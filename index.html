@@ -395,5 +395,30 @@
     </script>
     <noscript><div><img src="https://top-fwz1.mail.ru/counter?id=3748347;js=na" style="position:absolute;left:-9999px;" alt="Top.Mail.Ru" /></div></noscript>
     <!-- /Top.Mail.Ru counter -->
+
+    <!-- ВИДЖЕТ АССИСТЕНТА КАМИЛЫ ЗОЛОТОВОЙ -->
+    <script>
+    (function() {
+      fetch('/api/chat.php')
+        .then(function(res) { return res.text(); })
+        .then(function(html) {
+          var container = document.createElement('div');
+          container.id = 'psy-chat-container';
+          container.innerHTML = html;
+          document.body.appendChild(container);
+
+          var scripts = container.querySelectorAll('script');
+          scripts.forEach(function(oldScript) {
+            var newScript = document.createElement('script');
+            newScript.textContent = oldScript.textContent;
+            document.body.appendChild(newScript);
+            oldScript.remove();
+          });
+        })
+        .catch(function(err) {
+          console.error('Ошибка загрузки виджета чата:', err);
+        });
+    })();
+    </script>
 </body>
 </html>
