@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
     <meta name="twitter:image" content="https://pozitiv-psychology.ru/images/baner.webp">
     <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
     
-    <!-- Preconnect to Google Fonts -->
+    <!-- Подключение шрифтов -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/article.css">
     <link rel="stylesheet" href="../css/footer.css">
+
     <!-- Top.Mail.Ru counter -->
     <script type="text/javascript">
     var _tmr = window._tmr || (window._tmr = []);
@@ -49,7 +50,7 @@
             <li><a href="../index.html">Главная</a></li>
             <li><a href="../about.html">Обо мне</a></li>
             <li><a href="../services.html">Услуги</a></li>
-            <li><a href="../resources.html" class="active">Материалы</a></li>
+            <li><a href="../articles/" class="active">Материалы</a></li>
             <li><a href="../contact.html">Контакты</a></li>
         </ul>
         <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">
@@ -66,7 +67,7 @@
     </header>
     
     <section class="articles-section">
-        <!-- Закрепленные статьи -->
+        <!-- 1. ЗАКРЕПЛЕННЫЕ СТАТЬИ (СТРОГО 3 ШТУКИ) -->
         <div class="section-label">📌 Закреплено</div>
         
         <div class="articles-grid">
@@ -89,7 +90,7 @@
                     </div>
                 </div>
             </article>
-            
+
             <!-- Статья 2: Закрепленная — Симптомы тревоги -->
             <article class="article-card pinned">
                 <div class="article-image" style="background-image: url('../images/article-trevoga-preview.webp'); background-size: cover; background-position: center;" data-category="Тревога"></div>
@@ -131,10 +132,175 @@
             </article>
         </div>
         
-        <!-- Все статьи -->
+        <!-- 2. ВСЕ ОСТАЛЬНЫЕ СТАТЬИ (СЮДА ДОБАВЛЯЮТСЯ НОВЫЕ) -->
         <div class="section-label" style="margin-top: 3rem;">Все статьи</div>
         
         <div class="articles-grid">
+            <!-- МЕТКА ДЛЯ БОТА: НОВЫЕ СТАТЬИ БУДУТ ПАДАТЬ СЮДА, НЕ ТРОГАЯ ЗАКРЕП -->
+            <!-- ARTICLES_INJECT_POINT -->
+
+            <!-- Статья: Чувство вины — это не совесть. Как отличить реальный проступок от навязанного долга? -->
+            <article class="article-card" id="art-chuvstvo-viny--eto-ne-sovest-kak-otlichit-realnyy-prostupok-ot-navyazannogo-dolga-e69d">
+                <div class="article-image" style="background-image: url('../images/art-1790778400.webp'); background-size: cover; background-position: center;" data-category="Самооценка"></div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Самооценка</span>
+                        <span>30 сентября 2026</span>
+                    </div>
+                    <h3><a href="chuvstvo-viny--eto-ne-sovest-kak-otlichit-realnyy-prostupok-ot-navyazannogo-dolga-e69d.html">Чувство вины — это не совесть. Как отличить реальный проступок от навязанного долга?</a></h3>
+                    <p>Многие путают вину с совестью, но это разные механизмы. Разбираемся, где заканчивается ответственность и начинается самобичевание.</p>
+                    <div class="article-footer">
+                        <span class="read-time">11 мин чтения</span>
+                        <a href="chuvstvo-viny--eto-ne-sovest-kak-otlichit-realnyy-prostupok-ot-navyazannogo-dolga-e69d.html" class="btn-read">
+                            <span>Читать</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+
+            <!-- Статья: Депрессия как ловушка мышления: почему мы застреваем и как КПТ помогает выбраться -->
+            <article class="article-card" id="art-depressiya-kak-lovushka-myshleniya-pochemu-my-zastrevaem-i-kak-kpt-pomogaet-vybratsya-7b0c">
+                <div class="article-image" style="background-image: url('../images/article-kpt-preview.webp'); background-size: cover; background-position: center;" data-category="Депрессия"></div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Депрессия</span>
+                        <span>30 сентября 2026</span>
+                    </div>
+                    <h3><a href="depressiya-kak-lovushka-myshleniya-pochemu-my-zastrevaem-i-kak-kpt-pomogaet-vybratsya-7b0c.html">Депрессия как ловушка мышления: почему мы застреваем и как КПТ помогает выбраться</a></h3>
+                    <p>Разбираем механизмы депрессии с точки зрения когнитивно-поведенческой терапии и находим практические шаги к восстановлению.</p>
+                    <div class="article-footer">
+                        <span class="read-time">14 мин чтения</span>
+                        <a href="depressiya-kak-lovushka-myshleniya-pochemu-my-zastrevaem-i-kak-kpt-pomogaet-vybratsya-7b0c.html" class="btn-read">
+                            <span>Читать</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+
+            <!-- Статья: Синдром отличника и вечное "должен": Как выйти из замкнутого круга самонаказания -->
+            <article class="article-card" id="art-sindrom-otlichnika-i-vechnoe-dolzhen-kak-vyyti-iz-zamknutogo-kruga-samonakazaniya-2b2b">
+                <div class="article-image" style="background-image: url('../images/art-1790701823.webp'); background-size: cover; background-position: center;" data-category="Самооценка"></div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Самооценка</span>
+                        <span>29 сентября 2026</span>
+                    </div>
+                    <h3><a href="sindrom-otlichnika-i-vechnoe-dolzhen-kak-vyyti-iz-zamknutogo-kruga-samonakazaniya-2b2b.html">Синдром отличника и вечное &quot;должен&quot;: Как выйти из замкнутого круга самонаказания</a></h3>
+                    <p>Разбираем механизм хронического долженствования и внутреннего критика, который превращает достижения в погоню за недостижимым идеалом.</p>
+                    <div class="article-footer">
+                        <span class="read-time">11 мин чтения</span>
+                        <a href="sindrom-otlichnika-i-vechnoe-dolzhen-kak-vyyti-iz-zamknutogo-kruga-samonakazaniya-2b2b.html" class="btn-read">
+                            <span>Читать</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Статья: Тихая агрессия: Как подавленное чувство вины разрушает отношения с близкими -->
+            <article class="article-card" id="art-tikhaya-agressiya-kak-podavlennoe-chuvstvo-viny-razrushaet-otnosheniya-s-blizkimi-65f1">
+                <div class="article-image" style="background-image: url('../images/art-1790509469.webp'); background-size: cover; background-position: center;" data-category="Отношения"></div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Отношения</span>
+                        <span>27 сентября 2026</span>
+                    </div>
+                    <h3><a href="tikhaya-agressiya-kak-podavlennoe-chuvstvo-viny-razrushaet-otnosheniya-s-blizkimi-65f1.html">Тихая агрессия: Как подавленное чувство вины разрушает отношения с близкими</a></h3>
+                    <p>Подавленная вина не делает вас добрее — она превращает обычный конфликт в холодную войну, где нет победителей, а есть только отчуждение и боль.</p>
+                    <div class="article-footer">
+                        <span class="read-time">13 мин чтения</span>
+                        <a href="tikhaya-agressiya-kak-podavlennoe-chuvstvo-viny-razrushaet-otnosheniya-s-blizkimi-65f1.html" class="btn-read">
+                            <span>Читать</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Статья: Токсичное чувство вины: как перестать извиняться за то, что вы просто живете -->
+            <article class="article-card" id="art-toksichnoe-chuvstvo-viny-kak-perestat-izvinyatsya-za-to-chto-vy-prosto-zhivete-0355">
+                <div class="article-image" style="background-image: url('../images/art-1790420595.png'); background-size: cover; background-position: center;" data-category="Самооценка"></div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Самооценка</span>
+                        <span>26 сентября 2026</span>
+                    </div>
+                    <h3><a href="toksichnoe-chuvstvo-viny-kak-perestat-izvinyatsya-za-to-chto-vy-prosto-zhivete-0355.html">Токсичное чувство вины: как перестать извиняться за то, что вы просто живете</a></h3>
+                    <p>Постоянные извинения за свои желания и потребности — это не вежливость, а симптом глубоких когнитивных искажений. Разбираем механизмы токсической вины и путь к освобождению.</p>
+                    <div class="article-footer">
+                        <span class="read-time">11 мин чтения</span>
+                        <a href="toksichnoe-chuvstvo-viny-kak-perestat-izvinyatsya-za-to-chto-vy-prosto-zhivete-0355.html" class="btn-read">
+                            <span>Читать</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Статья: Чувство вины — скрытый тормоз ваших целей -->
+            <article class="article-card" id="art-chuvstvo-viny--skrytyy-tormoz-vashikh-tseley-klinicheskiy-razbor-mekhanizma-i-strategii-vykhoda-6009">
+                <div class="article-image" style="background-image: url('../images/art-1790416225.png'); background-size: cover; background-position: center;" data-category="Самооценка"></div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Самооценка</span>
+                        <span>26 сентября 2026</span>
+                    </div>
+                    <h3><a href="chuvstvo-viny--skrytyy-tormoz-vashikh-tseley-klinicheskiy-razbor-mekhanizma-i-strategii-vykhoda-6009.html">Чувство вины — скрытый тормоз ваших целей: клинический разбор механизма и стратегии выхода</a></h3>
+                    <p>Разбираем, почему хроническое чувство вины саботирует движение к целям сильнее страха неудачи, и как КПТ помогает выйти из этого цикла.</p>
+                    <div class="article-footer">
+                        <span class="read-time">11 мин чтения</span>
+                        <a href="chuvstvo-viny--skrytyy-tormoz-vashikh-tseley-klinicheskiy-razbor-mekhanizma-i-strategii-vykhoda-6009.html" class="btn-read">
+                            <span>Читать</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Статья: Эмоциональные качели или любовь? -->
+            <article class="article-card" id="art-emotsionalnye-kacheli-ili-lyubov-kak-otlichit-zavisimost-ot-privyazannosti-9443">
+                <div class="article-image" style="background-image: url('../images/art-1790269710.png'); background-size: cover; background-position: center;" data-category="Отношения"></div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Отношения</span>
+                        <span>24 сентября 2026</span>
+                    </div>
+                    <h3><a href="emotsionalnye-kacheli-ili-lyubov-kak-otlichit-zavisimost-ot-privyazannosti-9443.html">Эмоциональные качели или любовь? Как отличить зависимость от привязанности</a></h3>
+                    <p>Разбираемся, почему циклы «то холодно, то горячо» активируют зависимость, а не глубокое чувство, и как вернуть себе ясность.</p>
+                    <div class="article-footer">
+                        <span class="read-time">14 мин чтения</span>
+                        <a href="emotsionalnye-kacheli-ili-lyubov-kak-otlichit-zavisimost-ot-privyazannosti-9443.html" class="btn-read">
+                            <span>Читать</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Статья: Как справиться с расставанием -->
+            <article class="article-card" id="art-kak-spravitsya-s-rasstavaniem-psikhologiya-i-strategii-preodoleniya-0920">
+                <div class="article-image" style="background-image: url('../images/art-1790170990.png'); background-size: cover; background-position: center;" data-category="Отношения"></div>
+                <div class="article-content">
+                    <div class="article-meta">
+                        <span>Отношения</span>
+                        <span>23 сентября 2026</span>
+                    </div>
+                    <h3><a href="kak-spravitsya-s-rasstavaniem-psikhologiya-i-strategii-preodoleniya-0920.html">Как справиться с расставанием: психология и стратегии преодоления</a></h3>
+                    <p>Расставание — это тяжелый эмоциональный опыт, требующий времени и поддержки. Как пройти через этот процесс?</p>
+                    <div class="article-footer">
+                        <span class="read-time">8 мин чтения</span>
+                        <a href="kak-spravitsya-s-rasstavaniem-psikhologiya-i-strategii-preodoleniya-0920.html" class="btn-read">
+                            <span>Читать</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
             <!-- Статья: Как принять решение -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/reshenie-33.webp'); background-size: cover; background-position: center;" data-category="Самоопределение"></div>
@@ -323,7 +489,7 @@
                 </div>
             </article>
             
-            <!-- Статья 1 -->
+            <!-- Статья: Панические атаки -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/article-panika-preview.webp'); background-size: cover; background-position: center;" data-category="Тревога"></div>
                 <div class="article-content">
@@ -343,7 +509,7 @@
                 </div>
             </article>
             
-            <!-- Статья 2 -->
+            <!-- Статья: Онлайн vs Офлайн -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/article-online-offline-preview.webp'); background-size: cover; background-position: center;" data-category="Гид"></div>
                 <div class="article-content">
@@ -363,7 +529,7 @@
                 </div>
             </article>
             
-            <!-- Статья 3 -->
+            <!-- Статья: Восстановление после мошенничества -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/article-vosstanovlenie.webp'); background-size: cover; background-position: center;" data-category="Восстановление"></div>
                 <div class="article-content">
@@ -383,7 +549,7 @@
                 </div>
             </article>
             
-            <!-- Статья 5: Социальная тревога -->
+            <!-- Статья: Социальная тревога -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/article-social-anxiety.webp'); background-size: cover; background-position: center;" data-category="Тревога"></div>
                 <div class="article-content">
@@ -403,7 +569,7 @@
                 </div>
             </article>
             
-            <!-- Статья 6: Я не знаю чего хочу -->
+            <!-- Статья: Я не знаю чего хочу -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/016.webp'); background-size: cover; background-position: center;" data-category="Самоопределение"></div>
                 <div class="article-content">
@@ -423,7 +589,7 @@
                 </div>
             </article>
             
-            <!-- Статья 7: Синдром самозванца -->
+            <!-- Статья: Синдром самозванца -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/62.webp'); background-size: cover; background-position: center;" data-category="Самооценка"></div>
                 <div class="article-content">
@@ -443,7 +609,7 @@
                 </div>
             </article>
             
-            <!-- Статья 8: Не хочу работать -->
+            <!-- Статья: Не хочу работать -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/18.webp'); background-size: cover; background-position: center;" data-category="Выгорание"></div>
                 <div class="article-content">
@@ -463,7 +629,7 @@
                 </div>
             </article>
             
-            <!-- Статья 9: Финансовые конфликты в паре -->
+            <!-- Статья: Финансовые конфликты в паре -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/78.webp'); background-size: cover; background-position: center;" data-category="Отношения"></div>
                 <div class="article-content">
@@ -483,7 +649,7 @@
                 </div>
             </article>
             
-            <!-- Статья 10: Исследование финансовой тревожности -->
+            <!-- Статья: Исследование финансовой тревожности -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/82.webp'); background-size: cover; background-position: center;" data-category="Исследование"></div>
                 <div class="article-content">
@@ -525,7 +691,7 @@
                 </div>
             </article>
 
-            <!-- Статья 11: Психосоматика тревоги -->
+            <!-- Статья: Психосоматика тревоги -->
             <article class="article-card">
                 <div class="article-image" style="background-image: url('../images/91.webp'); background-size: cover; background-position: center;" data-category="Исследование"></div>
                 <div class="article-content">

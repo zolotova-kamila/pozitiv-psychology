@@ -1,3 +1,8 @@
+# Force HTTPS (Спринтхост)
+RewriteEngine On
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
+
 # Enable compression
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
@@ -55,10 +60,20 @@ Redirect 301 /obshhaya-psixologiya/ https://pozitiv-psychology.ru/
 Redirect 301 /about_me https://pozitiv-psychology.ru/about.html
 
 # 301 Redirects for moved articles (old → new URLs)
-Redirect 301 /article-alert-fatigue.html https://pozitiv-psychology.ru/articles/trevozhnoye-utomleniye.html
-Redirect 301 /article-pochemu-umnye-lyudi-popadayutsya-na-moshennikov.html https://pozitiv-psychology.ru/articles/pochemu-umnye-lyudi-popadayutsya.html
 Redirect 301 /article-vosstanovlenie-posle-moshennichestva.html https://pozitiv-psychology.ru/articles/vosstanovlenie-posle-moshennichestva.html
-Redirect 301 /test.html https://pozitiv-psychology.ru/articles/test.html
 
-# Redirect all 404 errors to homepage
-ErrorDocument 404 https://pozitiv-psychology.ru/
+# 301 Redirects for duplicate articles removed 2026-10-22
+Redirect 301 /articles/perfektsionizm-i-trevoga-pochemu-khorosho-nikogda-ne-dostatochno-0836.html https://pozitiv-psychology.ru/articles/perfektsionizm-i-trevoga.html
+Redirect 301 /articles/perfektsionizm-i-trevoga-pochemu-khorosho-nikogda-ne-dostatochno-1799.html https://pozitiv-psychology.ru/articles/perfektsionizm-i-trevoga.html
+Redirect 301 /articles/perfektsionizm-i-trevoga-pochemu-khorosho-nikogda-ne-dostatochno-3304.html https://pozitiv-psychology.ru/articles/perfektsionizm-i-trevoga.html
+Redirect 301 /articles/perfektsionizm-i-trevoga-pochemu-khorosho-nikogda-ne-dostatochno-5890.html https://pozitiv-psychology.ru/articles/perfektsionizm-i-trevoga.html
+Redirect 301 /articles/perfektsionizm-i-trevoga-pochemu-khorosho-nikogda-ne-dostatochno-7073.html https://pozitiv-psychology.ru/articles/perfektsionizm-i-trevoga.html
+Redirect 301 /articles/perfektsionizm-i-trevoga-pochemu-khorosho-nikogda-ne-dostatochno-8004.html https://pozitiv-psychology.ru/articles/perfektsionizm-i-trevoga.html
+Redirect 301 /articles/kak-spravitsya-s-panicheskimi-atakami-tekhniki-kotorye-rabotayut-0126.html https://pozitiv-psychology.ru/articles/kak-spravitsya-s-panicheskimi-atakami.html
+Redirect 301 /articles/kak-spravitsya-s-panicheskimi-atakami-tekhniki-kotorye-rabotayut-9923.html https://pozitiv-psychology.ru/articles/kak-spravitsya-s-panicheskimi-atakami.html
+Redirect 301 /articles/finansovye-konflikty-v-pare-kto-platit-i-pochemu-eto-ne-pro-dengi-0323.html https://pozitiv-psychology.ru/articles/finansovye-konflikty-v-pare.html
+Redirect 301 /articles/finansovye-konflikty-v-pare-kto-platit-i-pochemu-eto-ne-pro-dengi-9843.html https://pozitiv-psychology.ru/articles/finansovye-konflikty-v-pare.html
+Redirect 301 /articles/emotsionalnye-kacheli-ili-lyubov-kak-otlichit-zavisimost-ot-privyazannosti-8900.html https://pozitiv-psychology.ru/articles/emotsionalnye-kacheli-ili-lyubov-kak-otlichit-zavisimost-ot-privyazannosti-9443.html
+
+# Custom 404 page (relative path — prevents redirect loop)
+ErrorDocument 404 /404.html
