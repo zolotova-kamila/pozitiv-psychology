@@ -48,7 +48,8 @@
 
       fetch(ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        // text/plain — «простой» запрос без CORS-предзапроса; сервер всё равно читает тело как JSON
+        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
         body: JSON.stringify({
           type: 'lead',
           name: field('name'),
