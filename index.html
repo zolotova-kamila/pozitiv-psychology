@@ -172,6 +172,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/lead-form.css">
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -207,7 +208,7 @@
             <span></span>
             <span></span>
         </button>
-        <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer" class="nav-cta">Записаться</a>
+        <a href="#zapis" class="nav-cta">Записаться</a>
     </nav>
 
     <section class="hero">
@@ -218,9 +219,10 @@
                 <p class="hero-location">Психолог в Москве · Онлайн-консультации по всему миру</p>
                 <p class="hero-subtitle">Работаю с тревогой, самопознанием и финансовой психологией. Использую когнитивно-поведенческий подход и метод EMDR для устойчивых изменений.</p>
                 <div class="hero-buttons">
-                    <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer" class="btn-primary">Записаться на консультацию</a>
+                    <a href="#zapis" class="btn-primary">Записаться на консультацию</a>
                     <a href="about.html" class="btn-secondary">Узнать больше</a>
                 </div>
+                <p class="hero-contacts">Или напишите напрямую: <a href="https://wa.me/79099030000" target="_blank" rel="noopener noreferrer">WhatsApp</a> · <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer">Telegram</a> · <a href="tel:+79099030000">+7 (909) 903-00-00</a></p>
             </div>
             <div class="hero-image">
                 <img src="images/kamila-18.webp" alt="Камила Золотова - психолог КПТ, специалист по EMDR" class="hero-photo" fetchpriority="high" width="540" height="540">
@@ -352,10 +354,47 @@
         </div>
     </section>
 
-    <section class="cta-section">
-        <div class="section-title">Готовы начать?</div>
-        <p class="section-subtitle">Запишитесь на знакомство — время для того, чтобы понять, подхожу ли я вам.</p>
-        <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer" class="btn-white">Записаться на консультацию</a>
+    <section class="lead-section" id="zapis">
+        <div class="lead-card">
+            <div class="lead-intro">
+                <div class="section-title">Готовы начать?</div>
+                <p class="lead-hint">Напишите в одну строку, что вас беспокоит. Отвечу сама в течение суток.</p>
+                <p class="lead-note">Первая встреча — знакомство: поймём, подхожу ли я вам. Ни к чему не обязывает.</p>
+            </div>
+
+            <form class="lead-form" data-lead-form="Форма на главной">
+                <label class="lead-field">
+                    <span>Как к вам обращаться</span>
+                    <input type="text" name="name" autocomplete="name" placeholder="Имя" required>
+                </label>
+                <label class="lead-field">
+                    <span>Как с вами связаться</span>
+                    <input type="text" name="contact" autocomplete="tel" inputmode="email" placeholder="Телефон, @username или e-mail" required>
+                </label>
+                <label class="lead-field">
+                    <span>Что вас беспокоит</span>
+                    <input type="text" name="message" maxlength="300" placeholder="Например: тревога перед сном, не могу расслабиться">
+                </label>
+                <input type="text" name="website" class="lead-trap" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <p class="lead-error" role="alert" hidden></p>
+                <button type="submit" class="lead-submit">Отправить</button>
+                <p class="lead-consent">Нажимая «Отправить», вы соглашаетесь на обработку персональных данных согласно <a href="privacy.html">политике конфиденциальности</a>.</p>
+            </form>
+            <div class="lead-success" role="status" hidden>
+                <div class="lead-success-icon">✓</div>
+                <p><strong>Спасибо, заявка получена!</strong></p>
+                <p>Я отвечу вам сама в течение суток.</p>
+            </div>
+
+            <div class="lead-alt">
+                <span>Удобнее написать или позвонить?</span>
+                <div class="lead-alt-buttons">
+                    <a href="https://wa.me/79099030000" target="_blank" rel="noopener noreferrer" class="lead-alt-btn lead-alt-wa">WhatsApp</a>
+                    <a href="tel:+79099030000" class="lead-alt-btn">Позвонить</a>
+                    <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer" class="lead-alt-btn">Telegram</a>
+                </div>
+            </div>
+        </div>
     </section>
 
     <footer>
@@ -379,6 +418,7 @@
         </div>
     </footer>
     <script src="js/nav.js"></script>
+    <script src="js/lead-form.js"></script>
     <script src="js/metrika-goals.js"></script>
     <script src="js/cookie-consent.js"></script>
     <!-- Top.Mail.Ru counter -->
