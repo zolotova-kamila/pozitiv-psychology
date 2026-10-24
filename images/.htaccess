@@ -1,0 +1,4 @@
+# В папке картинок (её пополняет бот) скрипты не исполняются.
+<FilesMatch "\.(php|phtml|phar|pl|cgi)$">
+    Require all denied
+</FilesMatch>

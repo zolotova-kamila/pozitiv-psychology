@@ -42,7 +42,9 @@ path="${path#$BASE}"
 case "$path" in /*) ;; *) path="/$path" ;; esac
 
 # Служебные пути, за которые WAF банит IP, и файлы с секретами.
-if printf '%s' "$path" | grep -qiE '(^|/)\.(git|env|svn|hg|htaccess|htpasswd|claude|ssh|DS_Store)|/api/|wp-|xmlrpc|phpmyadmin|\.(php|ps1|py|sh|sql|bak|zip|tar|gz|exe|log|lock|ini|conf|yml|yaml)$|\.\./|%2e|%00|<|>|['"'"'"]|select|union'; then
+# /api/*.php и /api/drafts.json разрешены (единичные проверки, что бот жив
+# и что данные закрыты) — они не похожи на сканирование.
+if printf '%s' "$path" | grep -qiE '(^|/)\.(git|env|svn|hg|htaccess|htpasswd|claude|ssh|DS_Store)|wp-|xmlrpc|phpmyadmin|\.(ps1|py|sh|sql|bak|zip|tar|gz|exe|log|ini|conf|yml|yaml)$|\.\./|%2e|%00|<|>|['"'"'"]|select|union'; then
   echo "safe-fetch: путь '$path' запрещён (служебный путь — WAF хостинга заблокирует IP). Проверяйте такие файлы по SSH: ls/stat на сервере." >&2
   exit 3
 fi

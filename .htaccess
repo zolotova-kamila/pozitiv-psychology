@@ -46,6 +46,19 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
     </FilesMatch>
 </IfModule>
 
+# Заголовки безопасности (без X-Frame-Options: редактор бота открывается в Telegram WebApp)
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+    Header always set Strict-Transport-Security "max-age=31536000"
+</IfModule>
+
+# Служебные файлы не отдаются по HTTP, даже если случайно попадут на сервер
+<FilesMatch "\.(ps1|py|sh|bak|exe|zip|log|lock|sql|ini|md)$|\(1\)\.html$">
+    Require all denied
+</FilesMatch>
+
 # Disable ETags
 <IfModule mod_headers.c>
     Header unset ETag

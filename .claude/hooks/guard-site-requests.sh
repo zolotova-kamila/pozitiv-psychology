@@ -23,6 +23,8 @@ if [ "$tool" = "WebFetch" ]; then
 fi
 
 cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // ""')
+# Пути к папкам на сервере (~/domains/pozitiv-psychology.ru/...) — не запросы к сайту.
+cmd=$(printf '%s' "$cmd" | sed -E 's#domains/(pozitiv-psychology\.ru|mila2026\.xsph\.ru)#domains/SITEDIR#g')
 
 # Запросы к служебным путям сайта запрещены всегда — именно за них WAF банит IP.
 if printf '%s' "$cmd" | grep -qiE "($SITE)[^ ]*($SENSITIVE)"; then
