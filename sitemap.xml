@@ -166,31 +166,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://pozitiv-psychology.ru/articles/depressiya-kak-sistemnyy-sboy-pochemu-plokhoe-nastroenie-ne-lechitsya-siloy-voli-c9d2.html</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://pozitiv-psychology.ru/articles/kogda-mozg-teryaet-chyotkost-chto-stoit-za-kognitivnymi-rasstroystvami-i-kak-otlichit-normu-ot-patologii-85c2.html</loc>
-    <lastmod>2026-09-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://pozitiv-psychology.ru/articles/tikhaya-agressiya-kak-podavlennoe-chuvstvo-viny-razrushaet-otnosheniya-s-blizkimi-65f1.html</loc>
-    <lastmod>2026-09-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://pozitiv-psychology.ru/articles/kognitivnye-rasstroystva-pochemu-vash-mozg-vam-vryot-i-kak-perestat-v-eto-verit-95ce.html</loc>
-    <lastmod>2026-09-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://pozitiv-psychology.ru/articles/tuman-v-golove-kak-trevoga-i-depressiya-menyayut-rabotu-mozga-test-proverki-5733.html</loc>
     <lastmod>2026-09-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -202,25 +178,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://pozitiv-psychology.ru/articles/kognitivnye-narusheniya-pochemu-tuman-v-golove-meshaet-zhit-i-kak-s-etim-rabotat-49d2.html</loc>
-    <lastmod>2026-09-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://pozitiv-psychology.ru/articles/depressiya-kak-lovushka-myshleniya-pochemu-my-zastrevaem-i-kak-kpt-pomogaet-vybratsya-7b0c.html</loc>
-    <lastmod>2026-09-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://pozitiv-psychology.ru/articles/depressiya-kak-raspoznat-lovushku-zamorozhennoy-voli-i-vernut-sebe-sposobnost-chuvstvovat-7296.html</loc>
-    <lastmod>2026-09-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://pozitiv-psychology.ru/articles/depressiya-ne-prosto-plokhoe-nastroenie-a-sostoyanie-trebuyushchee-ponimaniya-i-deystviy-8ff0.html</loc>
     <lastmod>2026-09-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -236,5 +194,41 @@
     <lastmod>2026-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://pozitiv-psychology.ru/group-therapy-landing.html</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pozitiv-psychology.ru/denezhny-razryad.html</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pozitiv-psychology.ru/articles/chuvstvo-viny--skrytyy-tormoz-vashikh-tseley-klinicheskiy-razbor-mekhanizma-i-strategii-vykhoda-6009.html</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pozitiv-psychology.ru/articles/emotsionalnye-kacheli-ili-lyubov-kak-otlichit-zavisimost-ot-privyazannosti-9443.html</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pozitiv-psychology.ru/articles/kak-spravitsya-s-rasstavaniem-psikhologiya-i-strategii-preodoleniya-0920.html</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://pozitiv-psychology.ru/articles/toksichnoe-chuvstvo-viny-kak-perestat-izvinyatsya-za-to-chto-vy-prosto-zhivete-0355.html</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

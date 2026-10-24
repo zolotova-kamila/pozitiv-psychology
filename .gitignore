@@ -37,3 +37,15 @@ Thumbs.db
 tmp/
 temp/
 *.tmp
+
+# Мусор, который не должен попадать в репозиторий и на сайт
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
+*.bak
+*(1).html
+*.exe
+*.zip
+*.ps1
+2gis_*
+api/
+.env

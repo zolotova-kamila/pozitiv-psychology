@@ -1,4 +1,7 @@
-(function(){'use strict';const COOKIE_NAME='cookie_consent';const COOKIE_EXPIRY_DAYS=365;function getCookie(name){const value='; '+document.cookie;const parts=value.split('; '+name+'=');if(parts.length===2)return parts.pop().split(';').shift();return null;}
+(function(){'use strict';
+// Адрес сайта относительно этого скрипта: страницы лежат и в корне, и в подпапках
+const BASE=(document.currentScript&&document.currentScript.src)?document.currentScript.src.replace(/js\/cookie-consent\.js.*$/,''):'';
+const COOKIE_NAME='cookie_consent';const COOKIE_EXPIRY_DAYS=365;function getCookie(name){const value='; '+document.cookie;const parts=value.split('; '+name+'=');if(parts.length===2)return parts.pop().split(';').shift();return null;}
 function setCookie(name,value,days){const date=new Date();date.setTime(date.getTime()+(days*24*60*60*1000));document.cookie=name+'='+value+';expires='+date.toUTCString()+';path=/;Secure;SameSite=Strict';}
 function hasConsent(){return getCookie(COOKIE_NAME)==='accepted';}
 function hasDeclined(){return getCookie(COOKIE_NAME)==='declined';}
@@ -6,8 +9,8 @@ function createBanner(){const banner=document.createElement('div');banner.id='co
             <div class="cookie-content">
                 <div class="cookie-text">
                     <strong>Мы используем файлы cookie</strong>
-                    <p>Для анализа трафика и улучшения работы сайта. Продолжая использовать сайт, вы соглашаетесь с 
-                    <a href="privacy.html" target="_blank">политикой конфиденциальности</a>.</p>
+                    <p>Разрешите Яндекс.Метрике и Top.Mail.Ru считать посещения — это помогает делать сайт удобнее. Без вашего согласия статистика не собирается. Подробнее — в 
+                    <a href="${BASE}privacy.html" target="_blank" rel="noopener">политике конфиденциальности</a>.</p>
                 </div>
                 <div class="cookie-buttons">
                     <button class="cookie-btn cookie-btn-decline" id="cookie-decline">Отклонить</button>
@@ -127,8 +130,9 @@ function createBanner(){const banner=document.createElement('div');banner.id='co
                 display: none !important;
             }
         `;document.head.appendChild(styles);document.getElementById('cookie-accept').addEventListener('click',function(){setCookie(COOKIE_NAME,'accepted',COOKIE_EXPIRY_DAYS);banner.classList.add('hidden');enableAnalytics();});document.getElementById('cookie-decline').addEventListener('click',function(){setCookie(COOKIE_NAME,'declined',COOKIE_EXPIRY_DAYS);banner.classList.add('hidden');disableAnalytics();});}
-function enableAnalytics(){console.log('Cookie consent: Analytics enabled');}
+// Счётчики загружаются только после согласия
+function enableAnalytics(){if(window.__pozitivAnalyticsLoaded)return;const s=document.createElement('script');s.src=BASE+'js/analytics.js?v=20261024';s.async=true;document.head.appendChild(s);}
 function disableAnalytics(){if(typeof ym!=='undefined'){window.ym=function(){console.log('Analytics disabled by user choice');};}
 if(typeof gtag!=='undefined'){window.gtag=function(){console.log('Analytics disabled by user choice');};}}
-function init(){if(!hasConsent()&&!hasDeclined()){if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',createBanner);}else{createBanner();}}else if(hasDeclined()){disableAnalytics();}}
+function init(){if(!hasConsent()&&!hasDeclined()){if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',createBanner);}else{createBanner();}}else if(hasConsent()){enableAnalytics();}}
 init();})();
