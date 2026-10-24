@@ -21,7 +21,7 @@
 <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
 <link rel="stylesheet" href="../css/fonts.css">
 <link rel="stylesheet" href="../css/footer.css">
-<link rel="stylesheet" href="../css/nav.css">
+<link rel="stylesheet" href="../css/nav.css?v=2026102402">
 <style>
 :root {
   --ink:          #1a1a1a;
@@ -130,7 +130,12 @@ body { background: var(--cream); color: var(--ink); font-family: var(--font-sans
         <li><a href="../articles/" class="active">Материалы</a></li>
         <li><a href="../contact.html">Контакты</a></li>
     </ul>
-    <a href="https://t.me/Kamila_Zolotova" target="_blank" class="nav-cta">Записаться</a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <a href="../index.html#zapis" class="nav-cta">Записаться</a>
 </nav>
 
 <main>
@@ -251,5 +256,6 @@ window.addEventListener("scroll", function(){
 });
 </script>
     <script src="../js/cookie-consent.js?v=20261024"></script>
+    <script src="../js/nav.js?v=2026102402"></script>
 </body>
 </html>

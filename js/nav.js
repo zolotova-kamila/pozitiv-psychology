@@ -26,8 +26,11 @@ window.psyOpenChat = function() {
   if (document.getElementById('psy-chat-widget') || document.getElementById('psy-chat-container')) return;
 
   fetch('/api/chat.php')
-    .then(function(res) { return res.text(); })
+    .then(function(res) { return res.ok ? res.text() : ''; })
     .then(function(html) {
+      // Вставляем только настоящий виджет: страница ошибки (например, 404 на GitHub Pages)
+      // принесла бы свои стили и сломала бы вёрстку всего сайта
+      if (html.indexOf('psy-chat-widget') === -1) return;
       var container = document.createElement('div');
       container.id = 'psy-chat-container';
       container.innerHTML = html;

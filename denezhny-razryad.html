@@ -18,7 +18,7 @@
 <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/footer.css">
-<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/nav.css?v=2026102402">
 <style>
   :root {
     --bg-primary: #F5F1EB;
@@ -434,6 +434,8 @@
   }
 
   /* PRICING */
+  .pricing-layout { grid-template-columns: 1fr 1fr; }
+  @media(max-width: 900px) { .pricing-layout { grid-template-columns: 1fr; } .pricing-box { padding: 28px 20px; } }
   .pricing-box {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -555,7 +557,7 @@
         <span></span>
         <span></span>
     </button>
-    <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer" class="nav-cta">Записаться</a>
+    <a href="index.html#zapis" class="nav-cta">Записаться</a>
 </nav>
 
 <!-- HERO -->
@@ -830,7 +832,7 @@
 <!-- PRICING -->
 <section id="pricing">
   <div class="section-tag">Участие</div>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;" class="reveal">
+  <div style="display: grid; gap: 40px; align-items: start;" class="reveal pricing-layout">
     <div>
       <h2 class="section-title display">Стоимость<br>и запись</h2>
       <p style="font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 32px;">Пилотная группа — 5–8 человек. Это первый запуск программы: участники получают скидку 50% в обмен на честный фидбек после каждого занятия.</p>
@@ -891,7 +893,7 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
-    <script src="js/nav.js"></script>
+    <script src="js/nav.js?v=2026102402"></script>
     <script src="js/cookie-consent.js?v=20261024"></script>
 </body>
 </html>

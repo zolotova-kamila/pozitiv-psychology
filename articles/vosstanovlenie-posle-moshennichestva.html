@@ -25,7 +25,7 @@
     
     <link rel="canonical" href="https://pozitiv-psychology.ru/articles/vosstanovlenie-posle-moshennichestva.html">
     
-        <link rel="stylesheet" href="../css/styles.css">
+        <link rel="stylesheet" href="../css/styles.css?v=2026102402">
     <link rel="stylesheet" href="../css/article.css">
     <link rel="stylesheet" href="../css/footer.css">
 
@@ -44,11 +44,12 @@
             <li><a href="../resources.html" class="active">Материалы</a></li>
             <li><a href="../contact.html">Контакты</a></li>
         </ul>
-        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Открыть меню">
+        <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">
             <span></span>
             <span></span>
             <span></span>
         </button>
+        <a href="../index.html#zapis" class="nav-cta">Записаться</a>
     </nav>
 
     <header class="article-header">
@@ -212,23 +213,7 @@
     </div>
 </footer>
 
-    <script>
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const navLinks = document.getElementById('navLinks');
-
-        mobileMenuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            mobileMenuToggle.classList.toggle('active');
-        });
-
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                mobileMenuToggle.classList.remove('active');
-            });
-        });
-    </script>
-    <script src="../js/nav.js"></script>
+    <script src="../js/nav.js?v=2026102402"></script>
     <script src="../js/share.js"></script>
     <script src="../js/cookie-consent.js?v=20261024"></script>
 </body>

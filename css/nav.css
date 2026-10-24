@@ -174,3 +174,27 @@ nav .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(
   }
   nav .nav-cta { position: relative; z-index: 1003; }
 }
+
+/* Мобильная шапка: имя в одну строку, кнопка меню у правого края */
+@media (max-width: 968px) {
+  nav { gap: .5rem; }
+  nav .nav-cta { margin-left: auto; }
+  nav .menu-toggle { order: 3; margin-left: .25rem; }
+}
+@media (max-width: 480px) {
+  nav { padding: .75rem 16px; gap: .4rem; }
+  nav .logo { gap: .4rem; font-size: .95rem; white-space: nowrap; min-width: 0; }
+  nav .logo-icon-img { width: 36px; height: 36px; }
+  nav .nav-cta { padding: .5rem .75rem; font-size: .85rem; white-space: nowrap; }
+  nav .menu-toggle { padding: 6px; }
+}
+@media (max-width: 360px) {
+  nav .logo span { display: none; }
+}
+
+/* Широкие таблицы на телефоне прокручиваются внутри себя, а не растягивают страницу */
+@media (max-width: 768px) {
+  main table, article table, table.segments, table.data-table, table.compare-table, table.comparison-table {
+    display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  }
+}
