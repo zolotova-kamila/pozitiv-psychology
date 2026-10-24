@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест: Ваш денежный типаж — Камила Золотова</title>
+    <meta name="description" content="Бесплатный психологический тест — узнайте свой денежный типаж. 20 вопросов, 7 типажей. Разберитесь, какой сценарий управляет вашими финансовыми решениями.">
+    <link rel="canonical" href="https://pozitiv-psychology.ru/test-denezhny-scenariy.html">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <!-- Yandex.Metrika -->
+    <script type="text/javascript">
+       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();
+       for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
+       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
+       ym(95862074,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true});
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/95862074" style="position:absolute;left:-9999px;" alt=""/></div></noscript>
+    <!-- /Yandex.Metrika -->
+
+    <!-- Top.Mail.Ru counter -->
+    <script type="text/javascript">
+    var _tmr=window._tmr||(window._tmr=[]);
+    _tmr.push({id:"3748347",type:"pageView",start:(new Date()).getTime()});
+    (function(d,w,id){if(d.getElementById(id))return;
+    var ts=d.createElement("script");ts.type="text/javascript";ts.async=true;ts.id=id;
+    ts.src="https://top-fwz1.mail.ru/js/code.js";
+    var f=function(){var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(ts,s);};
+    if(w.opera=="[object Opera]"){d.addEventListener("DOMContentLoaded",f,false);}else{f();}
+    })(document,window,"tmr-code");
+    </script>
+    <noscript><div><img src="https://top-fwz1.mail.ru/counter?id=3748347;js=na" style="position:absolute;left:-9999px;" alt="Top.Mail.Ru"/></div></noscript>
+    <!-- /Top.Mail.Ru counter -->
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            background: #F5F1EB;
+            min-height: 100vh;
+            padding: 24px 16px 48px;
+            color: #2D3436;
+        }
+
+        .test-wrap {
+            max-width: 660px;
+            margin: 0 auto;
+        }
+
+        /* ─── START SCREEN ─── */
+        .start-screen {
+            background: white;
+            border-radius: 24px;
+            padding: 48px 40px;
+            text-align: center;
+            box-shadow: 0 6px 40px rgba(45,90,74,0.13);
+        }
+
+        .start-badge {
+            display: inline-block;
+            background: #EAF0ED;
+            color: #2D5A4A;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            padding: 6px 18px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .start-screen h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 27px;
+            color: #2D3436;
+            line-height: 1.35;
+            margin-bottom: 16px;
+        }
+
+        .start-screen p {
+            color: #5A6266;
+            font-size: 16px;
+            line-height: 1.65;
+            margin-bottom: 28px;
+        }
+
+        .start-meta {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 36px;
+            flex-wrap: wrap;
+        }
+
+        .start-meta span {
+            background: #EAF0ED;
+            padding: 9px 18px;
+            border-radius: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            color: #2D5A4A;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, #2D5A4A, #4A7C6F);
+            color: white;
+            border: none;
+            padding: 16px 52px;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(45,90,74,0.35);
+            transition: transform 0.18s, box-shadow 0.18s;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(45,90,74,0.45);
+        }
+
+        /* ─── QUESTION SCREEN ─── */
+        .question-screen { display: none; }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            color: #5A6266;
+            font-weight: 600;
+        }
+
+        .progress-track {
+            background: rgba(255,255,255,0.65);
+            border-radius: 6px;
+            height: 7px;
+            margin-bottom: 22px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2D5A4A, #4A7C6F);
+            border-radius: 6px;
+            transition: width 0.4s ease;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 22px;
+            padding: 38px 36px 32px;
+            box-shadow: 0 6px 40px rgba(45,90,74,0.12);
+        }
+
+        .q-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: #4A7C6F;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .question-text {
+            font-size: 19px;
+            color: #2D3436;
+            line-height: 1.55;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border: 2px solid #D4CCC2;
+            border-radius: 14px;
+            cursor: pointer;
+            background: white;
+            transition: border-color 0.15s, background 0.15s;
+            width: 100%;
+            text-align: left;
+        }
+
+        .option-btn:hover { border-color: #4A7C6F; background: #F5F1EB; }
+
+        .option-btn.selected {
+            border-color: #2D5A4A;
+            background: #EAF0ED;
+        }
+
+        .option-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #C5BAB0;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .option-btn.selected .option-dot {
+            background: #2D5A4A;
+            border-color: #2D5A4A;
+        }
+
+        .option-btn.selected .option-dot::after {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .option-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            color: #2D3436;
+            line-height: 1.4;
+        }
+
+        .option-btn.selected .option-label {
+            color: #1E3D30;
+            font-weight: 500;
+        }
+
+        .nav-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-back {
+            background: #EAF0ED;
+            color: #2D5A4A;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            flex-shrink: 0;
+        }
+
+        .btn-back:hover { background: #D4E4DC; }
+
+        .btn-next {
+            flex: 1;
+            background: linear-gradient(135deg, #2D5A4A, #4A7C6F);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(45,90,74,0.28);
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(45,90,74,0.38);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ─── RESULTS SCREEN ─── */
+        .results-screen { display: none; }
+
+        .result-hero {
+            background: linear-gradient(140deg, #1E3D30, #2D5A4A);
+            border-radius: 22px 22px 0 0;
+            padding: 44px 36px 36px;
+            text-align: center;
+            color: white;
+        }
+
+        .result-emoji { font-size: 60px; line-height: 1; margin-bottom: 14px; }
+
+        .result-eyebrow {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-bottom: 6px;
+        }
+
+        .result-type-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .result-type-sub {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            opacity: 0.75;
+        }
+
+        .result-body {
+            background: white;
+            border-radius: 0 0 22px 22px;
+            padding: 36px;
+            box-shadow: 0 6px 40px rgba(45,90,74,0.13);
+        }
+
+        .section-heading {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            color: #4A7C6F;
+            letter-spacing: 1.3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .result-desc {
+            font-size: 16px;
+            color: #2D3436;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .signs-list {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .signs-list li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px solid #EAF0ED;
+            font-size: 15px;
+            color: #2D3436;
+            line-height: 1.5;
+        }
+
+        .signs-list li:last-child { border-bottom: none; }
+
+        .sign-icon {
+            flex-shrink: 0;
+            font-size: 16px;
+            margin-top: 1px;
+        }
+
+        /* Score chart */
+        .scores-block {
+            background: #F5F1EB;
+            border-radius: 16px;
+            padding: 22px 24px;
+            margin-bottom: 28px;
+        }
+
+        .scores-block .section-heading { margin-bottom: 16px; }
+
+        .score-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 9px;
+        }
+
+        .score-row:last-child { margin-bottom: 0; }
+
+        .score-name {
+            width: 96px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            color: #5A6266;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .score-bar-track {
+            flex: 1;
+            background: #D4CCC2;
+            border-radius: 6px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #2D5A4A, #4A7C6F);
+            transition: width 0.6s ease;
+        }
+
+        .score-bar-fill.primary { background: linear-gradient(90deg, #2D5A4A, #4A7C6F); }
+        .score-bar-fill.secondary { background: linear-gradient(90deg, #4A7C6F, #7EAD9C); }
+
+        .score-pct {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            color: #8B9194;
+            width: 34px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        /* Secondary type block */
+        .secondary-block {
+            background: #EAF0ED;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 28px;
+            border-left: 4px solid #4A7C6F;
+        }
+
+        .secondary-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            color: #4A7C6F;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 4px;
+        }
+
+        .secondary-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: #2D3436;
+            margin-bottom: 4px;
+        }
+
+        .secondary-desc {
+            font-size: 13px;
+            color: #5A6266;
+            line-height: 1.5;
+        }
+
+        /* CTA */
+        .cta-block {
+            background: linear-gradient(135deg, #EAF0ED, #D4E4DC);
+            border-radius: 18px;
+            padding: 28px;
+            border: 1px solid #B8D0C8;
+        }
+
+        .cta-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #2D3436;
+            margin-bottom: 10px;
+        }
+
+        .cta-text {
+            font-size: 15px;
+            color: #3D5248;
+            line-height: 1.65;
+            margin-bottom: 22px;
+        }
+
+        .btn-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, #C9A87C, #D4B896);
+            color: #2D3436;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            padding: 15px 36px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 18px rgba(201,168,124,0.4);
+            transition: transform 0.18s, box-shadow 0.18s;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 26px rgba(201,168,124,0.55);
+        }
+
+        .btn-restart {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            font-family: 'Montserrat', sans-serif;
+            color: #5A6266;
+            font-size: 14px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            text-decoration: underline;
+        }
+
+        /* Divider */
+        .divider { height: 1px; background: #EDE8E0; margin: 28px 0; }
+
+        /* Fade animation */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-up { animation: fadeUp 0.32s ease; }
+
+        /* Start screen image */
+        .start-img {
+            width: 100%;
+            border-radius: 16px;
+            margin: 4px 0 24px;
+            max-height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Result type image */
+        .result-type-img {
+            width: 100%;
+            border-radius: 14px;
+            margin-top: 22px;
+            max-height: 260px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Mobile */
+        @media (max-width: 500px) {
+            body { padding: 16px 12px 40px; }
+            .start-screen, .question-card { padding: 28px 20px; }
+            .result-hero { padding: 32px 22px 28px; }
+            .result-body { padding: 26px 20px; }
+            .question-text { font-size: 17px; }
+            .result-type-name { font-size: 28px; }
+            .score-name { width: 80px; }
+        }
+    </style>
+</head>
+<body>
+<div class="test-wrap">
+
+    <!-- ════════════════ START SCREEN ════════════════ -->
+    <div id="startScreen" class="start-screen fade-up">
+        <div class="start-badge">Психологический тест</div>
+        <h1>Какой у вас денежный типаж?</h1>
+        <p>Ваши отношения с деньгами — это не случайность, а сценарий, сложившийся с детства.
+        Тест определит ваш денежный типаж: главный паттерн, который управляет вашими финансовыми решениями.</p>
+        <div class="start-meta">
+            <span>⏱ 3–5 минут</span>
+            <span>📋 20 вопросов</span>
+            <span>🔍 7 типажей</span>
+        </div>
+        <img src="images/333.webp" alt="Денежный типаж" class="start-img">
+        <button class="btn-primary" onclick="startTest()">Начать тест →</button>
+    </div>
+
+    <!-- ════════════════ QUESTION SCREEN ════════════════ -->
+    <div id="questionScreen" class="question-screen">
+        <div class="progress-header">
+            <span class="progress-label" id="progressLabel">Вопрос 1 из 20</span>
+            <span class="progress-label" id="progressPct">0%</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <div class="question-card fade-up" id="questionCard">
+            <div class="q-number" id="qNumber">Утверждение 1</div>
+            <div class="question-text" id="questionText"></div>
+            <div class="options" id="optionsContainer"></div>
+            <div class="nav-row">
+                <button class="btn-back" id="btnBack" onclick="prevQuestion()">← Назад</button>
+                <button class="btn-next" id="btnNext" onclick="nextQuestion()" disabled>Далее →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════ RESULTS SCREEN ════════════════ -->
+    <div id="resultsScreen" class="results-screen fade-up">
+        <div class="result-hero" id="resultHero">
+            <div class="result-emoji" id="resultEmoji"></div>
+            <div class="result-eyebrow">Ваш основной денежный типаж</div>
+            <div class="result-type-name" id="resultName"></div>
+            <div class="result-type-sub" id="resultSub"></div>
+            <img id="resultTypeImg" src="" alt="" class="result-type-img" style="display:none">
+        </div>
+        <div class="result-body">
+
+            <div class="section-heading">О вашем типаже</div>
+            <div class="result-desc" id="resultDesc"></div>
+
+            <div class="section-heading">Узнаёте себя?</div>
+            <ul class="signs-list" id="resultSigns"></ul>
+
+            <div class="divider"></div>
+
+            <div class="scores-block">
+                <div class="section-heading">Ваш профиль по всем типажам</div>
+                <div id="scoresChart"></div>
+            </div>
+
+            <div id="secondaryBlock" class="secondary-block" style="display:none">
+                <div class="secondary-label">Дополнительный типаж</div>
+                <div class="secondary-name" id="secondaryName"></div>
+                <div class="secondary-desc" id="secondaryDesc"></div>
+            </div>
+
+            <div class="cta-block">
+                <div class="cta-title">Что с этим делать?</div>
+                <div class="cta-text" id="ctaText"></div>
+                <a href="https://pozitiv-psychology.ru/denezhny-razryad.html" class="btn-cta">
+                    Узнать об интенсиве →
+                </a>
+            </div>
+
+            <button class="btn-restart" onclick="restartTest()">Пройти тест заново</button>
+        </div>
+    </div>
+
+</div><!-- /test-wrap -->
+
+<script>
+// ════════════ DATA ════════════
+
+const questions = [
+    { text: "Когда я закрываю долг, вскоре снова появляется потребность что-то занять.", type: "dolzhnik" },
+    { text: "Когда на счету накапливается крупная сумма, я чувствую беспокойство или тревогу, пока не потрачу её.", type: "tranzira" },
+    { text: "Когда нужно назвать цену за свои услуги, я испытываю неловкость, стыд или растерянность.", type: "altruist" },
+    { text: "Стабильный, предсказуемый доход кажется мне скучным и каким-то ограничивающим.", type: "igrok" },
+    { text: "Разговоры о деньгах с партнёром или близкими почти всегда заканчиваются напряжением или конфликтом.", type: "partizan" },
+    { text: "Я часто проверяю баланс счёта, но потратить деньги — даже на нужное — ощущается как потеря.", type: "plyushkin" },
+    { text: "Я считаю, что люди, которые думают о деньгах, упускают что-то важное — духовность, ценности, смыслы.", type: "asket" },
+    { text: "Пока у меня есть долг, я чувствую себя «живее» — есть конкретная задача, связь с человеком.", type: "dolzhnik" },
+    { text: "Я делаю импульсивные покупки или щедро угощаю других, даже когда это не вписывается в бюджет.", type: "tranzira" },
+    { text: "Я часто сам предлагаю скидку или соглашаюсь на меньшую оплату, не дожидаясь просьбы.", type: "altruist" },
+    { text: "Я верю, что один удачный риск или проект способен полностью изменить мою финансовую ситуацию.", type: "igrok" },
+    { text: "Я предпочитаю не сообщать близким точные цифры своих доходов и расходов.", type: "partizan" },
+    { text: "Многие радости и покупки я откладываю «на потом» — когда накоплю достаточно.", type: "plyushkin" },
+    { text: "Я редко прошу повышения или торгуюсь — деньги для меня не главное, и это моя принципиальная позиция.", type: "asket" },
+    { text: "Я горжусь тем, что всегда возвращаю долги, — но почему-то снова оказываюсь в них.", type: "dolzhnik" },
+    { text: "Деньги у меня «не задерживаются» — между получением и тратой проходит очень мало времени.", type: "tranzira" },
+    { text: "Принимая оплату за работу, я иногда чувствую, что беру лишнее или не совсем заслуживаю.", type: "altruist" },
+    { text: "У меня есть история нескольких проектов или вложений, которые «почти» сработали — но всё же нет.", type: "igrok" },
+    { text: "Любые незапланированные расходы (поломка, подарок, праздник) вызывают у меня тревогу или ощущение потери.", type: "plyushkin" },
+    { text: "Богатые люди кажутся мне немного «продавшимися» или потерявшими что-то по-настоящему важное.", type: "asket" }
+];
+
+const OPTION_LABELS = [
+    "Совсем не про меня",
+    "Скорее не про меня",
+    "Скорее про меня",
+    "Точно про меня"
+];
+
+const typeData = {
+    dolzhnik: {
+        name: "Должник",
+        emoji: "🔄",
+        subtitle: "Цикличный сценарий",
+        count: 3,
+        description: "Вы живёте в замкнутом круге: занять → заработать → отдать → занять снова. Долг — это не финансовая проблема, а психологическая связь с людьми. Без него наступает ощущение пустоты или потери смысла — поэтому новый долг возникает почти автоматически.",
+        signs: [
+            "Долг даёт ощущение «живости», адреналин, конкретную цель",
+            "После погашения быстро возникает потребность занять снова",
+            "Деньги уходят на долги раньше, чем появляется финансовая подушка"
+        ],
+        image: "images/test-dolzhnik.webp",
+        secondaryDesc: "Помимо основного типажа, в вашем поведении заметны черты этого паттерна.",
+        cta: "Долговой цикл — это не слабость воли. Это психологический сценарий, который закладывается в детстве. На интенсиве «Денежный разряд» мы разбираем, какую потребность закрывает долг, и находим ресурсные замены — без новых займов."
+    },
+    tranzira: {
+        name: "Транжира",
+        emoji: "💸",
+        subtitle: "Импульсивный сценарий",
+        count: 3,
+        description: "Деньги физически невозможно удержать. Накопление вызывает тревогу, трата — облегчение. Это не слабость характера, а дофаминовая петля: получил → потратил → получил → потратил. Часто за этим стоит детская травма нестабильности.",
+        signs: [
+            "Крупная сумма на счету вызывает беспокойство или дискомфорт",
+            "Импульсивные покупки и щедрость как способ «сбросить» напряжение",
+            "Между доходом и тратой нет паузы — деньги «утекают» сами"
+        ],
+        image: "images/test-tranzhira.webp",
+        secondaryDesc: "Черты этого паттерна также присутствуют в вашем отношении к деньгам.",
+        cta: "Импульсивные траты — это симптом, а не характер. На интенсиве «Денежный разряд» мы работаем с корневой тревогой, которая прячется за расходами, и создаём новый сценарий — где деньги можно иметь без внутреннего напряжения."
+    },
+    altruist: {
+        name: "Альтруист",
+        emoji: "🎁",
+        subtitle: "Самообесценивающий сценарий",
+        count: 3,
+        description: "Вы не можете назначить цену, принять оплату, продать свои услуги без стыда. Вы работаете за меньшее, чем заслуживаете, — не из доброты, а из глубинного убеждения «мне неудобно брать». За этим стоит блок на ценность собственной личности.",
+        signs: [
+            "Цена называется со смущением — «сколько вам удобно?»",
+            "Скидку предлагаете сами, не дожидаясь возражений клиента",
+            "При получении полной оплаты появляется ощущение «беру лишнее»"
+        ],
+        image: "images/test-stydnik.webp",
+        secondaryDesc: "В дополнение к основному типажу, у вас есть черты этого паттерна.",
+        cta: "Получать по-настоящему — это навык, которому можно научиться. На интенсиве «Денежный разряд» мы работаем с блоком на получение: откуда взялся этот стыд, кто «запретил» вам ценить себя, и как разрешить себе брать столько, сколько вы стоите."
+    },
+    igrok: {
+        name: "Игрок",
+        emoji: "🎲",
+        subtitle: "Аддиктивный сценарий",
+        count: 3,
+        description: "Риск — ваш наркотик. Стабильность вызывает тоску и скуку. Нужен дозапас дофамина через ставку, крипту, стартап. Каждый провал — «почти», каждый новый риск — «вот теперь точно выстрелит». Постепенный рост кажется невозможным или неинтересным.",
+        signs: [
+            "Предсказуемый доход ощущается как тюрьма или «смерть»",
+            "Вера в прорыв сильнее, чем опыт многочисленных провалов",
+            "История «почти успешных» начинаний с потерей средств"
+        ],
+        secondaryDesc: "Элементы этого сценария дополнительно влияют на ваши финансовые решения.",
+        cta: "За аддикцией к риску стоит неспособность выдерживать постепенность. На интенсиве «Денежный разряд» мы разбираем корень непереносимости стабильного роста и находим способы получать достаточно дофамина — без ставок на всё."
+    },
+    partizan: {
+        name: "Партизан",
+        emoji: "🤫",
+        subtitle: "Избегающий сценарий",
+        count: 2,
+        description: "Финансовые разговоры — угроза отношениям. Любое обсуждение бюджета заканчивается ссорой или молчанием. Вы действуете скрытно: тайные траты, скрытые накопления, «свой кошелёк». Деньги и близость в вашем мире несовместимы.",
+        signs: [
+            "«Давай не будем про деньги» — постоянное избегание этой темы",
+            "Тайные траты или накопления как единственная форма автономии",
+            "Близость и финансы в вашей голове разведены — одно мешает другому"
+        ],
+        secondaryDesc: "Этот паттерн также влияет на то, как вы выстраиваете денежные отношения.",
+        cta: "Финансовая прозрачность не разрушает отношения — разрушает накопленное молчание. На интенсиве «Денежный разряд» мы работаем с убеждением, что деньги = угроза близости, и выстраиваем финансовую автономию без потери доверия."
+    },
+    plyushkin: {
+        name: "Плюшкин",
+        emoji: "🏦",
+        subtitle: "Накопительный сценарий",
+        count: 3,
+        description: "Деньги = безопасность. Тратить = угроза жизни. Накопление стало самоцелью, даже в ущерб качеству жизни прямо сейчас. Вы откладываете жизнь «на потом» — когда накоплю достаточно. Но нужная сумма никогда не достигается.",
+        signs: [
+            "Счёт проверяется часто, но потратить деньги — стресс даже на нужное",
+            "Жизнь откладывается «на потом» — «когда накоплю, тогда начну»",
+            "Незапланированные расходы вызывают тревогу или обиду на судьбу"
+        ],
+        image: "images/test-khranitel.webp",
+        secondaryDesc: "Черты этого паттерна также заметны в вашем поведении с деньгами.",
+        cta: "Тревога за будущее не станет меньше от роста цифры на счету. На интенсиве «Денежный разряд» мы находим корень страха, который заставляет копить и не жить, — и учимся чувствовать безопасность здесь и сейчас."
+    },
+    asket: {
+        name: "Аскет",
+        emoji: "🧘",
+        subtitle: "Идеологический сценарий",
+        count: 3,
+        description: "Обесценивание денег — ваша моральная позиция. «Настоящие люди о деньгах не думают», «деньги портят». Бедность — ваш бейдж чистоты. Но за этой позицией прячется страх: начну думать о деньгах — предам себя, стану «как все».",
+        signs: [
+            "Гордость немеркантильностью: «я выше денег», «мне это не нужно»",
+            "Богатые вызывают лёгкое презрение или жалость как «потерявшие себя»",
+            "Отказ от торга и повышений как принципиальная позиция, а не выбор"
+        ],
+        secondaryDesc: "Идеологический компонент также присутствует в вашем отношении к деньгам.",
+        cta: "Думать о деньгах — не значит предавать свои ценности. На интенсиве «Денежный разряд» мы разбираем, какой страх прячется за идеологией бедности, и находим путь к финансовому благополучию без потери себя."
+    }
+};
+
+const TYPE_ORDER = ["dolzhnik","tranzira","altruist","igrok","partizan","plyushkin","asket"];
+
+// ════════════ STATE ════════════
+let currentQ = 0;
+let answers = new Array(questions.length).fill(null);
+
+// ════════════ INIT ════════════
+function startTest() {
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("questionScreen").style.display = "block";
+    showQuestion(0);
+}
+
+function showQuestion(index) {
+    const q = questions[index];
+    const card = document.getElementById("questionCard");
+
+    card.classList.remove("fade-up");
+    void card.offsetWidth;
+    card.classList.add("fade-up");
+
+    document.getElementById("qNumber").textContent = "Утверждение " + (index + 1);
+    document.getElementById("questionText").textContent = q.text;
+    document.getElementById("progressLabel").textContent = "Вопрос " + (index + 1) + " из " + questions.length;
+
+    const pct = Math.round((index / questions.length) * 100);
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("progressPct").textContent = pct + "%";
+
+    const container = document.getElementById("optionsContainer");
+    container.innerHTML = "";
+    OPTION_LABELS.forEach((label, i) => {
+        const val = i + 1;
+        const btn = document.createElement("button");
+        btn.className = "option-btn" + (answers[index] === val ? " selected" : "");
+        btn.innerHTML = `<span class="option-dot"></span><span class="option-label">${label}</span>`;
+        btn.onclick = () => selectAnswer(val);
+        container.appendChild(btn);
+    });
+
+    document.getElementById("btnBack").style.visibility = index === 0 ? "hidden" : "visible";
+    document.getElementById("btnNext").disabled = answers[index] === null;
+    document.getElementById("btnNext").textContent = index === questions.length - 1 ? "Получить результат →" : "Далее →";
+}
+
+function selectAnswer(val) {
+    answers[currentQ] = val;
+    document.querySelectorAll(".option-btn").forEach((btn, i) => {
+        btn.classList.toggle("selected", i + 1 === val);
+    });
+    document.getElementById("btnNext").disabled = false;
+}
+
+function nextQuestion() {
+    if (answers[currentQ] === null) return;
+    if (currentQ < questions.length - 1) {
+        currentQ++;
+        showQuestion(currentQ);
+    } else {
+        showResults();
+    }
+}
+
+function prevQuestion() {
+    if (currentQ > 0) {
+        currentQ--;
+        showQuestion(currentQ);
+    }
+}
+
+// ════════════ SCORING ════════════
+function calculateScores() {
+    const raw = {};
+    TYPE_ORDER.forEach(t => raw[t] = 0);
+    questions.forEach((q, i) => { raw[q.type] += (answers[i] || 1); });
+    const norm = {};
+    TYPE_ORDER.forEach(t => {
+        const max = typeData[t].count * 4;
+        norm[t] = Math.round((raw[t] / max) * 100);
+    });
+    return norm;
+}
+
+function showResults() {
+    const scores = calculateScores();
+    const sorted = [...TYPE_ORDER].sort((a, b) => scores[b] - scores[a]);
+    const primaryKey = sorted[0];
+    const secondaryKey = sorted[1];
+    const primary = typeData[primaryKey];
+
+    document.getElementById("resultEmoji").textContent = primary.emoji;
+    document.getElementById("resultName").textContent = primary.name;
+    document.getElementById("resultSub").textContent = primary.subtitle;
+    document.getElementById("resultDesc").textContent = primary.description;
+
+    const imgEl = document.getElementById("resultTypeImg");
+    if (primary.image) {
+        imgEl.src = primary.image;
+        imgEl.alt = primary.name;
+        imgEl.style.display = "block";
+    } else {
+        imgEl.style.display = "none";
+    }
+
+    const signsList = document.getElementById("resultSigns");
+    signsList.innerHTML = primary.signs.map(s =>
+        `<li><span class="sign-icon">✦</span><span>${s}</span></li>`
+    ).join("");
+
+    const chart = document.getElementById("scoresChart");
+    chart.innerHTML = sorted.map((t, idx) => {
+        const d = typeData[t];
+        const cls = idx === 0 ? "primary" : idx === 1 ? "secondary" : "";
+        return `<div class="score-row">
+            <span class="score-name">${d.name}</span>
+            <div class="score-bar-track">
+                <div class="score-bar-fill ${cls}" style="width:${scores[t]}%"></div>
+            </div>
+            <span class="score-pct">${scores[t]}%</span>
+        </div>`;
+    }).join("");
+
+    const secBlock = document.getElementById("secondaryBlock");
+    if (scores[secondaryKey] >= 40 && scores[primaryKey] - scores[secondaryKey] <= 22) {
+        document.getElementById("secondaryName").textContent =
+            typeData[secondaryKey].emoji + "  " + typeData[secondaryKey].name + " — " + typeData[secondaryKey].subtitle;
+        document.getElementById("secondaryDesc").textContent = typeData[secondaryKey].secondaryDesc;
+        secBlock.style.display = "block";
+    } else {
+        secBlock.style.display = "none";
+    }
+
+    document.getElementById("ctaText").textContent = primary.cta;
+
+    document.getElementById("questionScreen").style.display = "none";
+    const resultsEl = document.getElementById("resultsScreen");
+    resultsEl.style.display = "block";
+    resultsEl.classList.remove("fade-up");
+    void resultsEl.offsetWidth;
+    resultsEl.classList.add("fade-up");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function restartTest() {
+    currentQ = 0;
+    answers = new Array(questions.length).fill(null);
+    document.getElementById("resultsScreen").style.display = "none";
+    document.getElementById("startScreen").style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+</script>
+</body>
+</html>
