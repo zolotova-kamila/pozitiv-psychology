@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/guard-site-requests.sh",
+            "timeout": 10,
+            "statusMessage": "Проверка запросов к сайту"
+          }
+        ]
+      }
+    ]
+  }
+}
