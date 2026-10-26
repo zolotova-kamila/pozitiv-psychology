@@ -459,3 +459,9 @@ body.article-page {
 /* Украшения подзаголовков из старых стилей страниц не нужны в конце статьи */
 .article-page .article-end :is(h2, h3)::before,
 .article-page .article-end :is(h2, h3)::after { display: none; content: none; }
+
+/* Картинки в тексте сохраняют пропорции (у них заданы width/height) */
+.article-page :is(main, .article-content, .article) img:not(.author-box-photo img):not(.hero-meta-avatar img):not(.author-ava img):not(.author-avatar img) {
+  max-width: 100%;
+  height: auto;
+}
