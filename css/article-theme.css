@@ -455,3 +455,7 @@ body.article-page {
   .article-page .article-end .author-box { flex-direction: column; text-align: center; padding: 22px 20px; }
   .article-page .article-end .cta-block { padding: 32px 20px; }
 }
+
+/* Украшения подзаголовков из старых стилей страниц не нужны в конце статьи */
+.article-page .article-end :is(h2, h3)::before,
+.article-page .article-end :is(h2, h3)::after { display: none; content: none; }
