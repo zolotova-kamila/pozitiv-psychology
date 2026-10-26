@@ -25,15 +25,15 @@
 <link rel="stylesheet" href="../css/nav.css?v=2026102402">
 <style>
   :root {
-    --teal:       #2A7B6F;
-    --teal-dark:  #1A5248;
-    --teal-light: #E8F5F2;
-    --teal-mid:   #C5E8E2;
-    --gold:       #C9A84C;
-    --gold-light: #FDF6E3;
-    --dark:       #1A2E2B;
-    --grey:       #5A6E6B;
-    --light:      #F7FAFA;
+    --teal:       #2D5A4A;
+    --teal-dark:  #23473A;
+    --teal-light: #EAF0ED;
+    --teal-mid:   #C5D8D2;
+    --gold:       #C9A87C;
+    --gold-light: #F6EFE3;
+    --dark:       #2D3436;
+    --grey:       #5A6266;
+    --light:      #F5F1EB;
     --white:      #FFFFFF;
     --max:        740px;
   }
@@ -51,7 +51,7 @@
 
   /* ── HERO ── */
   .hero {
-    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 60%, #3D9A8A 100%);
+    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 60%, #4A7C6F 100%);
     padding: 64px 24px 52px;
     text-align: center;
     position: relative;
@@ -61,7 +61,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 70% 30%, rgba(201,168,76,0.12) 0%, transparent 60%);
+    background: radial-gradient(ellipse at 70% 30%, rgba(201,168,124,0.12) 0%, transparent 60%);
     pointer-events: none;
   }
   .hero-tag {
@@ -183,7 +183,7 @@
   /* ── GOLD BOX ── */
   .goldbox {
     background: var(--gold-light);
-    border: 1px solid rgba(201,168,76,0.35);
+    border: 1px solid rgba(201,168,124,0.35);
     border-radius: 12px;
     padding: 22px 26px;
     margin: 28px 0;
@@ -253,7 +253,7 @@
     justify-content: center;
     margin-top: 2px;
   }
-  .checklist.cross .check-icon { background: #D0564A; }
+  .checklist.cross .check-icon { background: #B87D5E; }
 
   /* ── MYTH vs FACT ── */
   .myths {
@@ -277,7 +277,7 @@
     line-height: 1.55;
   }
   .myth-cell.myth {
-    background: #FFF5F5;
+    background: #FBF0EA;
     border-right: 1px solid var(--teal-mid);
   }
   .myth-cell.fact { background: var(--teal-light); }
@@ -288,7 +288,7 @@
     text-transform: uppercase;
     margin-bottom: 6px;
   }
-  .myth-label.m { color: #C0392B; }
+  .myth-label.m { color: #B87D5E; }
   .myth-label.f { color: var(--teal); }
   @media (max-width: 540px) {
     .myth-row { grid-template-columns: 1fr; }
@@ -339,7 +339,7 @@
   /* ── CTA ── */
   .cta {
     background: var(--gold-light);
-    border: 1px solid rgba(201,168,76,0.4);
+    border: 1px solid rgba(201,168,124,0.4);
     border-radius: 16px;
     padding: 36px 32px;
     text-align: center;
@@ -454,8 +454,9 @@
   }
 }
 </script>
+<link rel="stylesheet" href="../css/article-theme.css?v=2026102601">
 </head>
-<body>
+<body class="article-page">
 
 <!-- NAV -->
     <nav>

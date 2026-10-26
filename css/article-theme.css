@@ -1,0 +1,390 @@
+/* Единый стиль статей.
+   Подключается последним (после встроенных стилей страницы) и приводит все статьи
+   к одному виду: кремовый фон, фирменный тёмно-зелёный, текст Source Serif,
+   подписи и кнопки Montserrat. Уникальные схемы страниц остаются, но в общей палитре. */
+
+:root {
+  --at-bg: #F5F1EB;
+  --at-card: #FAF8F5;
+  --at-ink: #2D3436;
+  --at-muted: #5A6266;
+  --at-accent: #2D5A4A;
+  --at-accent-2: #4A7C6F;
+  --at-accent-light: #EAF0ED;
+  --at-mint: #D6E8E2;
+  --at-warm: #C9A87C;
+  --at-warm-light: #F6EFE3;
+  --at-border: #E2DBD1;
+  --at-serif: 'Source Serif Pro', Georgia, serif;
+  --at-sans: 'Montserrat', system-ui, sans-serif;
+
+  /* Переменные старых оформлений — в общую палитру */
+  --teal: #2D5A4A; --teal-dark: #23473A; --teal-light: #EAF0ED; --teal-mid: #C5D8D2;
+  --accent: #2D5A4A; --accent-dark: #23473A; --accent-light: #EAF0ED;
+  --color-primary: #2D5A4A; --color-primary-dark: #23473A; --color-primary-light: #EAF0ED; --color-primary-mid: #C5D8D2;
+  --color-gold: #C9A87C; --color-gold-light: #F6EFE3; --color-grey: #5A6266; --color-text: #2D3436; --color-light-bg: #F5F1EB;
+  --gold: #C9A87C; --gold-light: #F6EFE3; --gold-pale: #F6EFE3;
+  --sage: #4A7C6F; --sage-light: #EAF0ED;
+  --ink: #2D3436; --dark: #2D3436; --grey: #5A6266; --muted: #5A6266;
+  --warm: #F5F1EB; --cream: #F5F1EB; --light: #F5F1EB;
+  --font-serif: 'Source Serif Pro', Georgia, serif;
+  --font-sans: 'Montserrat', system-ui, sans-serif;
+}
+
+/* ---------- Страница и текст ---------- */
+body.article-page {
+  background: var(--at-bg);
+  color: var(--at-ink);
+  font-family: var(--at-serif);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.75;
+}
+.article-page :is(main, .article-content, .article) {
+  font-family: var(--at-serif);
+  color: var(--at-ink);
+}
+.article-page :is(main, .article-content, .article) :is(p, li) {
+  font-family: var(--at-serif);
+  font-size: 17px;
+  line-height: 1.75;
+  font-weight: 400;
+}
+.article-page :is(main, .article-content, .article) :is(p, li) strong { font-weight: 600; }
+.article-page :is(.container, .article-body, .article) { max-width: 760px; }
+.article-page .article-content { max-width: 760px; margin-left: auto; margin-right: auto; }
+
+/* Ссылки в тексте */
+.article-page :is(main, .article-content, .article) p a:not([class]),
+.article-page :is(main, .article-content, .article) li a:not([class]) {
+  color: var(--at-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* ---------- Заголовки ---------- */
+.article-page :is(main, .article-content, .article) h2 {
+  font-family: var(--at-serif);
+  font-weight: 600;
+  font-size: clamp(24px, 3vw, 30px);
+  line-height: 1.25;
+  color: var(--at-ink);
+  letter-spacing: 0;
+  border: 0;
+}
+.article-page :is(main, .article-content, .article) h2::after { display: none; }
+.article-page :is(main, .article-content, .article) h3 {
+  font-family: var(--at-sans);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--at-ink);
+}
+.article-page :is(main, .article-content, .article) h4 {
+  font-family: var(--at-sans);
+  font-weight: 600;
+  color: var(--at-ink);
+}
+
+/* ---------- Шапка статьи ---------- */
+.article-page :is(.hero, .article-hero, .article-header) {
+  background: var(--at-bg);
+  background-image: none;
+  color: var(--at-ink);
+  text-align: center;
+  border-bottom: 1px solid var(--at-border);
+}
+.article-page :is(.hero, .article-hero, .article-header)::before,
+.article-page :is(.hero, .article-hero, .article-header)::after { display: none; }
+.article-page .hero:not(header) { max-width: none; }
+.article-page :is(.hero, .article-hero, .article-header) h1 {
+  font-family: var(--at-serif);
+  font-weight: 600;
+  font-size: clamp(32px, 4.4vw, 46px);
+  line-height: 1.18;
+  color: var(--at-ink);
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+.article-page :is(.hero, .article-hero, .article-header) h1 :is(em, .hero-accent) {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--at-accent);
+}
+.article-page :is(.hero-sub, .hero-lead, .hero-subtitle, .article-hero .lead, .article-header > p, .article-subtitle) {
+  font-family: var(--at-serif);
+  font-size: 19px;
+  font-style: normal;
+  line-height: 1.6;
+  color: var(--at-muted);
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0;
+  padding: 0;
+  background: none;
+}
+.article-page .hero-subtitle .hero-accent { color: var(--at-accent); font-weight: 600; }
+.article-page :is(.hero-meta, .article-hero .meta, .article-meta, .article-date) {
+  font-family: var(--at-sans);
+  font-size: 0.8rem;
+  color: var(--at-muted);
+  justify-content: center;
+}
+.article-page :is(.hero-meta, .article-hero .meta) :is(strong, span, time) { color: var(--at-muted); }
+.article-page .hero-meta strong { color: var(--at-ink); font-weight: 600; }
+
+/* Рубрика над заголовком — одна «таблетка» на всех страницах */
+.article-page :is(.hero-tag, .article-tag, .hero-category, .article-hero .tag, .article-category) {
+  display: inline-block;
+  font-family: var(--at-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--at-accent);
+  background: var(--at-mint);
+  border: 0;
+  border-radius: 20px;
+  padding: 5px 14px;
+  margin-bottom: 18px;
+}
+.article-page .article-tag::before { display: none; }
+
+/* Мелкие подписи разделов */
+.article-page :is(.section-label, .eyebrow, .cta-eyebrow, .cta-eye, .technique-label, .callout-label, .infobox-title, .infobox-label, .key-label, .related-label, .rel-label, .toc-title, .toc-label) {
+  font-family: var(--at-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--at-accent);
+}
+
+/* ---------- Лид и цитаты ---------- */
+.article-page :is(main, .article-content, .article) .lead:not(.article-hero .lead) {
+  font-family: var(--at-serif);
+  font-size: 20px;
+  font-style: italic;
+  line-height: 1.65;
+  color: var(--at-ink);
+  background: none;
+  border: 0;
+  border-left: 3px solid var(--at-warm);
+  border-radius: 0;
+  padding: 2px 0 2px 20px;
+}
+.article-page :is(blockquote, .pull-quote, .pullquote, .quote-box, .quote-block, .pq, .lead-quote) {
+  font-family: var(--at-serif);
+  font-style: italic;
+  color: var(--at-ink);
+  background: var(--at-card);
+  border: 0;
+  border-left: 3px solid var(--at-accent);
+  border-radius: 0 10px 10px 0;
+  padding: 18px 22px;
+}
+.article-page :is(blockquote, .pull-quote, .pullquote, .quote-box, .quote-block, .pq, .lead-quote) :is(p, cite, .quote-author) {
+  font-family: var(--at-serif);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--at-ink);
+}
+.article-page :is(blockquote, .quote-block) :is(cite, .quote-author) {
+  font-family: var(--at-sans);
+  font-size: 0.8rem;
+  font-style: normal;
+  color: var(--at-muted);
+}
+
+/* ---------- Плашки ---------- */
+.article-page :is(.callout, .infobox, .highlight-box, .key-box, .box, .goldbox) {
+  background: var(--at-accent-light);
+  border: 0;
+  border-left: 3px solid var(--at-accent);
+  border-radius: 0 10px 10px 0;
+  color: var(--at-ink);
+  box-shadow: none;
+}
+.article-page :is(.callout, .infobox, .highlight-box, .key-box, .box, .goldbox) :is(p, li) { color: var(--at-ink); }
+.article-page :is(.callout.warning, .callout.violet, .callout.amber, .goldbox, .warning-box) {
+  background: var(--at-warm-light);
+  border-left-color: var(--at-warm);
+}
+.article-page .warning-box { border: 0; border-left: 3px solid var(--at-warm); border-radius: 0 10px 10px 0; }
+.article-page .key-box .key-text {
+  font-family: var(--at-serif);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--at-ink);
+}
+
+/* ---------- Упражнения ---------- */
+.article-page :is(.technique, .exercise, .exercise-box, .technique-box) {
+  background: #fff;
+  border: 1px solid var(--at-border);
+  border-left: 3px solid var(--at-accent);
+  border-radius: 0 12px 12px 0;
+  box-shadow: none;
+  color: var(--at-ink);
+}
+
+/* ---------- Блок записи ---------- */
+.article-page :is(.cta, .cta-block, .cta-box, .cta-section) {
+  background: var(--at-accent);
+  background-image: none;
+  color: #fff;
+  border: 0;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: none;
+}
+.article-page :is(.cta, .cta-block, .cta-box, .cta-section) :is(h2, h3) {
+  font-family: var(--at-sans);
+  font-weight: 700;
+  font-size: 1.35rem;
+  line-height: 1.3;
+  color: #fff;
+}
+.article-page :is(.cta, .cta-block, .cta-box, .cta-section) :is(p, li, .cta-block-text, .btn-note) {
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--at-serif);
+}
+.article-page :is(.cta, .cta-block, .cta-box, .cta-section) :is(.cta-eyebrow, .cta-eye) { color: var(--at-warm); }
+.article-page :is(.cta, .cta-block, .cta-box, .cta-section) a:is(.btn, .btn-primary, .cta-btn, .cta-main, .btn-cta),
+.article-page a.cta-main {
+  display: inline-block;
+  font-family: var(--at-sans);
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: #fff;
+  color: var(--at-accent);
+  border: 0;
+  border-radius: 8px;
+  padding: 0.85rem 1.8rem;
+  text-decoration: none;
+  box-shadow: none;
+}
+.article-page :is(.cta, .cta-block, .cta-box, .cta-section) a:is(.btn, .btn-primary, .cta-btn, .cta-main, .btn-cta):hover,
+.article-page a.cta-main:hover { background: var(--at-warm-light); transform: none; }
+
+/* ---------- Автор ---------- */
+.article-page :is(.author-box, .author-block, .author-card) {
+  background: var(--at-mint);
+  background-image: none;
+  color: var(--at-ink);
+  border: 0;
+  border-radius: 14px;
+  box-shadow: none;
+}
+.article-page :is(.author-box, .author-block, .author-card) :is(h3, h4, .author-name) {
+  font-family: var(--at-sans);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--at-ink);
+}
+.article-page :is(.author-box, .author-block, .author-card) :is(p, .author-bio, .author-creds, .author-role) {
+  font-family: var(--at-serif);
+  font-size: 0.95rem;
+  color: var(--at-ink);
+}
+.article-page :is(.author-creds, .author-role) {
+  font-family: var(--at-sans);
+  font-size: 0.8rem;
+  color: var(--at-accent);
+}
+
+/* ---------- «Читайте также» и теги ---------- */
+.article-page :is(.rlink, .related-link, .related-card, .rel-card) { color: var(--at-accent); }
+.article-page :is(.related-card, .rel-card) {
+  background: #fff;
+  border: 1px solid var(--at-border);
+  border-radius: 10px;
+  box-shadow: none;
+}
+.article-page :is(.related-card, .rel-card) :is(h3, .rel-title) {
+  font-family: var(--at-serif);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--at-ink);
+}
+.article-page :is(.related-card-tag, .rel-tag, .related-category) {
+  font-family: var(--at-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--at-accent);
+}
+.article-page :is(.article-tags .tag, .tag-link) {
+  font-family: var(--at-sans);
+  font-size: 0.78rem;
+  color: var(--at-accent);
+  background: var(--at-accent-light);
+  border: 0;
+  border-radius: 20px;
+}
+
+/* ---------- Картинки, таблицы, разделители ---------- */
+.article-page :is(.article-image img, .article-img, .article-image-inline, .article-photo, .section-photo img, .article-hero-image) {
+  border-radius: 10px;
+}
+.article-page :is(main, .article-content, .article) table th {
+  font-family: var(--at-sans);
+  background: var(--at-accent-light);
+  color: var(--at-accent);
+}
+.article-page :is(main, .article-content, .article) table td { font-family: var(--at-serif); }
+.article-page .reading-progress { background: var(--at-accent); }
+.article-page :is(.breadcrumbs, .breadcrumb) { font-family: var(--at-sans); font-size: 0.78rem; color: var(--at-muted); }
+.article-page :is(.breadcrumbs, .breadcrumb) a { color: var(--at-muted); }
+
+@media (max-width: 640px) {
+  .article-page :is(main, .article-content, .article) :is(p, li) { font-size: 17px; }
+  .article-page :is(.hero, .article-hero, .article-header) h1 { font-size: clamp(27px, 7vw, 34px); }
+}
+
+/* Метки упражнений — «ярлычок» на зелёном */
+.article-page :is(.ex-label, .exercise-label) {
+  font-family: var(--at-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  background: var(--at-accent);
+  color: #fff;
+}
+
+/* Мелкие подписи — не меньше 12px */
+.article-page :is(.myth-label, .dist-badge, .symptom-col-head, .badge, .related-card-tag, .rel-tag, .related-category, .hero-meta-read, .article-category) {
+  font-size: 12px;
+}
+
+/* Кнопки «Связаться с автором» — в фирменном цвете */
+.article-page .share-btn {
+  font-family: var(--at-sans);
+  background: var(--at-accent);
+  color: #fff;
+  border: 0;
+}
+.article-page .share-btn:hover { background: var(--at-accent-2); }
+
+/* Текущий пункт в «хлебных крошках» */
+.article-page :is(.breadcrumbs, .breadcrumb) :is(span, li) { color: var(--at-muted); }
+
+/* Фото автора: всегда круглое и в своей рамке (у картинок заданы размеры 301×400) */
+.article-page :is(.author-ava, .author-avatar, .author-box-photo, .hero-meta-avatar) {
+  overflow: hidden;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.article-page :is(.author-ava, .author-avatar, .author-box-photo, .hero-meta-avatar) img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
