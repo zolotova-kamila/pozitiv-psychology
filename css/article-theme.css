@@ -29,6 +29,7 @@
   --warm: #F5F1EB; --cream: #F5F1EB; --light: #F5F1EB;
   --font-serif: 'Source Serif Pro', Georgia, serif;
   --font-sans: 'Montserrat', system-ui, sans-serif;
+  --warm-mid: #D6E8E2; --text-dark: #2D3436;
 }
 
 /* ---------- Страница и текст ---------- */
@@ -51,8 +52,17 @@ body.article-page {
   font-weight: 400;
 }
 .article-page :is(main, .article-content, .article) :is(p, li) strong { font-weight: 600; }
-.article-page :is(.container, .article-body, .article) { max-width: 760px; }
-.article-page .article-content { max-width: 760px; margin-left: auto; margin-right: auto; }
+.article-page :is(.container, .article-body, .article, .article-content) {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  box-sizing: border-box;
+}
+@media (max-width: 600px) {
+  .article-page :is(.container, .article-body, .article, .article-content) { padding-left: 18px; padding-right: 18px; }
+}
 
 /* Ссылки в тексте */
 .article-page :is(main, .article-content, .article) p a:not([class]),
@@ -387,4 +397,61 @@ body.article-page {
   object-fit: cover;
   object-position: center top;
   display: block;
+}
+
+/* ==========================================================
+   Конец статьи — одинаковый на всех страницах:
+   «Связаться с автором» → автор → запись → «Читайте также»
+   ========================================================== */
+.article-page .article-end { margin: 48px 0 64px; }
+
+.article-page .article-end .article-share {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+  margin: 0 0 28px; padding: 16px 0;
+  border-top: 1px solid var(--at-border); border-bottom: 1px solid var(--at-border);
+}
+.article-page .article-end .share-label { font-family: var(--at-sans); font-size: 14px; font-weight: 600; color: var(--at-muted); }
+.article-page .article-end .share-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.article-page .article-end .share-btn {
+  display: inline-flex; align-items: center; padding: 7px 14px; border-radius: 8px;
+  font-family: var(--at-sans); font-size: 13px; font-weight: 500; line-height: 1.3;
+  background: var(--at-accent); color: #fff; text-decoration: none; border: 0; cursor: pointer;
+  width: auto; height: auto; min-width: 0; white-space: nowrap; justify-content: center;
+}
+.article-page .article-end .share-btn:hover { background: var(--at-accent-2); transform: none; }
+
+.article-page .article-end .author-box {
+  display: flex; align-items: center; gap: 18px;
+  margin: 0 0 24px; padding: 22px 26px;
+  background: var(--at-mint); border-radius: 14px; border: 0;
+}
+.article-page .article-end .author-box-photo { width: 64px; height: 64px; border: 2px solid #fff; }
+.article-page .article-end .author-box-content h3 { font-family: var(--at-sans); font-size: 16px; font-weight: 600; margin: 0 0 4px; color: var(--at-ink); }
+.article-page .article-end .author-box-content p { font-family: var(--at-serif); font-size: 15px; line-height: 1.5; margin: 0; color: var(--at-ink); }
+
+.article-page .article-end .cta-block {
+  margin: 0; padding: 40px 28px; border-radius: 14px; text-align: center;
+  background: var(--at-accent); color: #fff; position: relative; overflow: hidden;
+}
+.article-page .article-end .cta-block::before,
+.article-page .article-end .cta-block::after { display: none; }
+.article-page .article-end .cta-block h2 { margin: 0 0 10px; font-size: 24px; }
+.article-page .article-end .cta-block p { margin: 0 auto 22px; max-width: 520px; font-size: 16px; line-height: 1.6; }
+.article-page .article-end .cta-block .cta-btn { text-transform: none; letter-spacing: 0; width: auto; }
+
+.article-page .article-end .related { margin: 40px 0 0; padding: 32px 0 0; border-top: 1px solid var(--at-border); text-align: left; }
+.article-page .article-end .related-label { margin: 0 0 16px; }
+.article-page .article-end .related-links { display: flex; flex-direction: column; gap: 10px; }
+.article-page .article-end .rlink {
+  display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+  background: var(--at-accent-light); border: 1px solid var(--at-border); border-radius: 10px;
+  font-family: var(--at-sans); font-size: 15px; font-weight: 500; line-height: 1.4;
+  color: var(--at-accent); text-decoration: none;
+}
+.article-page .article-end .rlink:hover { background: var(--at-mint); }
+.article-page .article-end .rlink-arr { color: var(--at-warm); font-size: 17px; font-weight: 700; flex-shrink: 0; }
+
+@media (max-width: 600px) {
+  .article-page .article-end .author-box { flex-direction: column; text-align: center; padding: 22px 20px; }
+  .article-page .article-end .cta-block { padding: 32px 20px; }
 }
