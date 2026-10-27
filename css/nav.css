@@ -198,3 +198,6 @@ nav .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(
     display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
 }
+
+/* Меню из 7 пунктов: на средних экранах плотнее, без переносов */
+@media(min-width:969px) and (max-width:1240px){nav .nav-links{gap:1.25rem}nav .nav-links a{font-size:.85rem}nav .logo span{display:none}}nav .nav-links a,nav .logo{white-space:nowrap}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="copyright" content="© 2026 Камила Золотова">
+    <meta name="author" content="Камила Золотова">
+    <meta name="robots" content="noindex, follow">
+    <title>Заявка получена | Камила Золотова</title>
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <meta name="description" content="Спасибо, заявка на встречу с психологом Камилой Золотовой получена.">
+    <link rel="preload" as="font" type="font/woff2" href="fonts/montserrat-normal-cyrillic.woff2" crossorigin>
+    <link rel="stylesheet" href="css/fonts.css?v=2026102510">
+    <link rel="stylesheet" href="css/styles.css?v=2026102702">
+    <link rel="stylesheet" href="css/footer.css">
+    <style>
+        .thanks { max-width: 640px; margin: 0 auto; padding: 140px 16px 80px; text-align: center; }
+        .thanks-icon { width: 64px; height: 64px; margin: 0 auto 24px; border-radius: 50%; background: var(--accent-primary, #254b3e); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+        .thanks h1 { margin-bottom: 16px; }
+        .thanks p { color: var(--text-secondary, #3b5045); line-height: 1.6; margin-bottom: 12px; }
+        .thanks-links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 32px; }
+        .thanks-links a { padding: 12px 20px; border-radius: 999px; border: 1px solid currentColor; color: var(--accent-primary, #254b3e); text-decoration: none; }
+        .thanks-links a.thanks-main { background: var(--accent-primary, #254b3e); border-color: var(--accent-primary, #254b3e); color: #fff; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">
+            <img width="44" height="44" src="images/logo-kz-flat-88.webp" alt="KZ" class="logo-icon-img">
+            <span>Камила Золотова</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="about.html">Обо мне</a></li>
+            <li><a href="services.html">Услуги</a></li>
+            <li><a href="articles/">Статьи</a></li>
+            <li><a href="reviews.html">Отзывы</a></li>
+            <li><a href="resources.html">Материалы</a></li>
+            <li><a href="contact.html">Контакты</a></li>
+        </ul>
+        <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <a href="index.html#zapis" class="nav-cta">Записаться</a>
+    </nav>
+
+    <main class="thanks">
+        <div class="thanks-icon">✓</div>
+        <h1>Спасибо, заявка получена!</h1>
+        <p>Я отвечу вам сама в течение суток и предложу время для бесплатной встречи-знакомства на 20 минут.</p>
+        <p>Если хочется связаться быстрее — напишите мне в мессенджер.</p>
+        <div class="thanks-links">
+            <a href="https://wa.me/79099030000" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer">Telegram</a>
+            <a href="articles/" class="thanks-main">Почитать статьи</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="footer-info">
+                    <h4>Камила Золотова<span class="footer-credentials">, магистр психологии</span></h4>
+                    <p class="footer-address">Москва, Алтуфьевское шоссе, 34а</p>
+                </div>
+                <div class="footer-contacts">
+                    <p>Тел: <a href="tel:+79099030000">+7 (909) 903-00-00</a></p>
+                    <p>Telegram: <a href="https://t.me/Kamila_Zolotova" target="_blank">@Kamila_Zolotova</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copy">© 2026 Камила Золотова. Все права защищены.</p>
+                <ul class="footer-links">
+                    <li><a href="privacy.html">Правовая информация</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/nav.js?v=2026102402"></script>
+    <script src="js/metrika-goals.js?v=2026102701"></script>
+    <script src="js/cookie-consent.js?v=20261024"></script>
+    <script>
+        // Засчитываем цель «заявка отправлена» только после настоящей отправки формы,
+        // а не при случайном открытии страницы. Ждём, пока загрузятся счётчики.
+        (function () {
+            var source;
+            try { source = sessionStorage.getItem('pozitiv_lead'); } catch (e) {}
+            if (!source) return;
+            var tries = 0;
+            var timer = setInterval(function () {
+                tries++;
+                if (typeof window.ym === 'function' || tries > 40) {
+                    clearInterval(timer);
+                    if (typeof window.ym !== 'function') return;
+                    window.pozitivGoal('lead_sent');
+                    try { sessionStorage.removeItem('pozitiv_lead'); } catch (e) {}
+                }
+            }, 250);
+        })();
+    </script>
+</body>
+</html>

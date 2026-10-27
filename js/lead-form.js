@@ -2,6 +2,9 @@
 // Посетителю не нужен Telegram — достаточно оставить телефон, @username или e-mail.
 (function () {
   var ENDPOINT = 'https://pozitiv-psychology.ru/api/chat.php';
+  // Корень сайта — по адресу этого скрипта (работает и на основном домене, и на GitHub Pages)
+  var me = document.currentScript && document.currentScript.src;
+  var ROOT = me ? me.replace(/js\/lead-form\.js.*$/, '') : '';
 
   function isValidContact(value) {
     var v = value.trim();
@@ -41,6 +44,10 @@
 
       var source = form.getAttribute('data-lead-form');
       if (field('source')) source += ' · узнали: ' + field('source');
+      var utm = window.pozitivUtm ? window.pozitivUtm() : '';
+      if (utm) source += ' · реклама: ' + utm;
+      var comment = field('message') || 'Без описания';
+      if (field('messenger')) comment += ' · удобный способ связи: ' + field('messenger');
 
       var label = button.textContent;
       button.disabled = true;
@@ -54,7 +61,7 @@
           type: 'lead',
           name: field('name'),
           phone: field('contact'),
-          comment: field('message') || 'Без описания',
+          comment: comment,
           source: source,
           website: field('website')
         })
@@ -65,15 +72,18 @@
           });
         })
         .then(function () {
-          if (typeof ym !== 'undefined') ym(95862074, 'reachGoal', 'lead_sent');
+          // Цель lead_sent засчитывает страница «Спасибо» — её же удобно указать целью в рекламе
+          try { sessionStorage.setItem('pozitiv_lead', source); } catch (e) {}
+          if (ROOT) { location.href = ROOT + 'spasibo.html'; return; }
+          if (window.pozitivGoal) window.pozitivGoal('lead_sent');
           form.hidden = true;
           form.parentNode.querySelector('.lead-success').hidden = false;
         })
         .catch(function (err) {
           button.disabled = false;
           button.textContent = label;
-          showError(form, (err && err.message && err.message !== 'Failed to fetch' ? err.message + ' ' : 'Не получилось отправить заявку. ') +
-            'Пожалуйста, напишите мне в WhatsApp или позвоните: +7 (909) 903-00-00.');
+          // Технический текст ошибки посетителю не показываем
+          showError(form, 'Не получилось отправить заявку. Пожалуйста, напишите мне в WhatsApp или Telegram или позвоните: +7 (909) 903-00-00.');
         });
     });
   });
