@@ -87,6 +87,13 @@
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/footer.css">
 
+<style>
+/* Длинный текст рядом с фото: на широком экране фото у верхнего края и остаётся на виду при прокрутке */
+@media (min-width: 969px) {
+  .about-intro-top { align-items: start; }
+  .about-intro-top .about-intro-image { position: sticky; top: 100px; }
+}
+</style>
 </head>
 <body>
     <nav>
@@ -115,8 +122,8 @@
     </header>
 
     <section class="about-section">
-        <div class="about-intro" style="align-items: start;">
-            <div class="about-intro-image" style="position: sticky; top: 100px;">
+        <div class="about-intro about-intro-top">
+            <div class="about-intro-image">
                 <img width="852" height="864" src="images/kamila-39.webp" alt="Камила Золотова - психолог КПТ" fetchpriority="high">
             </div>
             <div class="about-intro-text">
