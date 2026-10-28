@@ -78,6 +78,7 @@
     <link rel="stylesheet" href="css/fonts.css?v=2026102510">
     <link rel="stylesheet" href="css/styles.css?v=2026102703">
     <link rel="stylesheet" href="css/services.css">
+    <link rel="stylesheet" href="css/lead-form.css?v=20261027">
     <link rel="stylesheet" href="css/footer.css">
 </head>
 <body>
@@ -100,7 +101,7 @@
             <span></span>
             <span></span>
         </button>
-        <a href="index.html#zapis" class="nav-cta">Записаться</a>
+        <a href="#zapis" class="nav-cta">Записаться</a>
     </nav>
 
     <header class="page-header">
@@ -134,7 +135,7 @@
                     <li>Длительность 50 мин.</li>
                 </ul>
                 
-                <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer" class="btn-service">Записаться</a>
+                <a href="#zapis" class="btn-service">Записаться</a>
             </div>
 
             <div class="service-card featured">
@@ -197,7 +198,7 @@
                     <li>Межсессионная поддержка</li>
                 </ul>
                 
-                <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer" class="btn-service">Записаться</a>
+                <a href="#zapis" class="btn-service">Записаться</a>
             </div>
 
             <div class="service-card">
@@ -290,10 +291,48 @@
         </div>
     </section>
 
-    <section class="cta-section">
-        <div class="section-title">Есть вопросы?</div>
-        <p class="section-subtitle">Запишитесь на бесплатное 20-минутное знакомство — обсудим ваш запрос и подберём подходящий формат работы.</p>
-        <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer" class="btn-white">Записаться на консультацию</a>
+    <section class="lead-section" id="zapis">
+        <div class="lead-card">
+            <div class="lead-intro">
+                <div class="section-title">Записаться на бесплатную встречу</div>
+                <p class="lead-hint">Напишите в одну строку, что вас беспокоит. Отвечу сама в течение суток.</p>
+                <p class="lead-note">Первая встреча — 20 минут, бесплатно: познакомимся и поймём, подхожу ли я вам. Ни к чему не обязывает.</p>
+            </div>
+
+            <form class="lead-form" data-lead-form="Страница &quot;Услуги&quot;">
+                <label class="lead-field">
+                    <span>Как к вам обращаться</span>
+                    <input type="text" name="name" autocomplete="name" placeholder="Имя" required>
+                </label>
+                <label class="lead-field">
+                    <span>Как с вами связаться</span>
+                    <input type="text" name="contact" autocomplete="tel" inputmode="email" placeholder="Телефон, @username или e-mail" required>
+                </label>
+                <label class="lead-field">
+                    <span>С каким вопросом хотите прийти <small>(по желанию)</small></span>
+                    <input type="text" name="message" maxlength="300" placeholder="Например: тревога перед сном, не могу расслабиться">
+                </label>
+                <input type="text" name="website" class="lead-trap" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <p class="lead-error" role="alert" hidden></p>
+                <label class="lead-agree"><input type="checkbox" name="agree" required> <span>Даю <a href="soglasie.html" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="privacy.html" target="_blank">политику конфиденциальности</a></span></label>
+                <button type="submit" class="lead-submit">Отправить</button>
+            </form>
+            <div class="lead-success" role="status" hidden>
+                <div class="lead-success-icon">✓</div>
+                <p><strong>Спасибо, заявка получена!</strong></p>
+                <p>Я отвечу вам сама в течение суток.</p>
+            </div>
+
+            <div class="lead-alt">
+                <span>Удобнее написать или позвонить?</span>
+                <div class="lead-alt-buttons">
+                    <a href="https://wa.me/79099030000" target="_blank" rel="noopener noreferrer" class="lead-alt-btn lead-alt-wa">WhatsApp</a>
+                    <a href="tel:+79099030000" class="lead-alt-btn">Позвонить</a>
+                    <a href="https://t.me/Kamila_Zolotova" target="_blank" rel="noopener noreferrer" class="lead-alt-btn">Telegram</a>
+                    <a href="https://t.me/Psyholog_Zolotova_bot?start=site" target="_blank" rel="noopener noreferrer" class="lead-alt-btn">Бот записи</a>
+                </div>
+            </div>
+        </div>
     </section>
 
     <footer>
@@ -320,6 +359,7 @@
     </footer>
     <script src="js/nav.js?v=2026102402"></script>
     <script src="js/faq.js"></script>
+    <script src="js/lead-form.js?v=2026102701"></script>
     <script src="js/metrika-goals.js?v=2026102701"></script>
     <script src="js/cookie-consent.js?v=20261024"></script>
 </body>
