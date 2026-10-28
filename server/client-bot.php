@@ -149,9 +149,15 @@ function askPhone($chatId) {
 }
 
 function askTopic($chatId) {
+    send($chatId, "3/4. С каким вопросом хотите прийти? Пара слов, без подробностей о здоровье — всё остальное обсудите на встрече.\n\nНажмите «Написать» или просто напишите ответ в поле сообщения внизу.",
+        kb([[['text' => '✍️ Написать', 'callback_data' => 'b_topic_write'], ['text' => 'Пропустить', 'callback_data' => 'b_topic_skip']]]));
+}
+
+// Открывает поле ввода с подсказкой (ответ на это сообщение приходит обычным текстом)
+function askText($chatId, $prompt, $placeholder) {
     global $api;
-    tg($api, 'sendMessage', ['chat_id' => $chatId, 'text' => "3/4. С каким вопросом хотите прийти? Пара слов, без подробностей о здоровье — всё остальное обсудите на встрече.",
-        'reply_markup' => kb([[['text' => 'Пропустить', 'callback_data' => 'b_topic_skip']], CANCEL_ROW])]);
+    tg($api, 'sendMessage', ['chat_id' => $chatId, 'text' => $prompt,
+        'reply_markup' => json_encode(['force_reply' => true, 'input_field_placeholder' => $placeholder], JSON_UNESCAPED_UNICODE)]);
 }
 
 function askTime($chatId) {
@@ -221,6 +227,7 @@ function handleCallback($cb) {
         else { $s['step'] = 'phone'; setState($chatId, $s); askPhone($chatId); }
         return;
     }
+    if ($data === 'b_topic_write' && $s['step'] === 'topic') { askText($chatId, "Напишите в паре слов, с каким вопросом хотите прийти 👇", 'Например: тревога перед сном'); return; }
     if ($data === 'b_topic_skip' && $s['step'] === 'topic') { $s['topic'] = ''; $s['step'] = 'time'; setState($chatId, $s); askTime($chatId); return; }
     if (isset(TIMES[$data]) && $s['step'] === 'time') { $s['time'] = TIMES[$data]; $s['step'] = 'confirm'; setState($chatId, $s); askConfirm($chatId, $s); return; }
     if ($data === 'b_send' && $s['step'] === 'confirm') { submitBooking($chatId, $s, $from); return; }
