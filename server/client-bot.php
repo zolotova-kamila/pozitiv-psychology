@@ -139,7 +139,7 @@ function askContact($chatId, $from) {
     $rows = [];
     $rows[] = [['text' => '💬 Здесь, в Telegram', 'callback_data' => 'b_c_tg']];
     $rows[] = [['text' => '📱 WhatsApp', 'callback_data' => 'b_c_wa'], ['text' => '📞 Звонок', 'callback_data' => 'b_c_call']];
-    send($chatId, "2/4. Как Камиле удобнее с вами связаться?", kb($rows));
+    send($chatId, "2/4. Как с Вами удобнее связаться?", kb($rows));
 }
 
 function askPhone($chatId) {
