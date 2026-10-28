@@ -2,6 +2,7 @@
 // Замена ключа Telegram-бота или ProxyAPI в api/article-bot.php и api/chat.php на сервере.
 // Запускается из tools/rotate-key.sh: новый ключ приходит через stdin и нигде не печатается.
 // Сначала проверяет новый ключ, потом сохраняет копию файлов, потом заменяет.
+const EXPECTED_BOT = 'psywebsite_bot';
 $kind = $argv[1] ?? '';
 $base = __DIR__;
 $files = [$base . '/public_html/api/article-bot.php', $base . '/public_html/api/chat.php'];
@@ -38,7 +39,13 @@ function post($url, $fields, $headers = []) {
 if ($kind === 'bot') {
     [$code, $r] = post('https://api.telegram.org/bot' . $new . '/getMe', []);
     if (empty($r['ok'])) { echo "❌ Telegram не принял новый ключ (HTTP $code). Ничего не изменено.\n"; exit(1); }
-    echo "✅ Новый ключ работает: бот @" . ($r['result']['username'] ?? '?') . "\n";
+    // Рабочий бот сайта и статей — @psywebsite_bot (не @Psyholog_Zolotova_bot)
+    $username = $r['result']['username'] ?? '';
+    if (strcasecmp($username, EXPECTED_BOT) !== 0) {
+        echo "❌ Это ключ бота @$username, а нужен ключ @" . EXPECTED_BOT . ". Ничего не изменено.\n";
+        exit(1);
+    }
+    echo "✅ Новый ключ работает: бот @$username\n";
 } else {
     [$code] = post('https://api.proxyapi.ru/v1/chat/completions', json_encode([
         'model' => 'openai/gpt-4o-mini', 'messages' => [['role' => 'user', 'content' => 'ping']], 'max_tokens' => 3,
