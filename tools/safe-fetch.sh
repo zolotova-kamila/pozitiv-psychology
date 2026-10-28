@@ -25,6 +25,9 @@ WINDOW=600
 MAX_PER_WINDOW=40
 STATE_DIR="${HOME}/.cache/pozitiv-safe-fetch"
 UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
+# Для проверки превью соцсетей можно подставить другое имя клиента (с теми же лимитами запросов):
+#   SAFE_FETCH_UA="TelegramBot (like TwitterBot)" tools/safe-fetch.sh -I /index.html
+UA="${SAFE_FETCH_UA:-$UA}"
 
 mode="code"; out=""
 while [ $# -gt 1 ]; do

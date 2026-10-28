@@ -246,8 +246,33 @@ function buildPostHtml($p) {
     return $html;
 }
 
+// Картинка для превью над текстом поста. Telegram стабильно показывает обложку, если ссылка ведёт
+// прямо на JPG (WebP обрезает, а по ссылке на страницу статьи превью не появилось), поэтому
+// для каждой обложки статьи делаем JPG-копию в public_html/images/tg/ (кладёт и обновляет агент).
+function coverJpgUrl($slug) {
+    global $base;
+    $html = (string)@file_get_contents($base . '/public_html/articles/' . $slug . '.html');
+    if (!preg_match('#<meta property="og:image" content="https://pozitiv-psychology\.ru/(images/[^"?]+)"#', $html, $m)) return null;
+    $rel = $m[1];
+    if (preg_match('/\.(jpe?g)$/i', $rel)) return SITE . $rel;
+    $name = preg_replace('/\.[a-z0-9]+$/i', '', basename($rel)) . '.jpg';
+    $dst = $base . '/public_html/images/tg/' . $name;
+    $srcPath = $base . '/public_html/' . $rel;
+    if (!is_file($dst) || filemtime($dst) < @filemtime($srcPath)) {
+        if (!is_dir(dirname($dst))) mkdir(dirname($dst), 0755, true);
+        $img = null;
+        if (preg_match('/\.webp$/i', $rel)) $img = @imagecreatefromwebp($srcPath);
+        elseif (preg_match('/\.png$/i', $rel)) $img = @imagecreatefrompng($srcPath);
+        if (!$img) return null;
+        imagejpeg($img, $dst, 88);
+        logLine('jpg cover created: ' . $name);
+    }
+    return SITE . 'images/tg/' . $name;
+}
+
 function previewOptions($slug) {
-    return json_encode(['url' => SITE . 'articles/' . $slug . '.html', 'prefer_large_media' => true, 'show_above_text' => true]);
+    $url = coverJpgUrl($slug) ?: SITE . 'articles/' . $slug . '.html';
+    return json_encode(['url' => $url, 'prefer_large_media' => true, 'show_above_text' => true]);
 }
 
 function nextPublishTime($fromTs) {
@@ -375,6 +400,22 @@ if ($cmd === 'cb') {
     }
     unset($p);
     saveState($s);
+    exit;
+}
+
+if ($cmd === 'refresh') {
+    $k = findPost($s, $argv[2] ?? 0);
+    if ($k === null || empty($s['posts'][$k]['channel_msg_id'])) { echo "no published post\n"; exit; }
+    $p = $s['posts'][$k];
+    $r = tg('editMessageText', [
+        'chat_id'              => CHANNEL,
+        'message_id'           => $p['channel_msg_id'],
+        'text'                 => buildPostHtml($p),
+        'parse_mode'           => 'HTML',
+        'link_preview_options' => previewOptions($p['slug']),
+    ]);
+    echo !empty($r['ok']) ? "refreshed\n" : ('FAIL ' . ($r['description'] ?? 'no response') . "\n");
+    logLine("refresh post {$p['id']}: " . (!empty($r['ok']) ? 'ok' : ($r['description'] ?? 'failed')));
     exit;
 }
 
