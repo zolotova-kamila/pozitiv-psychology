@@ -1,20 +1,25 @@
 #!/bin/bash
 # Замена ключа Telegram-бота или ProxyAPI на сервере без показа ключа на экране и в переписке.
-#   tools/rotate-key.sh bot     — новый токен из @BotFather (/revoke)
-#   tools/rotate-key.sh proxy   — новый ключ из личного кабинета proxyapi.ru
-# Ключ вводится скрыто и передаётся на сервер через ssh (stdin), в файлах и истории не остаётся.
+#   1. Скопируйте новый ключ (⌘C) — из @BotFather (/revoke) или из кабинета proxyapi.ru.
+#   2. Запустите: tools/rotate-key.sh bot   или   tools/rotate-key.sh proxy
+# Ключ берётся из буфера обмена (ничего не нужно вставлять в терминал), передаётся на сервер
+# через ssh (stdin), после чего буфер обмена очищается. В файлах и истории команд ключа нет.
 set -euo pipefail
 
 kind="${1:-}"
 case "$kind" in
-  bot)   prompt='Вставьте новый ключ (токен) бота из @BotFather и нажмите Enter (ввод не виден): ' ;;
-  proxy) prompt='Вставьте новый ключ ProxyAPI и нажмите Enter (ввод не виден): ' ;;
-  *) echo "Использование: $0 bot|proxy"; exit 2 ;;
+  bot|proxy) ;;
+  *) echo "Использование: сначала скопируйте ключ, затем $0 bot|proxy"; exit 2 ;;
 esac
 
+key="$(pbpaste | tr -d '[:space:]')"
+if [ -z "$key" ]; then
+  echo "Буфер обмена пуст — скопируйте новый ключ и запустите команду ещё раз."
+  exit 1
+fi
+
 scp -q "$(dirname "$0")/rotate-key.php" sprinthost:domains/pozitiv-psychology.ru/rotate-key.php
-read -r -s -p "$prompt" key
-echo
-[ -n "$key" ] || { echo "Пусто — ничего не изменено."; exit 1; }
 printf '%s' "$key" | ssh sprinthost "php ~/domains/pozitiv-psychology.ru/rotate-key.php $kind 2>/dev/null"
 unset key
+pbcopy < /dev/null
+echo "Буфер обмена очищен."
