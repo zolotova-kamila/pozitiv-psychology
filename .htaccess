@@ -66,10 +66,10 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301,NE]
 FileETag None
 
 # 301 Redirects for removed pages (old site structure)
-Redirect 301 /psihoterapiya/ https://pozitiv-psychology.ru/
-Redirect 301 /semejnye-otnosheniya/ https://pozitiv-psychology.ru/
-Redirect 301 /konsultirovanie/ https://pozitiv-psychology.ru/
-Redirect 301 /obshhaya-psixologiya/ https://pozitiv-psychology.ru/
+RedirectMatch 301 ^/psihoterapiya/ https://pozitiv-psychology.ru/
+RedirectMatch 301 ^/semejnye-otnosheniya/ https://pozitiv-psychology.ru/
+RedirectMatch 301 ^/konsultirovanie/ https://pozitiv-psychology.ru/
+RedirectMatch 301 ^/obshhaya-psixologiya/ https://pozitiv-psychology.ru/
 Redirect 301 /about_me https://pozitiv-psychology.ru/about.html
 
 # 301 Redirects for moved articles (old → new URLs)
