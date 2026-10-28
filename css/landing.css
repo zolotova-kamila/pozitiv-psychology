@@ -56,3 +56,18 @@
 
 @media(max-width:968px){.lp-hero-inner{grid-template-columns:1fr;gap:2rem}.lp-hero-photo{order:-1;max-width:420px}.lp-cards{grid-template-columns:1fr 1fr}.lp-terms{grid-template-columns:1fr}}
 @media(max-width:640px){.lp-hero{padding:100px 16px 2.5rem}.lp-hero-photo img{max-height:240px}.lp-hero h1{font-size:1.9rem}.lp-hero-lead{font-size:1.08rem}.lp-section{padding:3rem 16px}.lp-section h2{font-size:1.5rem}.lp-cards{grid-template-columns:1fr}.lp-steps li{padding-left:4rem}.lp-review{padding:1.25rem 1.25rem}.faq-question{padding:1.1rem 1.25rem;font-size:1rem}.faq-answer{padding:0 1.25rem 1.1rem}}
+
+/* Образование: хронология и документы */
+.lp-timeline{list-style:none;display:grid;gap:1rem}
+.lp-timeline li{display:grid;grid-template-columns:110px 1fr;gap:1.25rem;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:1.25rem 1.5rem}
+.lp-year{font-family:'Montserrat',sans-serif;font-weight:700;color:var(--accent-primary);font-size:1.05rem}
+.lp-timeline h3{font-family:'Montserrat',sans-serif;font-size:1.02rem;color:var(--text-primary);margin-bottom:.3rem}
+.lp-timeline p{color:var(--text-secondary);line-height:1.6}
+.lp-docs{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.lp-docs figure{margin:0;background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-md);overflow:hidden}
+.lp-docs a{display:block}
+.lp-docs img{width:100%;height:200px;object-fit:cover;object-position:top center;display:block}
+.lp-docs figcaption{padding:.85rem 1rem;font-size:.92rem;line-height:1.5;color:var(--text-secondary)}
+.lp-docs figcaption strong{display:block;font-family:'Montserrat',sans-serif;color:var(--text-primary);font-size:.95rem;margin-bottom:.15rem}
+@media(max-width:968px){.lp-docs{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.lp-timeline li{grid-template-columns:1fr;gap:.35rem}.lp-docs{grid-template-columns:1fr}}
