@@ -141,8 +141,8 @@ function writePost($article, $mode, $comment = '') {
 - Не придумывай клиентов, истории "из практики", цифры, проценты, исследования.
 - Не обещай результат.
 - Никаких сложных терминов: не используй научные и профессиональные названия (эвристика, негативное смещение, когнитивные искажения, катастрофизация, триггер и подобные). Объясняй простыми словами, как другу, а название опусти.
-- Обращайся к читателю нейтрально, без привязки к полу: не пиши "один", "одна", "сам", "сама" про читателя ("вы не остаётесь с этим наедине" вместо "один на один").
-- 2–4 эмодзи по смыслу (🌿 ❓ ✏️ 📌 💛), не в каждой строке. Без хэштегов, без markdown, без заголовков со звёздочками.
+- 2–4 эмодзи по смыслу (🌿 ❓ ✏️ 📌 💛), не в каждой строке. Без хэштегов и без заголовков.
+- Чтобы пост был живее, выделяй текст ТОЛЬКО тегами: <b>жирный</b> и <i>курсив</i>. Жирным — 2–4 коротких ключевых фразы поста (главная мысль, вопрос для самопроверки), курсивом — мысли и фразы читателя в кавычках, примеры, мягкие акценты. Выделенного текста — не больше пятой части поста. Других тегов и markdown (звёздочек, решёток) не используй.
 - Короткие абзацы по 1–3 предложения, между абзацами пустая строка.
 - Объём: 1200–2000 знаков.
 - {$ending}
@@ -171,10 +171,9 @@ PROMPT;
         $text = trim((string)($res['choices'][0]['message']['content'] ?? ''));
         if ($text === '' || ($res['choices'][0]['finish_reason'] ?? '') === 'length') continue;
         $text = str_replace(['«', '»', '“', '”', '„'], '"', $text);
-        $text = preg_replace('/\*\*(.+?)\*\*/u', '$1', $text);
-        $text = preg_replace('/^#+\s*/mu', '', $text);
+        $text = cleanMarkup($text);
         $text = preg_replace("/\n{3,}/", "\n\n", $text);
-        if (mb_strlen($text) > MAX_POST_LEN) continue;
+        if (mb_strlen(strip_tags($text)) > MAX_POST_LEN) continue;
         if (preg_match('/(лечени|лечит|диагноз|пациент|симптом|расстройств|терапевт|клиническ)/ui', $text)) continue;
         if (preg_match('/(эвристик|смещени|искажени|катастрофизац|триггер|когнитивн|дисфункциональн|ригидн|атрибуци|диссонанс|ресурсн)/ui', $text)) continue; // сложные термины
         return $text;
@@ -182,9 +181,38 @@ PROMPT;
     return '';
 }
 
-// Готовый пост в HTML-разметке Telegram: текст, ссылка на статью и приглашение (или вопрос)
+// Оставляет в тексте только <b> и <i> (жирный и курсив), лишние теги убирает, незакрытые закрывает
+function cleanMarkup($text) {
+    // Если нейросеть выделила markdown-знаками вместо тегов — переводим в теги
+    $text = preg_replace('/\*\*(.+?)\*\*/us', '<b>$1</b>', $text);
+    $text = preg_replace('/(?<![\p{L}\p{N}_])__(?!\s)(.+?)(?<!\s)__(?![\p{L}\p{N}_])/us', '<b>$1</b>', $text);
+    $text = preg_replace('/(?<![\p{L}\p{N}_])_(?![\s_])(.+?)(?<![\s_])_(?![\p{L}\p{N}_])/us', '<i>$1</i>', $text);
+    $text = preg_replace('/(?<![\p{L}\p{N}*])\*(?![\s*])(.+?)(?<![\s*])\*(?![\p{L}\p{N}*])/us', '<i>$1</i>', $text);
+    $text = preg_replace('/^#+\s*/mu', '', $text);
+    $text = html_entity_decode(strip_tags($text, '<b><i><strong><em>'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $text = preg_replace(['#<(/?)strong>#i', '#<(/?)em>#i'], ['<$1b>', '<$1i>'], $text);
+    $parts = preg_split('#(</?[bi]>)#i', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $out = ''; $open = [];
+    foreach ($parts as $part) {
+        if (preg_match('#^<(/?)([bi])>$#i', $part, $m)) {
+            $tag = strtolower($m[2]);
+            if ($m[1] === '') { $open[] = $tag; $out .= "<$tag>"; }
+            elseif ($open && end($open) === $tag) { array_pop($open); $out .= "</$tag>"; }
+            // закрывающий тег без пары или в неправильном порядке — отбрасываем
+        } else {
+            $out .= $part;
+        }
+    }
+    while ($open) $out .= '</' . array_pop($open) . '>';
+    return preg_replace('#<(b|i)>\s*</\1>#', '', $out);
+}
+
+// Готовый пост в HTML-разметке Telegram: текст с выделениями, ссылка на статью и приглашение (или вопрос)
 function buildPostHtml($p) {
-    $html = htmlspecialchars($p['text'], ENT_NOQUOTES, 'UTF-8');
+    $html = '';
+    foreach (preg_split('#(</?[bi]>)#', cleanMarkup($p['text']), -1, PREG_SPLIT_DELIM_CAPTURE) as $part) {
+        $html .= preg_match('#^</?[bi]>$#', $part) ? $part : htmlspecialchars($part, ENT_NOQUOTES, 'UTF-8');
+    }
     $url = SITE . 'articles/' . $p['slug'] . '.html';
     $html .= "\n\n📖 <a href=\"{$url}\">Полностью — в статье на сайте →</a>";
     if ($p['mode'] !== 'question') {
