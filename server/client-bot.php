@@ -4,9 +4,10 @@
 // Cron запускает его раз в минуту; он ~55 секунд забирает сообщения у Telegram (getUpdates),
 // второй экземпляр сразу выходит. Ключ бота — в client-bot.token (0600) рядом.
 //
-// Сообщения и заявки клиентов приходят Камиле через рабочий бот @psywebsite_bot (его ключ — в api/article-bot.php).
-// Каждое такое уведомление записывается в client-bot-map.json (id уведомления → чат клиента):
-// когда Камила отвечает на уведомление (функция "Ответить"), api/article-bot.php отправляет ответ клиенту от этого бота.
+// Всё клиентское живёт в этом боте: сообщения и заявки клиентов приходят Камиле в её чат с ботом
+// (туда же api/chat.php присылает заявки с сайта). Каждое уведомление о клиенте бота записывается
+// в client-bot-map.json (id уведомления → чат клиента): когда Камила отвечает на уведомление
+// (функция "Ответить"), ответ уходит клиенту от этого же бота. @psywebsite_bot — только для статей.
 $base = __DIR__;
 $lock = fopen($base . '/client-bot.lock', 'c');
 if (!$lock || !flock($lock, LOCK_EX | LOCK_NB)) exit;
@@ -18,10 +19,6 @@ const STATE_TTL = 86400; // незаконченная запись хранит
 $token = trim((string)@file_get_contents($base . '/client-bot.token'));
 if ($token === '') exit(1);
 $api = 'https://api.telegram.org/bot' . $token . '/';
-
-preg_match('/\$BOT_TOKEN\s*=\s*[\'"]([^\'"]+)[\'"]/', (string)@file_get_contents($base . '/public_html/api/article-bot.php'), $m);
-$notifyApi = isset($m[1]) ? 'https://api.telegram.org/bot' . $m[1] . '/' : '';
-unset($m);
 
 $offsetFile = $base . '/client-bot.offset';
 $stateFile  = $base . '/client-bot-state.json';
@@ -83,9 +80,8 @@ function setState($chatId, $s) {
 
 // ---------- уведомление Камиле с привязкой к чату клиента ----------
 function notifyKamila($text, $clientChatId) {
-    global $notifyApi, $mapFile;
-    if ($notifyApi === '') return false;
-    $sent = tg($notifyApi, 'sendMessage', ['chat_id' => KAMILA_CHAT_ID, 'text' => $text]);
+    global $api, $mapFile;
+    $sent = tg($api, 'sendMessage', ['chat_id' => KAMILA_CHAT_ID, 'text' => $text]);
     if (empty($sent['ok'])) return false;
     $map = readJson($mapFile);
     $map[(string)$sent['result']['message_id']] = (string)$clientChatId;
@@ -190,7 +186,7 @@ function askConfirm($chatId, $s) {
 }
 
 function submitBooking($chatId, $s, $from) {
-    $text = "🗓 Заявка из @Psyholog_Zolotova_bot\n\n"
+    $text = "🗓 Заявка из бота\n\n"
           . "Имя: " . $s['name'] . "\n"
           . "Связь: " . contactLine($s) . "\n"
           . "Вопрос: " . (($s['topic'] ?? '') !== '' ? $s['topic'] : '—') . "\n"
@@ -253,12 +249,43 @@ function handleCallback($cb) {
     reask($chatId, $s, $from);
 }
 
+// Камила отвечает (Ответить) на уведомление о клиенте — отправляем ответ клиенту
+function handleKamilaReply($msg) {
+    global $mapFile;
+    $text = trim((string)($msg['text'] ?? ''));
+    $map = readJson($mapFile);
+    $clientChat = $map[(string)$msg['reply_to_message']['message_id']] ?? null;
+    if ($clientChat === null) {
+        send(KAMILA_CHAT_ID, "Ответить через бота можно только на сообщения и заявки из этого бота. Человеку с сайта напишите по контакту из заявки.");
+        return;
+    }
+    if ($text === '') { send(KAMILA_CHAT_ID, "Пока через бота можно отправлять клиенту только текст."); return; }
+    $res = send($clientChat, $text);
+    tg($GLOBALS['api'], 'sendMessage', [
+        'chat_id' => KAMILA_CHAT_ID,
+        'reply_to_message_id' => $msg['message_id'],
+        'text' => !empty($res['ok']) ? '✅ Отправлено клиенту' : '❌ Не удалось отправить: ' . ($res['description'] ?? 'нет связи с Telegram') . '. Возможно, клиент остановил бота.',
+    ]);
+    logLine('reply to chat ' . $clientChat . ': ' . (!empty($res['ok']) ? 'ok' : 'FAILED'));
+}
+
 function handleMessage($msg) {
     global $api;
     $chatId = $msg['chat']['id'] ?? null;
     if ($chatId === null || ($msg['chat']['type'] ?? '') !== 'private') return;
     $text = trim((string)($msg['text'] ?? ''));
     $from = $msg['from'] ?? [];
+
+    // Ответ Камилы на уведомление. Остальные её сообщения обрабатываются как у клиента — так удобно проверять бота.
+    if ((string)($from['id'] ?? '') === KAMILA_CHAT_ID && !empty($msg['reply_to_message']['message_id'])
+        && ($msg['reply_to_message']['from']['is_bot'] ?? false)) {
+        $replied = (string)($msg['reply_to_message']['text'] ?? '');
+        // уведомления: 📩 сообщение клиента, 🗓 заявка из бота, 🔥 заявка с сайта
+        if (strpos($replied, '📩') === 0 || strpos($replied, '🗓') === 0 || strpos($replied, '🔥') === 0) {
+            handleKamilaReply($msg);
+            return;
+        }
+    }
 
     // /start, в том числе с меткой источника: t.me/Psyholog_Zolotova_bot?start=direct
     if (preg_match('#^/start(?:\s+([A-Za-z0-9_-]{1,64}))?#', $text, $m)) {
@@ -304,7 +331,7 @@ function handleMessage($msg) {
         send($chatId, "Пока я умею передавать только текстовые сообщения. Напишите, пожалуйста, словами 🌿");
         return;
     }
-    $ok = notifyKamila("📩 Сообщение в @Psyholog_Zolotova_bot\nОт: " . whoLine($from) . "\n\n" . mb_substr($text, 0, 3500)
+    $ok = notifyKamila("📩 Сообщение от клиента\nОт: " . whoLine($from) . "\n\n" . mb_substr($text, 0, 3500)
         . "\n\nЧтобы ответить, нажмите на это сообщение → Ответить.", $chatId);
     logLine('message from chat ' . $chatId . ': ' . ($ok ? 'ok' : 'FAILED'));
     send($chatId, $ok
