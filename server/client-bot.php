@@ -29,10 +29,10 @@ $mapFile    = $base . '/client-bot-map.json';
 $logFile    = $base . '/client-bot.log';
 $offset = (int)@file_get_contents($offsetFile);
 
-// С хостинга до Telegram по IPv4 соединение часто зависает, по IPv6 — стабильно:
-// сначала IPv6, при сбое соединения — повтор по IPv4.
+// С хостинга до Telegram по IPv4 соединение часто зависает, по IPv6 — почти всегда проходит:
+// до трёх попыток по IPv6, затем одна по IPv4. Неудачная отправка пишется в журнал.
 function tg($api, $method, $params, $timeout = 20) {
-    foreach ([CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V4] as $ip) {
+    foreach ([CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V4] as $ip) {
         $ch = curl_init($api . $method);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
@@ -45,6 +45,7 @@ function tg($api, $method, $params, $timeout = 20) {
         $raw = curl_exec($ch);
         if ($raw !== false) return json_decode((string)$raw, true);
     }
+    if ($method !== 'getUpdates') logLine($method . ' failed: no connection to Telegram');
     return null;
 }
 
@@ -207,6 +208,20 @@ function submitBooking($chatId, $s, $from) {
     }
 }
 
+// Повторить вопрос текущего шага (например, после нажатия на кнопку из прошлого сообщения)
+function reask($chatId, $s, $from) {
+    switch ($s['step'] ?? '') {
+        case 'consent': askConsent($chatId); break;
+        case 'name':    askName($chatId, $from); break;
+        case 'contact': askContact($chatId, $from); break;
+        case 'phone':   askPhone($chatId); break;
+        case 'topic':   askTopic($chatId); break;
+        case 'time':    askTime($chatId); break;
+        case 'confirm': askConfirm($chatId, $s); break;
+        default:        send($chatId, "Давайте начнём сначала 🌿", welcomeKeyboard());
+    }
+}
+
 // ---------- обработка ----------
 function handleCallback($cb) {
     global $api;
@@ -224,7 +239,7 @@ function handleCallback($cb) {
     if ($data === 'b_ok') { $s = ['step' => 'name', 'src' => $s['src'] ?? '', 'consent' => date('c')]; setState($chatId, $s); askName($chatId, $from); return; }
     if ($data === 'b_name_write' && $s['step'] === 'name') { askText($chatId, "Напишите, как к вам обращаться 👇", 'Ваше имя'); return; }
     if ($data === 'b_name_tg' && $s['step'] === 'name') { $s['name'] = mb_substr(trim((string)($from['first_name'] ?? '')), 0, 60); $s['step'] = 'contact'; setState($chatId, $s); askContact($chatId, $from); return; }
-    if (strpos($data, 'b_c_') === 0 && $s['step'] === 'contact') {
+    if (strpos($data, 'b_c_') === 0 && in_array($s['step'], ['contact', 'phone', 'topic', 'time', 'confirm'], true)) {
         $s['contact'] = substr($data, 4);
         if ($s['contact'] === 'tg') { $s['step'] = 'topic'; setState($chatId, $s); askTopic($chatId); }
         else { $s['step'] = 'phone'; setState($chatId, $s); askPhone($chatId); }
@@ -234,6 +249,8 @@ function handleCallback($cb) {
     if ($data === 'b_topic_skip' && $s['step'] === 'topic') { $s['topic'] = ''; $s['step'] = 'time'; setState($chatId, $s); askTime($chatId); return; }
     if (isset(TIMES[$data]) && $s['step'] === 'time') { $s['time'] = TIMES[$data]; $s['step'] = 'confirm'; setState($chatId, $s); askConfirm($chatId, $s); return; }
     if ($data === 'b_send' && $s['step'] === 'confirm') { submitBooking($chatId, $s, $from); return; }
+    // Кнопка из прошлого шага — напоминаем, на каком вопросе остановились
+    reask($chatId, $s, $from);
 }
 
 function handleMessage($msg) {

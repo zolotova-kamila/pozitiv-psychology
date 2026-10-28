@@ -19,9 +19,9 @@ $offsetFile = $base . '/bot-poll.offset';
 $offset = (int)@file_get_contents($offsetFile);
 
 // С хостинга до Telegram по IPv4 соединение часто зависает, по IPv6 — стабильно:
-// сначала IPv6, при сбое соединения — повтор по IPv4.
+// до трёх попыток по IPv6, затем одна по IPv4.
 function tg($api, $method, $params, $timeout) {
-    foreach ([CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V4] as $ip) {
+    foreach ([CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V4] as $ip) {
         $ch = curl_init($api . $method);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
