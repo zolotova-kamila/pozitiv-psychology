@@ -123,18 +123,16 @@ function askConsent($chatId) {
 }
 
 function askName($chatId, $from) {
-    $rows = [];
+    $rows = [[['text' => '✍️ Написать имя', 'callback_data' => 'b_name_write']]];
     $tgName = trim((string)($from['first_name'] ?? ''));
     if ($tgName !== '') $rows[] = [['text' => 'Можно просто: ' . mb_substr($tgName, 0, 40), 'callback_data' => 'b_name_tg']];
-    $rows[] = CANCEL_ROW;
-    send($chatId, "1/4. Как к вам обращаться? Напишите имя.", kb($rows));
+    send($chatId, "1/4. Как к вам обращаться?\n\nНажмите «Написать имя» или просто напишите его в поле сообщения внизу.", kb($rows));
 }
 
 function askContact($chatId, $from) {
     $rows = [];
     $rows[] = [['text' => '💬 Здесь, в Telegram', 'callback_data' => 'b_c_tg']];
     $rows[] = [['text' => '📱 WhatsApp', 'callback_data' => 'b_c_wa'], ['text' => '📞 Звонок', 'callback_data' => 'b_c_call']];
-    $rows[] = CANCEL_ROW;
     send($chatId, "2/4. Как Камиле удобнее с вами связаться?", kb($rows));
 }
 
@@ -220,6 +218,7 @@ function handleCallback($cb) {
     if ($s === null) { send($chatId, "Давайте начнём сначала 🌿", welcomeKeyboard()); return; }
 
     if ($data === 'b_ok') { $s = ['step' => 'name', 'src' => $s['src'] ?? '', 'consent' => date('c')]; setState($chatId, $s); askName($chatId, $from); return; }
+    if ($data === 'b_name_write' && $s['step'] === 'name') { askText($chatId, "Напишите, как к вам обращаться 👇", 'Ваше имя'); return; }
     if ($data === 'b_name_tg' && $s['step'] === 'name') { $s['name'] = mb_substr(trim((string)($from['first_name'] ?? '')), 0, 60); $s['step'] = 'contact'; setState($chatId, $s); askContact($chatId, $from); return; }
     if (strpos($data, 'b_c_') === 0 && $s['step'] === 'contact') {
         $s['contact'] = substr($data, 4);
