@@ -29,16 +29,23 @@ $mapFile    = $base . '/client-bot-map.json';
 $logFile    = $base . '/client-bot.log';
 $offset = (int)@file_get_contents($offsetFile);
 
+// С хостинга до Telegram по IPv4 соединение часто зависает, по IPv6 — стабильно:
+// сначала IPv6, при сбое соединения — повтор по IPv4.
 function tg($api, $method, $params, $timeout = 20) {
-    $ch = curl_init($api . $method);
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => $params,
-        CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_TIMEOUT        => $timeout,
-    ]);
-    return json_decode((string)curl_exec($ch), true);
+    foreach ([CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V4] as $ip) {
+        $ch = curl_init($api . $method);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST           => true,
+            CURLOPT_POSTFIELDS     => $params,
+            CURLOPT_CONNECTTIMEOUT => 4,
+            CURLOPT_TIMEOUT        => $timeout,
+            CURLOPT_IPRESOLVE      => $ip,
+        ]);
+        $raw = curl_exec($ch);
+        if ($raw !== false) return json_decode((string)$raw, true);
+    }
+    return null;
 }
 
 function logLine($text) {
@@ -103,8 +110,6 @@ function welcomeKeyboard() {
     ]);
 }
 
-const CANCEL_ROW = [['text' => '✖️ Отменить запись', 'callback_data' => 'b_cancel']];
-
 function send($chatId, $text, $markup = null, $html = false) {
     global $api;
     $p = ['chat_id' => $chatId, 'text' => $text, 'disable_web_page_preview' => 'true'];
@@ -119,7 +124,7 @@ function askConsent($chatId) {
         . "Я задам четыре коротких вопроса и передам ответы Камиле — она напишет вам и предложит время.\n\n"
         . "Для этого нужно ваше согласие на обработку персональных данных: имя, контакт и пара слов о запросе передаются Камиле Золотовой только для связи по записи. "
         . "<a href=\"" . SITE . "soglasie.html\">Текст согласия</a> · <a href=\"" . SITE . "privacy.html\">Политика конфиденциальности</a>",
-        kb([[['text' => '✅ Даю согласие, продолжить', 'callback_data' => 'b_ok']], CANCEL_ROW]), true);
+        kb([[['text' => '✅ Даю согласие, продолжить', 'callback_data' => 'b_ok']], [['text' => 'Не сейчас', 'callback_data' => 'b_cancel']]]), true);
 }
 
 function askName($chatId, $from) {
@@ -163,7 +168,6 @@ function askTime($chatId) {
         [['text' => 'Будни, 10–13', 'callback_data' => 'b_t_1'], ['text' => 'Будни, 13–17', 'callback_data' => 'b_t_2']],
         [['text' => 'Будни, 17–20', 'callback_data' => 'b_t_3'], ['text' => 'Выходные', 'callback_data' => 'b_t_4']],
         [['text' => 'Не важно', 'callback_data' => 'b_t_5']],
-        CANCEL_ROW,
     ]));
 }
 
@@ -274,7 +278,7 @@ function handleMessage($msg) {
         $s['topic'] = mb_substr($text, 0, 300); $s['step'] = 'time'; setState($chatId, $s); askTime($chatId); return;
     }
     if (in_array($step, ['consent', 'contact', 'time', 'confirm'], true)) {
-        send($chatId, "Пожалуйста, выберите вариант кнопкой в сообщении выше — или отмените запись.", kb([CANCEL_ROW]));
+        send($chatId, "Пожалуйста, выберите вариант кнопкой в сообщении выше 👆");
         return;
     }
 
