@@ -19,7 +19,7 @@ const CHANNEL = '@Psy_Zolotova_Kamila';
 const KAMILA_CHAT_ID = '1436904081';
 const SITE = 'https://pozitiv-psychology.ru/';
 const PUBLISH_HOUR = 19;
-const MAX_POST_LEN = 3300; // с запасом до лимита Telegram 4096 с учётом ссылки и приглашения
+const CAPTION_LIMIT = 1024; // подпись к фото у ботов; пост = одно сообщение: картинка + текст в подписи
 
 $stateFile = $base . '/channel-posts.json';
 $logFile = $base . '/channel-agent.log';
@@ -126,6 +126,7 @@ function writePost($article, $mode, $comment = '') {
     $ending = $mode === 'question'
         ? 'Закончи пост одним тёплым открытым вопросом к подписчикам, на который хочется ответить в комментариях.'
         : 'Не добавляй призыв записаться и ссылки — их добавят отдельно. Закончи завершённой тёплой мыслью.';
+    $bodyRange = $mode === 'question' ? '600–800' : '600–750';
     $system = <<<PROMPT
 Ты — Камила Золотова, психолог (КПТ и ДПДГ/EMDR), ведёшь свой Telegram-канал. Напиши пост для канала по статье с твоего сайта.
 
@@ -143,11 +144,11 @@ function writePost($article, $mode, $comment = '') {
 - Никаких сложных терминов: не используй научные и профессиональные названия (эвристика, негативное смещение, когнитивные искажения, катастрофизация, триггер и подобные). Объясняй простыми словами, как другу, а название опусти.
 - 2–4 эмодзи по смыслу (🌿 ❓ ✏️ 📌 💛), не в каждой строке. Без хэштегов и без заголовков.
 - Чтобы пост был живее, выделяй текст ТОЛЬКО тегами: <b>жирный</b> и <i>курсив</i>. Других тегов и markdown (звёздочек, решёток) не используй.
-- ЖИРНЫМ выделяй только 2–4 главные ключевые фразы, связанные с темой поста, каждая — коротко, 2–6 слов (например: <b>почву под ногами</b>, <b>страшный сценарий</b>). НИКОГДА не выделяй жирным предложение целиком, особенно длинное. Текст в кавычках (мысли и фразы читательницы, вопросы, цитаты) жирным НЕ выделяй — для него можно курсив.
+- ЖИРНЫМ выделяй только 2–3 главные ключевые фразы, связанные с темой поста, каждая — коротко, 2–6 слов (например: <b>почву под ногами</b>, <b>страшный сценарий</b>). НИКОГДА не выделяй жирным предложение целиком, особенно длинное. Текст в кавычках (мысли и фразы читательницы, вопросы, цитаты) жирным НЕ выделяй — для него можно курсив.
 - КУРСИВОМ — мысли и фразы читательницы в кавычках, примеры, мягкие акценты. Выделенного текста в сумме не больше десятой части поста.
 - АУДИТОРИЯ — ЖЕНЩИНЫ. Обращайся на "вы", но всё, что относится к читательнице, ставь в женском роде: "вы устали", "вы не одна", "вы тревожная", "вы уставшая", "вы сами", "вы готовы". Примеры о людях тоже бери про женщин (подруга, коллега, мама, дочь), где это уместно. Устойчивые выражения не переделывай: пиши "один на один" (не "одна на одну") или перефразируй ("наедине с этим").
 - Короткие абзацы по 1–3 предложения, между абзацами пустая строка.
-- Объём: 1200–2000 знаков.
+- Объём ТОЛЬКО основного текста: {$bodyRange} знаков с пробелами (это жёсткий лимит, лишнее не пиши). Одна главная мысль, 2–4 коротких абзаца, без перечислений.
 - {$ending}
 
 Выведи только текст поста.
@@ -176,7 +177,7 @@ PROMPT;
         $text = str_replace(['«', '»', '“', '”', '„'], '"', $text);
         $text = cleanMarkup($text);
         $text = preg_replace("/\n{3,}/", "\n\n", $text);
-        if (mb_strlen(strip_tags($text)) > MAX_POST_LEN) continue;
+        if (captionLen(buildPostHtml(['text' => $text, 'slug' => $article['slug'], 'mode' => $mode])) > CAPTION_LIMIT) continue; // не влезает в подпись к фото
         if (preg_match('/(лечени|лечит|диагноз|пациент|симптом|расстройств|терапевт|клиническ)/ui', $text)) continue;
         if (preg_match('/\bвы\s+(?:\S+\s+){0,2}(?:уставший|тревожный|одинокий|напуганный|виноватый|слабый|сильный|плохой|неправильный|должен|способен|обязан|готовый)\b/ui', $text)) continue; // обращение в мужском роде
         if (preg_match('/(эвристик|смещени|искажени|катастрофизац|триггер|когнитивн|дисфункциональн|ригидн|атрибуци|диссонанс|ресурсн)/ui', $text)) continue; // сложные термины
@@ -232,6 +233,11 @@ function limitBold($html) {
     return $res . substr($html, $pos);
 }
 
+// Длина подписи так, как её считает Telegram: видимые знаки без тегов
+function captionLen($html) {
+    return mb_strlen(html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+}
+
 // Готовый пост в HTML-разметке Telegram: текст с выделениями, ссылка на статью и приглашение (или вопрос)
 function buildPostHtml($p) {
     $html = '';
@@ -281,14 +287,14 @@ function coverJpgPath($slug) {
 
 // Telegram с нашего хостинга скачивать картинки по ссылкам не может (проверено 30.10: любые файлы сайта дают
 // "failed to get HTTP URL content"), поэтому картинку загружаем в Telegram файлом отдельным сообщением перед текстом.
-function sendCoverPhoto($chatId, $slug, $silent = false) {
+function sendCoverPhoto($chatId, $slug, $silent = false, $caption = '', $markup = null) {
     $path = coverJpgPath($slug);
     if (!$path) { logLine("no cover file for $slug"); return null; }
     $r = tg('sendPhoto', [
         'chat_id'              => $chatId,
         'photo'                => new CURLFile($path, 'image/jpeg', 'cover.jpg'),
         'disable_notification' => $silent ? 'true' : 'false',
-    ], 60);
+    ] + ($caption !== '' ? ['caption' => $caption, 'parse_mode' => 'HTML'] : []) + ($markup ? ['reply_markup' => $markup] : []), 60);
     if (empty($r['ok'])) { logLine("sendPhoto to $chatId failed: " . ($r['description'] ?? 'no response')); return null; }
     return $r['result']['message_id'] ?? null;
 }
@@ -312,37 +318,42 @@ function draftButtons($id) {
     ]);
 }
 
-function sendDraft(&$p, $withPhoto = true) {
+function sendDraft(&$p) {
+    // Пост — одно сообщение: картинка с текстом в подписи (как выйдет в канале), кнопки под ним
     $head = "📝 <b>Черновик поста №{$p['id']} для канала</b>\n"
           . "По статье: «" . htmlspecialchars($p['title'], ENT_NOQUOTES, 'UTF-8') . "»\n"
-          . "Публикация: " . date('d.m в H:i', $p['publish_at']) . " — после вашего одобрения\n"
-          . "━━━━━━━━━━━━━━━━\n\n";
-    if ($withPhoto) sendCoverPhoto(KAMILA_CHAT_ID, $p['slug'], true);
-    $r = tg('sendMessage', [
-        'chat_id'              => KAMILA_CHAT_ID,
-        'text'                 => $head . buildPostHtml($p),
-        'parse_mode'           => 'HTML',
-        'link_preview_options' => json_encode(['is_disabled' => true]),
-        'reply_markup'         => draftButtons($p['id']),
-    ]);
-    $p['draft_msg_id'] = $r['result']['message_id'] ?? null;
-    return !empty($r['ok']);
+          . "Публикация: " . date('d.m в H:i', $p['publish_at']) . " — после вашего одобрения. Ниже — пост так, как он выйдет.";
+    tg('sendMessage', ['chat_id' => KAMILA_CHAT_ID, 'text' => $head, 'parse_mode' => 'HTML', 'disable_notification' => 'true']);
+    $html = buildPostHtml($p);
+    $id = sendCoverPhoto(KAMILA_CHAT_ID, $p['slug'], false, $html, draftButtons($p['id']));
+    if (!$id) { // обложки нет — шлём текстом, чтобы черновик не потерялся
+        $r = tg('sendMessage', ['chat_id' => KAMILA_CHAT_ID, 'text' => $html, 'parse_mode' => 'HTML',
+            'link_preview_options' => json_encode(['is_disabled' => true]), 'reply_markup' => draftButtons($p['id'])]);
+        $id = $r['result']['message_id'] ?? null;
+    }
+    $p['draft_msg_id'] = $id;
+    return (bool)$id;
 }
 
 function publish(&$p) {
-    // Сначала обложка (файлом), затем текст поста без карточки-превью
-    $photoId = sendCoverPhoto(CHANNEL, $p['slug']);
-    $r = tg('sendMessage', [
-        'chat_id'              => CHANNEL,
-        'text'                 => buildPostHtml($p),
-        'parse_mode'           => 'HTML',
-        'link_preview_options' => json_encode(['is_disabled' => true]),
-        'disable_notification' => $photoId ? 'true' : 'false',
-    ]);
+    // Один пост = одно сообщение: обложка загружается файлом, текст идёт в подписи
+    $html = buildPostHtml($p);
+    $photoId = sendCoverPhoto(CHANNEL, $p['slug'], false, $html);
+    if ($photoId) {
+        $r = ['ok' => true, 'result' => ['message_id' => $photoId]];
+    } else {
+        $r = tg('sendMessage', [
+            'chat_id'              => CHANNEL,
+            'text'                 => $html,
+            'parse_mode'           => 'HTML',
+            'link_preview_options' => json_encode(['is_disabled' => true]),
+        ]);
+    }
     if (!empty($r['ok'])) {
         $p['status'] = 'published';
         $p['channel_msg_id'] = $r['result']['message_id'];
-        if ($photoId) $p['photo_msg_id'] = $photoId;
+        $p['single'] = (bool)$photoId; // true — пост это фото с подписью (правится editMessageCaption)
+        unset($p['photo_msg_id']);
         $p['published_at'] = time();
         $p['preview_ok'] = true; // картинка загружена файлом, проверять карточку-превью не нужно
         tg('sendMessage', ['chat_id' => KAMILA_CHAT_ID, 'text' => ($photoId ? '✅' : '⚠️ (без картинки: не загрузилась)') . " Пост №{$p['id']} опубликован в канале: https://t.me/" . ltrim(CHANNEL, '@') . '/' . $p['channel_msg_id']]);
@@ -375,6 +386,11 @@ function channelPostHasPreview($msgId) {
 // Пересобирает превью опубликованного поста. Telegram не обновляет карточку, если текст не менялся,
 // поэтому при "message is not modified" на мгновение добавляем невидимый знак и возвращаем текст обратно
 function refreshPostPreview($p) {
+    if (!empty($p['single'])) {
+        $r = tg('editMessageCaption', ['chat_id' => CHANNEL, 'message_id' => $p['channel_msg_id'], 'caption' => buildPostHtml($p), 'parse_mode' => 'HTML']);
+        if (empty($r['ok']) && strpos((string)($r['description'] ?? ''), 'not modified') !== false) $r['ok'] = true;
+        return $r;
+    }
     $params = [
         'chat_id'              => CHANNEL,
         'message_id'           => $p['channel_msg_id'],
@@ -433,7 +449,7 @@ if ($cmd === 'tick') {
             logLine("post {$p['id']} postponed");
         }
         // Самолечение: если у вышедшего поста в канале не появилась картинка, пересобираем превью (до 4 попыток)
-        if ($p['status'] === 'published' && empty($p['preview_ok']) && !empty($p['channel_msg_id'])
+        if ($p['status'] === 'published' && empty($p['preview_ok']) && empty($p['single']) && !empty($p['channel_msg_id'])
             && ($p['published_at'] ?? 0) < $now - 90 && ($p['published_at'] ?? 0) > $now - 86400) {
             $has = channelPostHasPreview($p['channel_msg_id']);
             if ($has === true) {
@@ -488,6 +504,27 @@ if ($cmd === 'cb') {
     exit;
 }
 
+if ($cmd === 'repost') {
+    // Публикует уже вышедший пост заново (обложка файлом + текст), и только после успеха удаляет старый
+    $k = findPost($s, $argv[2] ?? 0);
+    if ($k === null || empty($s['posts'][$k]['channel_msg_id'])) { echo "no published post\n"; exit; }
+    $p = &$s['posts'][$k];
+    $oldMsg = $p['channel_msg_id'];
+    $oldPhoto = $p['photo_msg_id'] ?? null;
+    $ok = publish($p);
+    if ($ok) {
+        $del = tg('deleteMessage', ['chat_id' => CHANNEL, 'message_id' => $oldMsg]);
+        if ($oldPhoto) tg('deleteMessage', ['chat_id' => CHANNEL, 'message_id' => $oldPhoto]);
+        logLine("repost post {$p['id']}: new msg {$p['channel_msg_id']}, old $oldMsg " . (!empty($del['ok']) ? 'deleted' : 'NOT deleted: ' . ($del['description'] ?? '?')));
+        echo "reposted: new {$p['channel_msg_id']}, old " . (!empty($del['ok']) ? 'deleted' : 'not deleted') . "\n";
+    } else {
+        echo "publish failed, old post kept\n";
+    }
+    unset($p);
+    saveState($s);
+    exit;
+}
+
 if ($cmd === 'checkpreview') {
     $k = findPost($s, $argv[2] ?? 0);
     if ($k === null || empty($s['posts'][$k]['channel_msg_id'])) { echo "no published post\n"; exit; }
@@ -518,7 +555,7 @@ if ($cmd === 'redo') {
     $p['text'] = $text;
     $p['status'] = 'pending';
     if ($p['publish_at'] <= time()) $p['publish_at'] = nextPublishTime(time());
-    sendDraft($p, false);
+    sendDraft($p);
     unset($p);
     saveState($s);
     logLine("redo post {$s['posts'][$k]['id']}");
