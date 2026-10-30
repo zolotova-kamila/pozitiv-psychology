@@ -75,6 +75,11 @@ Redirect 301 /about_me https://pozitiv-psychology.ru/about.html
 # 301 Redirects for moved articles (old → new URLs)
 Redirect 301 /article-vosstanovlenie-posle-moshennichestva.html https://pozitiv-psychology.ru/articles/vosstanovlenie-posle-moshennichestva.html
 
+# 301: статья из папки /blog/ перенесена в /articles/ (2026-10-30)
+Redirect 301 /blog/kak-vybrat-psikhologa.html https://pozitiv-psychology.ru/articles/kak-vybrat-psikhologa.html
+RedirectMatch 301 ^/blog/?$ https://pozitiv-psychology.ru/articles/
+
+Redirect 301 /articles/chuvstvo-viny--skrytyy-tormoz-vashikh-tseley-klinicheskiy-razbor-mekhanizma-i-strategii-vykhoda-6009.html https://pozitiv-psychology.ru/articles/chuvstvo-viny-tormoz-vashikh-tseley-6009.html
 # 301 Redirects for duplicate articles removed 2026-10-22
 Redirect 301 /articles/perfektsionizm-i-trevoga-pochemu-khorosho-nikogda-ne-dostatochno-0836.html https://pozitiv-psychology.ru/articles/perfektsionizm-i-trevoga.html
 Redirect 301 /articles/perfektsionizm-i-trevoga-pochemu-khorosho-nikogda-ne-dostatochno-1799.html https://pozitiv-psychology.ru/articles/perfektsionizm-i-trevoga.html
