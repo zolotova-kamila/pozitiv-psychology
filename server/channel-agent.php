@@ -270,8 +270,33 @@ function coverJpgUrl($slug) {
     return SITE . 'images/tg/' . $name;
 }
 
-function previewOptions($slug) {
+// Локальный путь к JPG-обложке статьи (создаёт копию при необходимости)
+function coverJpgPath($slug) {
+    global $base;
+    $url = coverJpgUrl($slug);
+    if (!$url || strpos($url, SITE) !== 0) return null;
+    $path = $base . '/public_html/' . substr($url, strlen(SITE));
+    return is_file($path) ? $path : null;
+}
+
+// Telegram с нашего хостинга скачивать картинки по ссылкам не может (проверено 30.10: любые файлы сайта дают
+// "failed to get HTTP URL content"), поэтому картинку загружаем в Telegram файлом отдельным сообщением перед текстом.
+function sendCoverPhoto($chatId, $slug, $silent = false) {
+    $path = coverJpgPath($slug);
+    if (!$path) { logLine("no cover file for $slug"); return null; }
+    $r = tg('sendPhoto', [
+        'chat_id'              => $chatId,
+        'photo'                => new CURLFile($path, 'image/jpeg', 'cover.jpg'),
+        'disable_notification' => $silent ? 'true' : 'false',
+    ], 60);
+    if (empty($r['ok'])) { logLine("sendPhoto to $chatId failed: " . ($r['description'] ?? 'no response')); return null; }
+    return $r['result']['message_id'] ?? null;
+}
+
+function previewOptions($slug, $bust = '') {
     $url = coverJpgUrl($slug) ?: SITE . 'articles/' . $slug . '.html';
+    // Метка в адресе картинки заставляет Telegram скачать её заново (при тех же настройках он карточку не пересобирает)
+    if ($bust !== '') $url .= '?v=' . $bust;
     return json_encode(['url' => $url, 'prefer_large_media' => true, 'show_above_text' => true]);
 }
 
@@ -287,16 +312,17 @@ function draftButtons($id) {
     ]);
 }
 
-function sendDraft(&$p) {
+function sendDraft(&$p, $withPhoto = true) {
     $head = "📝 <b>Черновик поста №{$p['id']} для канала</b>\n"
           . "По статье: «" . htmlspecialchars($p['title'], ENT_NOQUOTES, 'UTF-8') . "»\n"
           . "Публикация: " . date('d.m в H:i', $p['publish_at']) . " — после вашего одобрения\n"
           . "━━━━━━━━━━━━━━━━\n\n";
+    if ($withPhoto) sendCoverPhoto(KAMILA_CHAT_ID, $p['slug'], true);
     $r = tg('sendMessage', [
         'chat_id'              => KAMILA_CHAT_ID,
         'text'                 => $head . buildPostHtml($p),
         'parse_mode'           => 'HTML',
-        'link_preview_options' => previewOptions($p['slug']),
+        'link_preview_options' => json_encode(['is_disabled' => true]),
         'reply_markup'         => draftButtons($p['id']),
     ]);
     $p['draft_msg_id'] = $r['result']['message_id'] ?? null;
@@ -304,23 +330,66 @@ function sendDraft(&$p) {
 }
 
 function publish(&$p) {
+    // Сначала обложка (файлом), затем текст поста без карточки-превью
+    $photoId = sendCoverPhoto(CHANNEL, $p['slug']);
     $r = tg('sendMessage', [
         'chat_id'              => CHANNEL,
         'text'                 => buildPostHtml($p),
         'parse_mode'           => 'HTML',
-        'link_preview_options' => previewOptions($p['slug']),
+        'link_preview_options' => json_encode(['is_disabled' => true]),
+        'disable_notification' => $photoId ? 'true' : 'false',
     ]);
     if (!empty($r['ok'])) {
         $p['status'] = 'published';
         $p['channel_msg_id'] = $r['result']['message_id'];
+        if ($photoId) $p['photo_msg_id'] = $photoId;
         $p['published_at'] = time();
-        tg('sendMessage', ['chat_id' => KAMILA_CHAT_ID, 'text' => "✅ Пост №{$p['id']} опубликован в канале: https://t.me/" . ltrim(CHANNEL, '@') . '/' . $p['channel_msg_id']]);
+        $p['preview_ok'] = true; // картинка загружена файлом, проверять карточку-превью не нужно
+        tg('sendMessage', ['chat_id' => KAMILA_CHAT_ID, 'text' => ($photoId ? '✅' : '⚠️ (без картинки: не загрузилась)') . " Пост №{$p['id']} опубликован в канале: https://t.me/" . ltrim(CHANNEL, '@') . '/' . $p['channel_msg_id']]);
         logLine("published post {$p['id']} ({$p['slug']})");
         return true;
     }
     logLine("publish failed for post {$p['id']}: " . ($r['description'] ?? 'no response'));
     tg('sendMessage', ['chat_id' => KAMILA_CHAT_ID, 'text' => "❌ Не удалось опубликовать пост №{$p['id']}: " . ($r['description'] ?? 'нет связи с Telegram') . '. Попробую снова через 10 минут.']);
     return false;
+}
+
+// Есть ли у поста в канале карточка-превью (смотрим публичную ленту t.me/s). true / false / null — не удалось проверить
+function channelPostHasPreview($msgId) {
+    $html = null;
+    foreach ([CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V6, CURL_IPRESOLVE_V4] as $ip) {
+        $ch = curl_init('https://t.me/s/' . ltrim(CHANNEL, '@'));
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 20, CURLOPT_CONNECTTIMEOUT => 4, CURLOPT_IPRESOLVE => $ip, CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; preview-check)']);
+        $raw = curl_exec($ch);
+        if ($raw !== false && $raw !== '') { $html = $raw; break; }
+    }
+    if ($html === null) return null;
+    $marker = 'data-post="' . ltrim(CHANNEL, '@') . '/' . (int)$msgId . '"';
+    $start = strpos($html, $marker);
+    if ($start === false) return null;
+    $end = strpos($html, 'data-post="', $start + strlen($marker));
+    $block = $end === false ? substr($html, $start) : substr($html, $start, $end - $start);
+    return strpos($block, 'tgme_widget_message_link_preview') !== false;
+}
+
+// Пересобирает превью опубликованного поста. Telegram не обновляет карточку, если текст не менялся,
+// поэтому при "message is not modified" на мгновение добавляем невидимый знак и возвращаем текст обратно
+function refreshPostPreview($p) {
+    $params = [
+        'chat_id'              => CHANNEL,
+        'message_id'           => $p['channel_msg_id'],
+        'text'                 => buildPostHtml($p),
+        'parse_mode'           => 'HTML',
+        'link_preview_options' => previewOptions($p['slug'], (string)time()),
+    ];
+    $r = tg('editMessageText', $params);
+    if (empty($r['ok']) && strpos((string)($r['description'] ?? ''), 'not modified') !== false) {
+        $tmp = $params;
+        $tmp['text'] = str_replace("\n\n📖", "\u{200B}\n\n📖", $params['text']);
+        tg('editMessageText', $tmp);
+        $r = tg('editMessageText', $params);
+    }
+    return $r;
 }
 
 function findPost(&$s, $id) {
@@ -363,6 +432,22 @@ if ($cmd === 'tick') {
             tg('sendMessage', ['chat_id' => KAMILA_CHAT_ID, 'text' => "⏳ Пост №{$p['id']} не одобрен — переношу на " . date('d.m в H:i', $p['publish_at']) . '. Черновик с кнопками — выше в чате.']);
             logLine("post {$p['id']} postponed");
         }
+        // Самолечение: если у вышедшего поста в канале не появилась картинка, пересобираем превью (до 4 попыток)
+        if ($p['status'] === 'published' && empty($p['preview_ok']) && !empty($p['channel_msg_id'])
+            && ($p['published_at'] ?? 0) < $now - 90 && ($p['published_at'] ?? 0) > $now - 86400) {
+            $has = channelPostHasPreview($p['channel_msg_id']);
+            if ($has === true) {
+                $p['preview_ok'] = true;
+                if (!empty($p['preview_tries'])) {
+                    tg('sendMessage', ['chat_id' => KAMILA_CHAT_ID, 'text' => "🔧 У поста №{$p['id']} в канале не сразу показалась картинка — я пересобрал превью, теперь она на месте."]);
+                }
+                logLine("post {$p['id']}: preview ok" . (!empty($p['preview_tries']) ? " after {$p['preview_tries']} refresh(es)" : ''));
+            } elseif ($has === false && ($p['preview_tries'] ?? 0) < 4) {
+                $p['preview_tries'] = ($p['preview_tries'] ?? 0) + 1;
+                $r = refreshPostPreview($p);
+                logLine("post {$p['id']}: no preview, refresh #{$p['preview_tries']}: " . (!empty($r['ok']) ? 'ok' : ($r['description'] ?? 'failed')));
+            }
+        }
     }
     unset($p);
     saveState($s);
@@ -403,17 +488,18 @@ if ($cmd === 'cb') {
     exit;
 }
 
+if ($cmd === 'checkpreview') {
+    $k = findPost($s, $argv[2] ?? 0);
+    if ($k === null || empty($s['posts'][$k]['channel_msg_id'])) { echo "no published post\n"; exit; }
+    echo json_encode(channelPostHasPreview($s['posts'][$k]['channel_msg_id'])), "\n";
+    exit;
+}
+
 if ($cmd === 'refresh') {
     $k = findPost($s, $argv[2] ?? 0);
     if ($k === null || empty($s['posts'][$k]['channel_msg_id'])) { echo "no published post\n"; exit; }
     $p = $s['posts'][$k];
-    $r = tg('editMessageText', [
-        'chat_id'              => CHANNEL,
-        'message_id'           => $p['channel_msg_id'],
-        'text'                 => buildPostHtml($p),
-        'parse_mode'           => 'HTML',
-        'link_preview_options' => previewOptions($p['slug']),
-    ]);
+    $r = refreshPostPreview($p);
     echo !empty($r['ok']) ? "refreshed\n" : ('FAIL ' . ($r['description'] ?? 'no response') . "\n");
     logLine("refresh post {$p['id']}: " . (!empty($r['ok']) ? 'ok' : ($r['description'] ?? 'failed')));
     exit;
@@ -432,7 +518,7 @@ if ($cmd === 'redo') {
     $p['text'] = $text;
     $p['status'] = 'pending';
     if ($p['publish_at'] <= time()) $p['publish_at'] = nextPublishTime(time());
-    sendDraft($p);
+    sendDraft($p, false);
     unset($p);
     saveState($s);
     logLine("redo post {$s['posts'][$k]['id']}");
