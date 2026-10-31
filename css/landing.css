@@ -71,3 +71,16 @@
 .lp-docs figcaption strong{display:block;font-family:'Montserrat',sans-serif;color:var(--text-primary);font-size:.95rem;margin-bottom:.15rem}
 @media(max-width:968px){.lp-docs{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){.lp-docs{grid-template-columns:1fr}}
+
+/* Рекламная страница: первый экран на телефоне без перекрытий */
+@media(max-width:640px){
+.lp-ads .lp-hero-photo{order:2;margin-top:.5rem}
+.lp-ads .lp-hero-photo img{max-height:170px}
+.lp-ads #psy-chat-badge{display:none!important}
+.lp-ads #cookie-banner{padding:10px 14px}
+.lp-ads #cookie-banner .cookie-text strong{display:none}
+.lp-ads #cookie-banner .cookie-text p{font-size:12px;line-height:1.35}
+.lp-ads #cookie-banner .cookie-content{flex-direction:column;align-items:stretch;gap:8px}
+.lp-ads #cookie-banner .cookie-buttons{display:flex;gap:8px}
+.lp-ads #cookie-banner .cookie-btn{flex:1;padding:8px 10px}
+}

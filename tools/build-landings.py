@@ -55,7 +55,7 @@ def lead_section(source, hint):
                 </label>
                 <label class="lead-field">
                     <span>Как с вами связаться</span>
-                    <input type="text" name="contact" autocomplete="tel" inputmode="email" placeholder="Телефон, @username или e-mail" required>
+                    <input type="text" name="contact" autocomplete="on" placeholder="Телефон, @username или e-mail" required>
                 </label>
                 <label class="lead-field">
                     <span>С каким вопросом хотите прийти <small>(по желанию)</small></span>
@@ -84,7 +84,7 @@ def lead_section(source, hint):
     </section>'''
 
 
-def page(slug, title, description, hero, body, faq=None, service=None, lead=None, photo=None, preload_photo=False, crumb=('Услуги', 'services.html')):
+def page(slug, title, description, hero, body, faq=None, service=None, lead=None, photo=None, preload_photo=False, crumb=('Услуги', 'services.html'), ads=False):
     ld = [{'@type': 'WebPage', 'name': title, 'url': SITE + slug, 'description': description,
            'publisher': {'@type': 'Person', 'name': 'Камила Золотова', 'url': SITE}},
           {'@type': 'BreadcrumbList', 'itemListElement': [
@@ -102,8 +102,8 @@ def page(slug, title, description, hero, body, faq=None, service=None, lead=None
     if photo:
         w, h = PHOTOS[photo]
         photo_html = f'''
-            <div class="lp-hero-photo"><img width="{w}" height="{h}" src="images/{photo}" alt="Камила Золотова — психолог КПТ и ДПДГ (EMDR)" fetchpriority="high"></div>'''
-        hero_cls = 'lp-hero'
+            <div class="lp-hero-photo"><img width="{w}" height="{h}" src="images/{photo}" alt="{'Камила Золотова — психолог, КПТ' if ads else 'Камила Золотова — психолог КПТ и ДПДГ (EMDR)'}" fetchpriority="high"></div>'''
+        hero_cls = 'lp-hero lp-hero-ads' if ads else 'lp-hero'
     else:
         photo_html = ''
         hero_cls = 'lp-hero lp-hero-simple'
@@ -147,10 +147,10 @@ def page(slug, title, description, hero, body, faq=None, service=None, lead=None
     <link rel="stylesheet" href="css/styles.css?v=2026102703">
     <link rel="stylesheet" href="css/services.css">
     <link rel="stylesheet" href="css/lead-form.css?v=20261027">
-    <link rel="stylesheet" href="css/landing.css?v=2026102802">
+    <link rel="stylesheet" href="css/landing.css?v=2026103101">
     <link rel="stylesheet" href="css/footer.css">
 </head>
-<body>
+<body{' class="lp-ads"' if ads else ''}>
     <nav>
         <a href="index.html" class="logo">
             <img width="44" height="44" src="images/logo-kz-flat-88.webp" alt="KZ" class="logo-icon-img">
@@ -777,7 +777,18 @@ ot_faq = [
     ('Сколько встреч понадобится?', 'Зависит от запроса и от того, как давно длятся трудности. На первых встречах мы сформулируем цели, и я скажу, какой ориентир вижу. Решение о продолжении всегда за вами.'),
     ('Что если в отношениях есть насилие?', 'Если вам страшно за свою безопасность или вас бьют, унижают и контролируют, парная консультация не подходит: сначала нужна безопасность. Напишите мне — поговорим индивидуально. Если опасно прямо сейчас, позвоните по номеру 112.'),
 ]
-ot_body = section(f'''            <h2>Узнаёте себя?</h2>
+ot_body = section(f'''            <h2>Кто с вами работает</h2>
+{cards([
+    ('Магистр психологии', 'Специализация — когнитивно-поведенческая терапия (КПТ). Консультирую больше шести лет.'),
+    ('Семейный психолог', 'Профессиональная переподготовка по семейной психологии, 340 часов. <a href="obrazovanie.html">Дипломы и документы</a>'),
+    ('Член АКПП', 'Ассоциация когнитивно-поведенческой психотерапии.'),
+])}
+{reviews([
+    ('Очень чуткая и внимательная, и как я понял — подбирает для каждого клиента индивидуальный набор разных техник и методов, которых в её "арсенале" приличное количество.', 'Иван Савченко, 2GIS'),
+    ('В результате сессий получилось шире посмотреть на волнующие вопросы, понять, почему могут происходить те или иные ситуации в жизни, а также задуматься об их причинах.', 'Анна, B17.ru'),
+])}
+            <p class="lp-note"><a href="reviews.html">Все отзывы</a></p>''', alt=True, narrow=False)
+ot_body += section(f'''            <h2>Узнаёте себя?</h2>
             <p class="lp-sub">Трудности в отношениях бывают у всех. Повод обратиться к психологу — когда они повторяются и забирают силы.</p>
 {cards([
     ('Ссоры по кругу', 'Начинается с мелочи, а заканчивается тем же спором, что и месяц назад.'),
@@ -800,7 +811,7 @@ ot_body += section(f'''            <h2>Два формата работы</h2>
                     <h3>Индивидуальная консультация</h3>
                     <p>Если партнёр пока не готов или вам нужно разобраться в себе: в своих реакциях, ожиданиях и решениях.</p>
                     <div class="service-price">5 000 ₽</div>
-                    <ul class="service-features"><li>50 минут</li><li>КПТ и ДПДГ (EMDR)</li><li>Онлайн, из любого города</li></ul>
+                    <ul class="service-features"><li>50 минут</li><li>КПТ</li><li>Онлайн, из любого города</li></ul>
                     <a href="#zapis" class="btn-service">Записаться</a>
                 </div>
             </div>
@@ -832,14 +843,16 @@ ot_body += section(f'''            <h2>Почитать об отношения�
 ])}''')
 pages['psiholog-po-otnosheniyam.html'] = page(
     'psiholog-po-otnosheniyam.html',
-    'Психолог по отношениям онлайн: для пары и для себя | Камила Золотова',
+    'Психолог по отношениям онлайн: для пары и себя | Камила Золотова',
     'Психолог по отношениям онлайн: консультация для пары (90 минут, 7 800 ₽) и индивидуальная (50 минут, 5 000 ₽). Ссоры, холод, недоверие, сомнения «быть вместе или расстаться». Первая встреча 20 минут бесплатно.',
-    {'tag': 'Онлайн · КПТ', 'h1': 'Психолог по отношениям',
-     'lead': 'Ссоры по кругу, холод, недоверие или сомнения, быть ли вместе. Разберёмся, что происходит между вами, и найдём способ говорить и слышать друг друга — вдвоём или сначала по отдельности.',
-     'price': PRICE_LINE},
-    ot_body, faq=ot_faq, photo='kamila-39.webp', preload_photo=True,
+    {'tag': 'Для пары и индивидуально · КПТ', 'h1': 'Психолог по отношениям онлайн',
+     'lead': 'Кризис в отношениях, ссоры по кругу, холод, недоверие или сомнения, быть ли вместе. Я семейный психолог с переподготовкой, работаю онлайн из любого города: помогу разобраться, что происходит между вами, и найти способ говорить и слышать друг друга — вдвоём или сначала по отдельности.',
+     'price': '<strong>Первая встреча 20 минут — бесплатно</strong> · далее 5&nbsp;000&nbsp;₽ за 50&nbsp;минут · для пары 90&nbsp;минут — 7&nbsp;800&nbsp;₽ · онлайн'},
+    ot_body, faq=ot_faq, photo='kamila-39.webp', preload_photo=True, ads=True,
     lead=('Страница "Отношения"', 'Напишите в одну строку, что беспокоит, — или просто оставьте контакт.'),
-    service=service_ld('Психолог по отношениям онлайн', 'psiholog-po-otnosheniyam.html', 'Онлайн-консультации психолога по отношениям: для пары и индивидуально, КПТ.'))
+    service=dict(service_ld('Психолог по отношениям онлайн', 'psiholog-po-otnosheniyam.html', 'Онлайн-консультации психолога по отношениям: для пары и индивидуально, КПТ.'),
+                 offers=[{'@type': 'Offer', 'price': '5000', 'priceCurrency': 'RUB', 'description': 'Индивидуальная консультация 50 минут; первая встреча 20 минут — бесплатно'},
+                         {'@type': 'Offer', 'price': '7800', 'priceCurrency': 'RUB', 'description': 'Консультация для пары 90 минут'}]))
 
 for name, content in pages.items():
     with open(os.path.join(ROOT, name), 'w', encoding='utf-8') as f:
