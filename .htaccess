@@ -97,4 +97,5 @@ Redirect 301 /articles/finansovye-konflikty-v-pare-kto-platit-i-pochemu-eto-ne-p
 Redirect 301 /articles/emotsionalnye-kacheli-ili-lyubov-kak-otlichit-zavisimost-ot-privyazannosti-8900.html https://pozitiv-psychology.ru/articles/emotsionalnye-kacheli-ili-lyubov-kak-otlichit-zavisimost-ot-privyazannosti-9443.html
 
 # Custom 404 page (relative path — prevents redirect loop)
-ErrorDocument 404 /404.htmlRedirect 301 /articles/simptomy-trevozhnogo-rasstroystva.html https://pozitiv-psychology.ru/articles/priznaki-trevogi.html
+ErrorDocument 404 /404.html
+Redirect 301 /articles/simptomy-trevozhnogo-rasstroystva.html https://pozitiv-psychology.ru/articles/priznaki-trevogi.html
