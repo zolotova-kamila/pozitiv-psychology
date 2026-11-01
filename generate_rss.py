@@ -243,12 +243,12 @@ articles = [
         'image': 'images/article-kpt-preview.jpg',
     },
     {
-        'title': 'Симптомы тревожного расстройства — как распознать',
-        'url': f'{BASE_URL}/articles/simptomy-trevozhnogo-rasstroystva.html',
-        'file': 'articles/simptomy-trevozhnogo-rasstroystva.html',
+        'title': 'Признаки тревоги: как понять, что тревога мешает жить',
+        'url': f'{BASE_URL}/articles/priznaki-trevogi.html',
+        'file': 'articles/priznaki-trevogi.html',
         'date': 'Wed, 18 Mar 2026 10:00:00 +0300',
         'categories': ['Тревога', 'Психическое здоровье', 'format-article'],
-        'description': 'Как отличить нормальную тревогу от расстройства, основные физические и психологические симптомы тревожного расстройства.',
+        'description': 'Чем обычное волнение отличается от тревоги, которая мешает жить: признаки в теле, мыслях и поведении и что можно сделать уже сейчас.',
         'image': 'images/article-trevoga-preview.jpg',
     },
     {

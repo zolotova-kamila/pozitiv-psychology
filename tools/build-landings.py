@@ -432,7 +432,7 @@ tr_body += section(f'''            <h2>Отзывы</h2>
 ])}''', alt=True)
 tr_body += section(f'''            <h2>Почитать о тревоге</h2>
 {links([
-    ('articles/simptomy-trevozhnogo-rasstroystva.html', 'Признаки тревоги: как понять, что тревога мешает жить'),
+    ('articles/priznaki-trevogi.html', 'Признаки тревоги: как понять, что тревога мешает жить'),
     ('articles/perfektsionizm-i-trevoga.html', 'Перфекционизм и тревога: почему "хорошо" никогда не достаточно'),
     ('articles/psikhosomatika-trevogi.html', 'Психосоматика тревоги: когда переживания говорят через тело'),
     ('articles/uprazhneniya-dlya-rasslableniya-i-snyatie-myshechnyx-blokov.html', 'Упражнения для расслабления и снятия мышечных блоков'),
