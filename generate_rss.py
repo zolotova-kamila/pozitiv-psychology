@@ -261,12 +261,12 @@ articles = [
         'image': 'images/article-vybor-psikhologa-new.jpg',
     },
     {
-        'title': 'Как справиться с приступами паники',
-        'url': f'{BASE_URL}/articles/kak-spravitsya-s-pristupami-paniki.html',
-        'file': 'articles/kak-spravitsya-s-pristupami-paniki.html',
+        'title': 'Как справиться с паникой',
+        'url': f'{BASE_URL}/articles/kak-spravitsya-s-panikoy.html',
+        'file': 'articles/kak-spravitsya-s-panikoy.html',
         'date': 'Thu, 19 Mar 2026 10:00:00 +0300',
-        'categories': ['Тревога', 'Приступы паники', 'format-article'],
-        'description': 'Техники остановки приступа паники: дыхание 4-7-8, заземление 5-4-3-2-1, прогрессивная релаксация.',
+        'categories': ['Тревога', 'Паника', 'format-article'],
+        'description': 'Техники остановки паники: дыхание 4-7-8, заземление 5-4-3-2-1, прогрессивная релаксация.',
         'image': 'images/article-panika-preview.jpg',
     },
     {
