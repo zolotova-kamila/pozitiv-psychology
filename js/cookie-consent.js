@@ -107,21 +107,39 @@ function createBanner(){const banner=document.createElement('div');banner.id='co
                 color: #2D5A4A;
             }
             
-            /* Mobile */
+            /* Mobile: компактная плашка, чтобы не закрывала кнопки на первом экране */
             @media (max-width: 768px) {
+                #cookie-banner {
+                    padding: 8px 12px;
+                    font-size: 12px;
+                    line-height: 1.35;
+                }
+
                 .cookie-content {
                     flex-direction: column;
                     text-align: center;
+                    gap: 8px;
                 }
-                
+
+                .cookie-text strong {
+                    display: none;
+                }
+
+                .cookie-text p {
+                    margin: 0;
+                }
+
                 .cookie-buttons {
                     width: 100%;
                     justify-content: center;
+                    gap: 8px;
                 }
-                
+
                 .cookie-btn {
                     flex: 1;
                     max-width: 150px;
+                    padding: 8px 12px;
+                    font-size: 13px;
                 }
             }
             
