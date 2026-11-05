@@ -99,3 +99,6 @@ Redirect 301 /articles/emotsionalnye-kacheli-ili-lyubov-kak-otlichit-zavisimost-
 # Custom 404 page (relative path — prevents redirect loop)
 ErrorDocument 404 /404.html
 Redirect 301 /articles/simptomy-trevozhnogo-rasstroystva.html https://pozitiv-psychology.ru/articles/priznaki-trevogi.html
+Redirect 301 /psiholog-dlya-emigrantov.html https://pozitiv-psychology.ru/services.html
+Redirect 301 /articles/trevoga-emigranta.html https://pozitiv-psychology.ru/articles/
+Redirect 301 /articles/ne-otsyuda-ne-ottyuda.html https://pozitiv-psychology.ru/articles/

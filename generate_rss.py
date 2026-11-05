@@ -171,15 +171,6 @@ def xml_escape(s):
 # ── Article definitions ────────────────────────────────────────────────────────
 articles = [
     {
-        'title': 'Не отсюда, не оттуда: кризис принадлежности эмигранта',
-        'url': f'{BASE_URL}/articles/ne-otsyuda-ne-ottyuda.html',
-        'file': 'articles/ne-otsyuda-ne-ottyuda.html',
-        'date': 'Thu, 03 Apr 2026 10:00:00 +0300',
-        'categories': ['Эмиграция', 'Идентичность', 'format-article'],
-        'description': 'Почему мы чувствуем себя чужими и там, и здесь. Третья культура, кризис принадлежности и как пройти через него, сохранив себя.',
-        'image': 'images/116.jpg',
-    },
-    {
         'title': 'Денежные сценарии детства: откуда берётся страх бедности',
         'url': f'{BASE_URL}/articles/deneshnye-scenarii-detstva.html',
         'file': 'articles/deneshnye-scenarii-detstva.html',
