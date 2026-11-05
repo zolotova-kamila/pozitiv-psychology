@@ -22,6 +22,14 @@
 
   document.querySelectorAll('form[data-lead-form]').forEach(function (form) {
     var contactInput = form.querySelector('[name="contact"]');
+    var messageInput = form.querySelector('[name="message"]');
+    if (messageInput) {
+      // Вопрос обязателен: заявки «без описания» чаще всего случайные
+      messageInput.required = true;
+      var optional = messageInput.parentNode.querySelector('small');
+      if (optional) optional.remove();
+      messageInput.placeholder = 'Пара слов о том, что беспокоит';
+    }
     contactInput.addEventListener('input', function () {
       contactInput.classList.remove('lead-invalid');
       form.querySelector('.lead-error').hidden = true;
@@ -39,6 +47,12 @@
         contactInput.classList.add('lead-invalid');
         contactInput.focus();
         showError(form, 'Укажите телефон с кодом страны, @username в Telegram или e-mail — так я смогу ответить.');
+        return;
+      }
+
+      if (messageInput && field('message').length < 5) {
+        messageInput.focus();
+        showError(form, 'Напишите в паре слов, с чем хотите прийти, — так я пойму, чем могу быть полезна.');
         return;
       }
 
