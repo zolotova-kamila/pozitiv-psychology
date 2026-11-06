@@ -39,3 +39,12 @@
 .lead-agree a{color:var(--accent-primary)}
 .lead-after{font-size:.85rem;line-height:1.5;color:var(--text-secondary);margin:0}
 @media(max-width:480px){.lead-field input::placeholder{font-size:.9rem}}
+/* Кнопки связи сразу под вступлением к форме: многие пишут сами, форма ниже */
+.lead-card-top{grid-template-rows:auto 1fr}
+.lead-card-top .lead-intro{grid-column:1;grid-row:1}
+.lead-card-top .lead-alt-top{align-self:start}
+.lead-card-top .lead-alt-top{grid-column:1;grid-row:2;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:.75rem;padding-top:0;border-top:0}
+.lead-card-top .lead-form,.lead-card-top .lead-success{grid-column:2;grid-row:1/span 2}
+.lead-alt-top .lead-alt-btn{flex:1;text-align:center}
+.lead-alt-bot{font-size:.9rem;color:var(--text-secondary)}
+@media(max-width:768px){.lead-card-top{grid-template-rows:none}.lead-card-top .lead-intro,.lead-card-top .lead-alt-top,.lead-card-top .lead-form,.lead-card-top .lead-success{grid-column:1;grid-row:auto}.lead-alt-top{text-align:center}}
