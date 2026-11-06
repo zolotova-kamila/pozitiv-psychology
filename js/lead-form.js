@@ -28,7 +28,10 @@
       messageInput.required = true;
       var optional = messageInput.parentNode.querySelector('small');
       if (optional) optional.remove();
-      messageInput.placeholder = 'Пара слов о том, что беспокоит';
+      // Пример под тему страницы задан в HTML; общий вариант — только если его нет
+      if (!messageInput.getAttribute('placeholder') || /без подробностей/.test(messageInput.placeholder)) {
+        messageInput.placeholder = 'Например: хочу разобраться, что со мной происходит';
+      }
     }
     contactInput.addEventListener('input', function () {
       contactInput.classList.remove('lead-invalid');
@@ -52,7 +55,7 @@
 
       if (messageInput && field('message').length < 5) {
         messageInput.focus();
-        showError(form, 'Напишите в паре слов, с чем хотите прийти, — так я пойму, чем могу быть полезна.');
+        showError(form, 'Напишите хотя бы пару слов, с чем хотите прийти — так я пойму, как вам лучше ответить.');
         return;
       }
 

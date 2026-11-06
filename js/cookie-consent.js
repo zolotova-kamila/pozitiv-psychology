@@ -17,7 +17,7 @@ function createBanner(){const banner=document.createElement('div');banner.id='co
                     <button class="cookie-btn cookie-btn-accept" id="cookie-accept">Принять</button>
                 </div>
             </div>
-        `;document.body.appendChild(banner);const styles=document.createElement('style');styles.textContent=`
+        `;document.body.appendChild(banner);document.body.classList.add('cookie-open');const styles=document.createElement('style');styles.textContent=`
             #cookie-banner {
                 position: fixed;
                 bottom: 0;
@@ -143,11 +143,18 @@ function createBanner(){const banner=document.createElement('div');banner.id='co
                 }
             }
             
+            /* Пока плашка видна на телефоне, значок чата стоит выше неё */
+            @media (max-width: 768px) {
+                body.cookie-open #psy-chat-widget {
+                    bottom: calc(var(--cookie-h, 130px) + 12px) !important;
+                }
+            }
+
             /* Hidden state */
             #cookie-banner.hidden {
                 display: none !important;
             }
-        `;document.head.appendChild(styles);document.getElementById('cookie-accept').addEventListener('click',function(){setCookie(COOKIE_NAME,'accepted',COOKIE_EXPIRY_DAYS);banner.classList.add('hidden');enableAnalytics();});document.getElementById('cookie-decline').addEventListener('click',function(){setCookie(COOKIE_NAME,'declined',COOKIE_EXPIRY_DAYS);banner.classList.add('hidden');disableAnalytics();});}
+        `;document.head.appendChild(styles);var setH=function(){document.documentElement.style.setProperty('--cookie-h',banner.offsetHeight+'px');};setH();window.addEventListener('resize',setH);document.getElementById('cookie-accept').addEventListener('click',function(){setCookie(COOKIE_NAME,'accepted',COOKIE_EXPIRY_DAYS);banner.classList.add('hidden');document.body.classList.remove('cookie-open');enableAnalytics();});document.getElementById('cookie-decline').addEventListener('click',function(){setCookie(COOKIE_NAME,'declined',COOKIE_EXPIRY_DAYS);banner.classList.add('hidden');document.body.classList.remove('cookie-open');disableAnalytics();});}
 // Счётчики загружаются только после согласия
 function enableAnalytics(){if(window.__pozitivAnalyticsLoaded)return;const s=document.createElement('script');s.src=BASE+'js/analytics.js?v=20261024';s.async=true;document.head.appendChild(s);}
 function disableAnalytics(){if(typeof ym!=='undefined'){window.ym=function(){console.log('Analytics disabled by user choice');};}

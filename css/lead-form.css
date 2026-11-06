@@ -37,3 +37,5 @@
 .lead-agree{display:flex!important;align-items:flex-start;gap:.6rem;margin:0;font-family:'Source Serif Pro',Georgia,serif;font-size:.85rem!important;font-weight:400!important;line-height:1.5;color:var(--text-secondary)!important;text-align:left;cursor:pointer}
 .lead-agree input{flex:none;width:18px!important;height:18px;margin:.15rem 0 0!important;padding:0!important;accent-color:var(--accent-primary);cursor:pointer}
 .lead-agree a{color:var(--accent-primary)}
+.lead-after{font-size:.85rem;line-height:1.5;color:var(--text-secondary);margin:0}
+@media(max-width:480px){.lead-field input::placeholder{font-size:.9rem}}

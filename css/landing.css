@@ -84,3 +84,6 @@
 .lp-ads #cookie-banner .cookie-buttons{display:flex;gap:8px}
 .lp-ads #cookie-banner .cookie-btn{flex:1;padding:8px 10px}
 }
+.lp-cta{margin:1.75rem 0 0;text-align:center}
+.lp-safety{padding-top:1.5rem;padding-bottom:1.5rem}
+.lp-safety .lp-note{margin:0;font-size:.9rem}
