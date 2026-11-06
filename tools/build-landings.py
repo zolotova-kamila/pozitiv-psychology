@@ -238,7 +238,7 @@ def page(slug, title, description, hero, body, faq=None, service=None, lead=None
 
     <script src="js/nav.js?v=2026102402"></script>
     <script src="js/faq.js"></script>
-    <script src="js/lead-form.js?v={'20261106' if ads else '2026102701'}"></script>
+    <script src="js/lead-form.js?v=20261107"></script>
     <script src="js/metrika-goals.js?v=2026102701"></script>
     <script src="js/cookie-consent.js?v={'20261106' if ads else '20261024'}"></script>
 </body>
