@@ -100,6 +100,55 @@ def lead_section(source, hint, ph=None, ads=False):
     </section>'''
 
 
+# Блок «Читайте также»: тематические статьи на рекламных страницах (перелинковка).
+# Заголовки статей проверены check-medical.py: на рекламных страницах только «чистые».
+ARTICLE_TITLES = {
+    'priznaki-trevogi': 'Признаки тревоги: как понять, что тревога мешает жить',
+    'a-vdrug-sluchitsya-uzhasnoe-pochemu-mozg-risuet-strashnye-stsenarii-430b': 'А вдруг случится ужасное? Почему мозг рисует страшные сценарии',
+    'a-vdrug-kak-ostanovit-mysl-kotoraya-prevrashchaet-mukhu-v-slona-8997': '«А вдруг?..»: как остановить мысль, которая превращает муху в слона',
+    'on-eto-spetsialno-kogda-my-prinimaem-sluchaynost-za-zloy-umysel-ed33': '«Он это специально»: когда мы принимаем случайность за злой умысел',
+    'pochemu-ya-ne-mogu-postroit-blizkie-otnosheniya-strakh-intimnosti-436a': 'Почему я не могу построить близкие отношения: страх интимности',
+    'finansovye-konflikty-v-pare': 'Финансовые конфликты в паре: почему это не про деньги',
+    'ne-khochu-rabotat': 'Не хочу работать: выгорание или пора менять профессию?',
+    'ne-znayu-chego-khochu': 'Я не знаю, чего хочу: почему взрослые теряют себя',
+    'kak-prinyat-reshenie': 'Как принять важное решение, если боишься ошибиться',
+    'pochemu-ya-boyus-byt-soboy-tsena-odobreniya-i-put-k-svobode-f7f1': 'Почему я боюсь быть собой: цена одобрения и путь к свободе',
+    'perfektsionizm-i-trevoga': 'Перфекционизм и тревога: почему «хорошо» никогда не достаточно',
+    'kak-perestat-boyatsya-ostatsya-odnoy-mif-o-nepolnotsennosti-afef': 'Как перестать бояться остаться одной: миф о неполноценности',
+    'chuvstvo-viny--eto-ne-sovest-kak-otlichit-realnyy-prostupok-ot-navyazannogo-dolga-e69d': 'Чувство вины и совесть: в чём разница и что с этим делать',
+    'chuvstvo-viny-tormoz-vashikh-tseley-6009': 'Чувство вины — тормоз ваших целей: почему трудно остановиться',
+    'tikhaya-agressiya-kak-podavlennoe-chuvstvo-viny-razrushaet-otnosheniya-s-blizkimi-65f1': 'Тихая агрессия: как подавленная вина разрушает отношения',
+    'kak-spravitsya-s-rasstavaniem-psikhologiya-i-strategii-preodoleniya-0920': 'Как справиться с расставанием: психология и стратегии',
+}
+READ_ALSO = {
+    'psiholog-pri-trevoge.html': ['priznaki-trevogi', 'a-vdrug-sluchitsya-uzhasnoe-pochemu-mozg-risuet-strashnye-stsenarii-430b', 'a-vdrug-kak-ostanovit-mysl-kotoraya-prevrashchaet-mukhu-v-slona-8997'],
+    'psiholog-po-otnosheniyam.html': ['on-eto-spetsialno-kogda-my-prinimaem-sluchaynost-za-zloy-umysel-ed33', 'pochemu-ya-ne-mogu-postroit-blizkie-otnosheniya-strakh-intimnosti-436a', 'finansovye-konflikty-v-pare'],
+    'vygoranie.html': ['ne-khochu-rabotat', 'ne-znayu-chego-khochu', 'kak-prinyat-reshenie'],
+    'neuverennost-v-sebe.html': ['pochemu-ya-boyus-byt-soboy-tsena-odobreniya-i-put-k-svobode-f7f1', 'ne-znayu-chego-khochu', 'perfektsionizm-i-trevoga'],
+    'odinochestvo.html': ['kak-perestat-boyatsya-ostatsya-odnoy-mif-o-nepolnotsennosti-afef', 'pochemu-ya-ne-mogu-postroit-blizkie-otnosheniya-strakh-intimnosti-436a', 'ne-znayu-chego-khochu'],
+    'chuvstvo-viny.html': ['chuvstvo-viny--eto-ne-sovest-kak-otlichit-realnyy-prostupok-ot-navyazannogo-dolga-e69d', 'chuvstvo-viny-tormoz-vashikh-tseley-6009', 'tikhaya-agressiya-kak-podavlennoe-chuvstvo-viny-razrushaet-otnosheniya-s-blizkimi-65f1'],
+    'rasstavanie.html': ['kak-spravitsya-s-rasstavaniem-psikhologiya-i-strategii-preodoleniya-0920', 'pochemu-ya-ne-mogu-postroit-blizkie-otnosheniya-strakh-intimnosti-436a', 'on-eto-spetsialno-kogda-my-prinimaem-sluchaynost-za-zloy-umysel-ed33'],
+    'perfektsionizm.html': ['perfektsionizm-i-trevoga', 'chuvstvo-viny-tormoz-vashikh-tseley-6009', 'kak-prinyat-reshenie'],
+}
+
+
+def readmore_section(slug):
+    items = READ_ALSO.get(slug)
+    if not items:
+        return ''
+    links = '\n'.join(f'                <li><a href="articles/{k}.html">{html.escape(ARTICLE_TITLES[k])}</a></li>' for k in items)
+    return f'''
+    <section class="lp-section lp-readmore-section">
+        <div class="lp-narrow">
+            <h2>Читайте также</h2>
+            <ul class="lp-readmore">
+{links}
+            </ul>
+        </div>
+    </section>
+'''
+
+
 def page(slug, title, description, hero, body, faq=None, service=None, lead=None, photo=None, preload_photo=False, crumb=('Услуги', 'services.html'), ads=False):
     ld = [{'@type': 'WebPage', 'name': title, 'url': SITE + slug, 'description': description,
            'publisher': {'@type': 'Person', 'name': 'Камила Золотова', 'url': SITE}},
@@ -137,6 +186,7 @@ def page(slug, title, description, hero, body, faq=None, service=None, lead=None
     </section>
 '''
     lead_html = lead_section(*lead, ads=ads) if lead else ''
+    readmore_html = readmore_section(slug)
     if ads and slug not in ('psiholog-po-otnosheniyam.html', 'psiholog-pri-trevoge.html'):
         # Информация о безопасности: в FAQ и внизу страницы, не в середине
         lead_html += f'''
@@ -172,7 +222,7 @@ def page(slug, title, description, hero, body, faq=None, service=None, lead=None
     <link rel="stylesheet" href="css/styles.css?v=2026102703">
     <link rel="stylesheet" href="css/services.css">
     <link rel="stylesheet" href="css/lead-form.css?v=20261108">
-    <link rel="stylesheet" href="css/landing.css?v={'20261106' if ads else '2026103101'}">
+    <link rel="stylesheet" href="css/landing.css?v=20261108">
     <link rel="stylesheet" href="css/footer.css">
 </head>
 <body{' class="lp-ads"' if ads else ''}>
@@ -211,7 +261,7 @@ def page(slug, title, description, hero, body, faq=None, service=None, lead=None
             </div>{photo_html}
         </div>
     </header>
-{body}{faq_block}
+{body}{faq_block}{readmore_html}
 {lead_html}
 
     <footer>

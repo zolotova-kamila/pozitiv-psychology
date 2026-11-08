@@ -1,0 +1,12 @@
+/* Оглавление, частые вопросы и дополнения к статьям */
+.article-toc{margin:1.6em 0 2em;padding:1.1em 1.4em;border:1px solid var(--border,#e3ddd3);border-radius:8px;background:var(--bg-secondary,#f6f3ee)}
+.article-toc-label{font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted,#6b6b6b);margin-bottom:.6em}
+.article-toc ol{margin:0;padding-left:1.2em}
+.article-toc li{margin:.3em 0;line-height:1.45}
+.article-toc a{color:inherit;text-decoration:underline;text-decoration-color:rgba(45,90,74,.4);text-underline-offset:3px}
+.article-toc a:hover{text-decoration-color:currentColor}
+.article-faq{margin:2.5em 0 0}
+.article-faq h2{margin-bottom:.6em}
+.article-faq h3{font-size:1.08rem;margin:1.2em 0 .35em}
+.article-faq p{margin:0 0 .6em}
+html{scroll-padding-top:80px}
