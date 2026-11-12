@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Архив несбывшегося — проверьте, как часто ошибается ваша тревога</title>
+  <meta name="description" content="Запишите тревожный прогноз, назначьте дату проверки и узнайте, как часто тревога ошибается. Бесплатный инструмент психолога Камилы Золотовой.">
+  <link rel="canonical" href="https://pozitiv-psychology.ru/arhiv/">
+  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+  <meta name="theme-color" content="#F5F1EB">
+  <link rel="stylesheet" href="../css/fonts.css?v=2026102510">
+  <link rel="stylesheet" href="style.css?v=20261112">
+</head>
+<body>
+  <div class="shell">
+    <header class="top">
+      <a class="brand" href="https://pozitiv-psychology.ru/" target="_blank" rel="noopener">Камила Золотова · психолог</a>
+      <h1>Архив несбывшегося</h1>
+      <p class="lead">Тревога постоянно делает прогнозы. Здесь вы проверяете, как часто она ошибается.</p>
+    </header>
+
+    <nav class="tabs" aria-label="Разделы">
+      <button type="button" class="tab" data-view="today">Сегодня<span class="badge" id="due-badge" hidden></span></button>
+      <button type="button" class="tab" data-view="cards">Карты</button>
+      <button type="button" class="tab" data-view="archive">Архив</button>
+      <button type="button" class="tab" data-view="insights">Итоги</button>
+    </nav>
+
+    <main id="app"></main>
+
+    <footer class="foot">
+      <p>Это инструмент самонаблюдения, а не медицинская или психологическая помощь. В экстренной ситуации звоните 112.</p>
+      <p>Тексты прогнозов хранятся только в этом браузере на вашем устройстве и никуда не отправляются. Если подключить напоминания в Telegram, боту передаются только даты проверки.</p>
+      <p><button type="button" class="link" id="wipe">Удалить все записи</button></p>
+    </footer>
+  </div>
+
+  <dialog id="add" aria-labelledby="add-title">
+    <form id="add-form" method="dialog" novalidate>
+      <h2 id="add-title">Новый тревожный прогноз</h2>
+
+      <label class="field" for="f-text">
+        <span class="field-label">Что, по мнению тревоги, случится?</span>
+        <textarea id="f-text" rows="3" maxlength="280" placeholder="Например: в четверг на планёрке мой отчёт раскритикуют"></textarea>
+        <span class="hint">Сформулируйте так, чтобы потом можно было ответить «да» или «нет».</span>
+        <span class="error" id="f-text-error" hidden>Запишите прогноз — хотя бы пару слов.</span>
+      </label>
+
+      <fieldset class="field">
+        <legend class="field-label">Когда станет ясно?</legend>
+        <div class="chips" id="f-when">
+          <label class="chip"><input type="radio" name="when" value="1"><span>Завтра</span></label>
+          <label class="chip"><input type="radio" name="when" value="3"><span>Через 3 дня</span></label>
+          <label class="chip"><input type="radio" name="when" value="7" checked><span>Через неделю</span></label>
+          <label class="chip"><input type="radio" name="when" value="30"><span>Через месяц</span></label>
+          <label class="chip"><input type="radio" name="when" value="custom"><span>Своя дата</span></label>
+        </div>
+        <input type="date" id="f-date" aria-label="Дата проверки" hidden>
+        <span class="error" id="f-date-error" hidden>Выберите дату не раньше завтрашнего дня.</span>
+      </fieldset>
+
+      <label class="field" for="f-conf">
+        <span class="field-label">Насколько вы уверены, что это случится? <output id="f-conf-out" for="f-conf">70%</output></span>
+        <input type="range" id="f-conf" min="0" max="100" step="5" value="70">
+        <span class="range-ends"><span>точно нет</span><span>точно да</span></span>
+      </label>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn ghost" id="add-cancel">Отмена</button>
+        <button type="submit" class="btn primary">Записать и отложить</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="config.js?v=20261112"></script>
+  <script src="cards.js?v=20261112"></script>
+  <script src="cardart.js?v=20261112"></script>
+  <script src="app.js?v=20261112"></script>
+</body>
+</html>
