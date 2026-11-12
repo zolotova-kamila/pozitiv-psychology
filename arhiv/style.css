@@ -417,6 +417,29 @@ input[type="range"] { width: 100%; accent-color: var(--accent-primary); margin: 
 
 .step-card { background: var(--bg-secondary); border-color: transparent; box-shadow: none; }
 
+/* Пояснение про МАК и строки-хокку к карте */
+.mak-note {
+  margin: 4px 0 12px;
+  padding: 12px 14px;
+  border-left: 4px solid var(--accent-secondary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--bg-secondary);
+  font-size: 16px;
+  line-height: 1.45;
+}
+.mak-note b { font-family: var(--font-head); font-size: 15px; color: var(--accent-primary); }
+.verse {
+  max-width: 330px;
+  margin: 16px auto 20px;
+  text-align: center;
+  white-space: pre-line;
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.entry-body .verse { margin: 0 auto 4px; font-size: 16px; }
+
 @media (prefers-reduced-motion: reduce) {
   .reveal, .cardback { animation: none; }
 }

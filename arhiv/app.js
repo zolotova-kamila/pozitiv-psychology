@@ -744,6 +744,11 @@
   const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
   const num = (n) => String(Math.round(n * 10) / 10).replace('.', ',');
 
+  // Строки-хокку к карте: описание образа не показываем, чтобы не мешать собственным ассоциациям
+  function verseEl(card) {
+    return h('p', { class: 'verse' }, (card.verse || []).join('\n'));
+  }
+
   function promptsFor(card) {
     return [
       'Что вы видите на карте? Что привлекает внимание в первую очередь?',
@@ -782,8 +787,10 @@
     const todays = cards.draws.filter((d) => d.date === todayKey());
     const locked = !TEST_MODE && todays.length >= DAILY_DRAWS;
     const box = h('div', { class: 'card' },
-      h('h2', null, 'Карта тревоги'),
-      h('p', { class: 'muted' }, `Колода «${DECK.name}»: образы о том, что происходит внутри, когда тревожно. Это не гадание и не предсказание: карта помогает заметить то, что вы и так чувствуете.`));
+      h('h2', null, 'Ассоциативная карта тревоги'),
+      h('p', { class: 'mak-note' }, h('b', null, 'МАК — метафорическая ассоциативная карта. '),
+        'У образа нет «правильного» смысла: важно, что он вызывает именно у вас.'),
+      h('p', { class: 'muted' }, `Колода «${DECK.name}». Это не гадание и не предсказание: карта помогает заметить то, что вы и так чувствуете.`));
 
     if (locked) {
       const card = cardById(todays[0].cardId);
@@ -828,6 +835,7 @@
   function renderPick() {
     return [h('div', { class: 'card' },
       h('h2', null, 'Выберите карту'),
+      h('p', { class: 'mak-note' }, h('b', null, 'МАК — метафорическая ассоциативная карта.')),
       h('p', { class: 'muted' }, `Ваш вопрос: «${currentQuestion()}». Не думайте долго: выберите ту карту, к которой тянет.`),
       h('div', { class: 'fan' }, cardUI.options.map((id, i) => h('button', {
         type: 'button', class: 'cardback', 'aria-label': `Закрытая карта ${i + 1}`,
@@ -845,7 +853,7 @@
       h('div', { class: 'bigcard reveal' },
         ART.art(card),
         h('div', { class: 'bigcard-title' }, h('span', { class: 'cat' }, DECK.groups[card.group]), h('h2', null, card.title))),
-      h('p', { class: 'muted', style: 'margin:14px 0; text-align:center' }, card.desc),
+      verseEl(card),
       h('div', { class: 'card' },
         h('div', { class: 'stack' }, prompts.map((p, i) => {
           const area = h('textarea', { rows: 2, maxlength: 400, placeholder: 'Коротко или пропустите' }, cardUI.answers[i]);
@@ -889,7 +897,8 @@
 
     return [
       h('div', { class: 'bigcard', style: 'max-width:240px' }, ART.art(card),
-        h('div', { class: 'bigcard-title' }, h('h2', { style: 'font-size:22px' }, card.title))),
+        h('div', { class: 'bigcard-title' }, h('h2', { style: 'font-size:22px' }, card.title)),
+        verseEl(card)),
       h('div', { class: 'card', style: 'margin-top:16px' },
         h('h2', null, 'Записано в дневник'),
         h('p', { class: 'muted' }, line),
@@ -925,6 +934,7 @@
           h('span', { class: 'mini' }, ART.art(card)),
           h('span', { class: 'entry-head' }, h('strong', null, card.title), h('span', { class: 'muted' }, `${formatDate(dr.date)} · тревога ${dr.before} → ${dr.after}`))),
         h('div', { class: 'entry-body' },
+          verseEl(card),
           h('p', null, h('b', null, 'Вопрос'), `«${dr.question}»`),
           filled,
           h('p', null, h('b', null, 'Шаг на сегодня'), card.step),

@@ -247,7 +247,7 @@
     el.className = 'art';
     el.innerHTML = placeholderSvg(card);
     const img = new Image();
-    img.alt = card.title;
+    img.alt = card.desc || card.title; // описание видят только программы чтения с экрана, на странице его нет
     img.decoding = 'async';
     img.onload = () => { el.replaceChildren(img); el.dataset.real = '1'; if (onState) onState(true); };
     img.onerror = () => { el.dataset.real = '0'; if (onState) onState(false); };
