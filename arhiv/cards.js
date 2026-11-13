@@ -1,15 +1,16 @@
-// Колода «Тихий горизонт»: 24 карты о тревоге.
+// Колода «Тревога»: 24 карты о тревоге.
 // ВАЖНО: ниже строгий JSON (двойные кавычки, без комментариев и запятых в конце): его читает и браузер,
 // и скрипт tools/generate_cards.py. Так у колоды один источник правды.
 // Готовые картинки лежат в cards/img/01.webp … 24.webp — они автоматически заменяют заглушки.
 window.ARHIV_DECK = {
   "id": "base",
+  "name": "Тревога",
   "title": "Ассоциативная карта тревоги",
   "access": "free",
-  "name": "Тихий горизонт",
+  "tagline": "Образы о том, что происходит внутри, когда тревожно.",
   "imageDir": "cards/img/",
   "imageExt": "webp",
-  "imageVersion": "20261113f",
+  "imageVersion": "20261113g",
   "basePrompt": "Soft hand-painted surrealist fine-art image with fine canvas grain, blending photographic realism with painterly texture, dreamlike and poetic. Pastel palette of dusty rose, mauve, lavender-grey, warm sand and cream, with a delicate golden glow as the single bright accent. Hazy atmospheric light, gentle diffused shadows. The image is built around one clear associative image (a detail of nature, an animal, a symbol, a surreal transformation, or a human gesture) that evokes feelings and associations and leaves room for the viewer's own interpretation. Dali-inspired dreamlike logic but an original composition. Quiet, hopeful mood. No text, no letters, no logos, no watermark. Vertical 2:3.",
   "noPeoplePrompt": "No people in the scene.",
   "negativePrompt": "skulls, bones, skeleton, blood, wounds, severed or disfigured body parts, gore, horror, monsters, spiders, snakes, grotesque or distorted faces, extra fingers, text, letters, logo, watermark, harsh black, heavy darkness, cartoon, 3d render",

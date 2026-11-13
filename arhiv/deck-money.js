@@ -10,7 +10,7 @@
   "price": 390,
   "imageDir": "cards/money/",
   "imageExt": "webp",
-  "imageVersion": "20261113f",
+  "imageVersion": "20261113g",
   "questions": [
     "Что я чувствую, когда думаю о деньгах?",
     "Откуда у меня такое отношение к деньгам?",
