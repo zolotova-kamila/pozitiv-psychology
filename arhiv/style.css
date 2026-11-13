@@ -417,6 +417,13 @@ input[type="range"] { width: 100%; accent-color: var(--accent-primary); margin: 
 
 .step-card { background: var(--bg-secondary); border-color: transparent; box-shadow: none; }
 
+/* Инструкция и кнопки перехода на сайт */
+.guide-block { margin-top: 18px; }
+.guide-h { margin: 0 0 6px; font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.guide-block .steps { margin: 8px 0 0; }
+.site-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.site-links .btn { flex: 1 1 150px; }
+
 /* Пояснение про МАК и строки-хокку к карте */
 .mak-note {
   margin: 4px 0 12px;

@@ -7,6 +7,8 @@
   const LINKS = {
     booking: 'https://pozitiv-psychology.ru/#zapis',
     group: 'https://pozitiv-psychology.ru/group-therapy-landing.html',
+    site: 'https://pozitiv-psychology.ru/',
+    contacts: 'https://pozitiv-psychology.ru/contact.html',
   };
   const SHARE_SITE = 'pozitiv-psychology.ru';
 
@@ -776,7 +778,37 @@
     return { out, input };
   }
 
+  // Инструкция перед использованием: показывается один раз, потом открывается по ссылке «Как работают МАК карты»
+  function renderGuide(first) {
+    const close = () => { cards.guideSeen = true; saveCards(); cardUI.step = 'intro'; render(); window.scrollTo(0, 0); };
+    const block = (title, ...kids) => h('div', { class: 'guide-block' }, h('h3', { class: 'guide-h' }, title), ...kids);
+
+    return [h('div', { class: 'card' },
+      h('h2', null, 'Как работают МАК карты'),
+      h('p', { class: 'mak-note' }, h('b', null, 'МАК — метафорическая ассоциативная карта.')),
+      block('Что это',
+        h('p', null, 'Карта с образом, у которого нет готового значения. Вы смотрите на картинку и замечаете, что она вызывает в вас: чувство, воспоминание, мысль. Смысл рождается у вас, а не в карте.')),
+      block('Чем это не является',
+        h('p', null, 'Это не гадание и не прогноз. Карта ничего не предсказывает и не говорит, что с вами будет.')),
+      block('Зачем это нужно',
+        h('p', null, 'Это способ лучше понять себя и учиться обращаться со своими эмоциями: заметить чувство, назвать его, разглядеть, что за ним стоит, и выбрать маленький шаг.')),
+      block('Как пользоваться',
+        h('ol', { class: 'steps' },
+          h('li', null, h('strong', null, 'Вопрос'), 'Выберите вопрос и отметьте, насколько тревожно сейчас.'),
+          h('li', null, h('strong', null, 'Карта'), 'Выберите карту, не думая долго: к какой потянуло.'),
+          h('li', null, h('strong', null, 'Образ'), 'Посмотрите на картинку и ответьте на вопросы. Правильных ответов нет, любой вопрос можно пропустить.'),
+          h('li', null, h('strong', null, 'Шаг'), 'Прочитайте строки к карте, сделайте маленький шаг и снова отметьте уровень тревоги.'))),
+      block('Важно помнить',
+        h('p', null, 'Если вам тяжело, остановитесь, подышите и сделайте паузу. Приложение не заменяет консультацию психолога. Если вам плохо или вы в опасности, позвоните 112.')),
+      h('div', { class: 'item-actions' }, button('btn primary wide', first ? 'Понятно, начать' : 'Вернуться к картам', close)),
+      h('div', { class: 'site-links' },
+        h('a', { class: 'btn ghost', href: LINKS.site, target: '_blank', rel: 'noopener' }, 'Перейти на сайт'),
+        h('a', { class: 'btn ghost', href: LINKS.contacts, target: '_blank', rel: 'noopener' }, 'Контакты')))];
+  }
+
   function renderCards() {
+    if (cardUI.step === 'intro' && !cards.guideSeen) return renderGuide(true);
+    if (cardUI.step === 'guide') return renderGuide(!cards.guideSeen);
     if (cardUI.step === 'pick') return renderPick();
     if (cardUI.step === 'reflect') return renderReflect();
     if (cardUI.step === 'done') return renderDone();
@@ -790,7 +822,8 @@
       h('h2', null, 'Ассоциативная карта тревоги'),
       h('p', { class: 'mak-note' }, h('b', null, 'МАК — метафорическая ассоциативная карта. '),
         'У образа нет «правильного» смысла: важно, что он вызывает именно у вас.'),
-      h('p', { class: 'muted' }, `Колода «${DECK.name}». Это не гадание и не предсказание: карта помогает заметить то, что вы и так чувствуете.`));
+      h('p', { class: 'muted' }, `Колода «${DECK.name}». Это не гадание и не предсказание: карта помогает заметить то, что вы и так чувствуете.`),
+      h('p', { style: 'margin-top:8px' }, button('link', 'Как работают МАК карты', () => { cardUI.step = 'guide'; render(); window.scrollTo(0, 0); })));
 
     if (locked) {
       const card = cardById(todays[0].cardId);
