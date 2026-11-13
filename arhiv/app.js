@@ -17,7 +17,8 @@
   // Цели Яндекс.Метрики. Функцию pozitivGoal даёт сайт (js/metrika-goals.js): она шлёт цель только после согласия на cookie.
   // Каждую цель нужно один раз создать в Метрике как «JavaScript-событие»:
   //   app_guide_ok, app_card_pick, app_card_saved, app_write_telegram, app_write_whatsapp,
-  //   app_book_click, app_site_click, app_contacts_click, app_share_card, app_forecast_added, app_forecast_checked
+  //   app_book_click, app_site_click, app_contacts_click, app_share_card, app_forecast_added, app_forecast_checked,
+  //   app_deck_open, app_deck_request, app_deck_unlocked
   // Адрес с ?test (проверка владельцем) цели не отправляет, чтобы тесты не искажали статистику.
   function goal(name) {
     if (new URLSearchParams(location.search).has('test')) return;
@@ -28,6 +29,7 @@
   document.addEventListener('click', (e) => {
     const a = e.target.closest ? e.target.closest('a[href]') : null;
     if (!a) return;
+    if (a.dataset.goal) { goal(a.dataset.goal); return; }
     const href = a.href;
     if (href === LINKS.site) goal('app_site_click');
     else if (href === LINKS.contacts) goal('app_contacts_click');
@@ -740,8 +742,12 @@
   });
 
   // ---------- Карта тревоги ----------
-  const DECK = window.ARHIV_DECK;
   const ART = window.ArhivArt;
+  // Колод несколько: базовая (бесплатная) и тематические (файлы deck-*.js)
+  const DECKS = [window.ARHIV_DECK, ...(window.ARHIV_EXTRA_DECKS || [])];
+  DECKS.forEach((d) => d.cards.forEach((c) => { c.deckId = d.id; }));
+  window.ARHIV_DECK_INDEX = Object.fromEntries(DECKS.map((d) => [d.id, d]));
+  const deckById = (id) => window.ARHIV_DECK_INDEX[id] || DECKS[0];
   const CARDS_KEY = 'arhiv-nesbyvshegosya:cards:v1';
   const DAILY_DRAWS = 1; // сколько карт в день бесплатно; адрес с ?test отключает ограничение
   const TEST_MODE = new URLSearchParams(location.search).has('test');
@@ -751,8 +757,8 @@
   let cards = loadCards();
   let cardUI = freshCardUI();
 
-  function freshCardUI() {
-    return { step: 'intro', question: PRESET_QUESTIONS[0], custom: '', before: 5, options: [], cardId: null, answers: ['', '', '', ''], after: 5, saved: null };
+  function freshCardUI(deckId = 'base') {
+    return { step: 'intro', deckId, question: (deckById(deckId).questions || PRESET_QUESTIONS)[0], custom: '', before: 5, options: [], cardId: null, answers: ['', '', '', ''], after: 5, saved: null };
   }
 
   function loadCards() {
@@ -767,7 +773,9 @@
     try { localStorage.setItem(CARDS_KEY, JSON.stringify(cards)); } catch (e) { /* хранилище недоступно */ }
   }
 
-  const cardById = (id) => DECK.cards.find((c) => c.id === id);
+  const cardById = (id, deckId) => deckById(deckId || 'base').cards.find((c) => c.id === id);
+  const currentDeck = () => deckById(cardUI.deckId);
+  const isLocked = (deck) => deck.access === 'paid' && !TEST_MODE && !(cards.unlocked || []).includes(deck.id);
   const currentQuestion = () => cardUI.custom.trim() || cardUI.question;
   const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
   const num = (n) => String(Math.round(n * 10) / 10).replace('.', ',');
@@ -787,14 +795,17 @@
   }
 
   function pickOptions() {
-    const recent = new Set(cards.draws.slice(0, 6).map((d) => d.cardId));
-    let pool = DECK.cards.map((c) => c.id).filter((id) => !recent.has(id));
-    if (pool.length < 6) pool = DECK.cards.map((c) => c.id);
+    const deck = currentDeck();
+    const recent = new Set(cards.draws.filter((d) => (d.deckId || 'base') === deck.id).slice(0, 6).map((d) => d.cardId));
+    const all = deck.cards.map((c) => c.id);
+    const need = Math.min(6, all.length);
+    let pool = all.filter((id) => !recent.has(id));
+    if (pool.length < need) pool = all;
     for (let i = pool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [pool[i], pool[j]] = [pool[j], pool[i]];
     }
-    return pool.slice(0, 6);
+    return pool.slice(0, need);
   }
 
   function slider(value, onInput) {
@@ -841,8 +852,9 @@
     try {
       await Promise.all([document.fonts.load(`700 64px ${head}`), document.fonts.load(`600 30px ${head}`), document.fonts.load(`italic 400 42px ${serif}`)]);
     } catch (e) { /* шрифты не загрузились: используем запасные */ }
-    const v = DECK.imageVersion ? `?v=${DECK.imageVersion}` : '';
-    const img = await loadImage(`${DECK.imageDir}${ART.pad(card.id)}.${DECK.imageExt}${v}`);
+    const deck = deckById(card.deckId);
+    const v = deck.imageVersion ? `?v=${deck.imageVersion}` : '';
+    const img = await loadImage(`${deck.imageDir}${ART.pad(card.id)}.${deck.imageExt}${v}`);
 
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
@@ -855,7 +867,9 @@
     c.textAlign = 'center';
     c.fillStyle = '#4A7C6F';
     c.font = `600 30px ${head}`;
-    c.fillText('АССОЦИАТИВНАЯ КАРТА ТРЕВОГИ', W / 2, 112);
+    const topLine = (deck.title || 'Ассоциативная карта тревоги').toUpperCase();
+    fitFont(c, topLine, 940, 30, (sz) => `600 ${sz}px ${head}`);
+    c.fillText(topLine, W / 2, 112);
 
     // карта (формат 2:3), рамка и мягкая тень
     const cw = 800, ch = 1200, cx = (W - cw) / 2, cy = 150;
@@ -917,7 +931,7 @@
   // Готовое сообщение для Камилы: только название карты, ответы человека никуда не передаются
   // Если человек пришёл с рекламы, сайт запомнил метку (pozitivUtm): она добавляется к сообщению, чтобы было видно источник
   function cardMessage(card, withUtm) {
-    const text = `Здравствуйте! В приложении «Ассоциативная карта тревоги» мне выпала карта «${card.title}». Хочу разобрать её с вами.`;
+    const text = `Здравствуйте! В приложении «Ассоциативная карта тревоги» мне выпала карта «${card.title}»${card.deckId && card.deckId !== 'base' ? ` из колоды «${deckById(card.deckId).name}»` : ''}. Хочу разобрать её с вами.`;
     const utm = withUtm && typeof window.pozitivUtm === 'function' ? window.pozitivUtm() : '';
     return utm ? `${text} [${utm}]` : text;
   }
@@ -966,23 +980,86 @@
     return renderCardsIntro();
   }
 
+  async function sha256(text) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Код доступа к платной колоде. В файле колоды лежат только хеши кодов (их создаёт tools/make_codes.py).
+  async function tryUnlock(deck, raw) {
+    const code = raw.trim().toUpperCase().replace(/[\s-]+/g, '');
+    if (!code) return;
+    let ok = false;
+    try { ok = (deck.codes || []).includes(await sha256(`${deck.id}:${code}`)); } catch (e) { /* нет crypto */ }
+    if (ok) {
+      cards.unlocked = [...new Set([...(cards.unlocked || []), deck.id])];
+      saveCards();
+      goal('app_deck_unlocked');
+      render();
+      toast(`Колода «${deck.name}» открыта`);
+    } else {
+      toast('Код не подходит. Проверьте, нет ли опечатки');
+    }
+  }
+
+  function selectDeck(id) {
+    if (id !== 'base') goal('app_deck_open');
+    cardUI.deckId = id;
+    cardUI.question = (deckById(id).questions || PRESET_QUESTIONS)[0];
+    cardUI.custom = '';
+    render();
+  }
+
+  function deckMessageLinks(deck) {
+    const text = encodeURIComponent(`Здравствуйте! Хочу получить колоду «${deck.name}» в приложении «Ассоциативная карта тревоги».`);
+    return { tg: `${LINKS.telegram}?text=${text}`, wa: `${LINKS.whatsapp}?text=${text}` };
+  }
+
+  function renderLockedDeck(deck) {
+    const links = deckMessageLinks(deck);
+    const codeInput = h('input', { type: 'text', class: 'code-input', placeholder: 'Код доступа', 'aria-label': 'Код доступа', autocomplete: 'off', autocapitalize: 'characters' });
+    codeInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryUnlock(deck, codeInput.value); });
+    return [
+      h('p', { class: 'ask' }, `Колода «${deck.name}» платная`),
+      deck.price ? h('p', { class: 'muted' }, `Стоимость: ${deck.price} ₽`) : null,
+      deck.preview ? h('div', { class: 'fan preview' }, deck.preview.map((id) => ART.art(cardById(id, deck.id)))) : null,
+      h('div', { class: 'btn-row tall item-actions' },
+        h('a', { class: 'btn primary', href: links.tg, 'data-goal': 'app_deck_request', target: '_blank', rel: 'noopener' }, 'Получить колоду: написать в Telegram'),
+        h('a', { class: 'btn ghost', href: links.wa, 'data-goal': 'app_deck_request', target: '_blank', rel: 'noopener' }, 'Написать в WhatsApp')),
+      h('p', { class: 'fine' }, 'Напишите Камиле, оплатите, и она пришлёт код доступа.'),
+      h('div', { class: 'code-row' }, codeInput, button('btn soft', 'Открыть', () => tryUnlock(deck, codeInput.value))),
+    ];
+  }
+
   function renderCardsIntro() {
-    const todays = cards.draws.filter((d) => d.date === todayKey());
-    const locked = !TEST_MODE && todays.length >= DAILY_DRAWS;
+    const deck = currentDeck();
+    const todays = cards.draws.filter((d) => d.date === todayKey() && (d.deckId || 'base') === deck.id);
+    const dayDone = !TEST_MODE && todays.length >= DAILY_DRAWS;
+    const questions = deck.questions || PRESET_QUESTIONS;
     const box = h('div', { class: 'card' },
-      h('h2', null, 'Ассоциативная карта тревоги'),
+      h('h2', null, deck.title || 'Ассоциативная карта тревоги'),
       h('p', { class: 'mak-note' }, h('b', null, 'МАК — метафорическая ассоциативная карта. '),
         'У образа нет «правильного» смысла: важно, что он вызывает именно у вас.'),
-      h('p', { class: 'muted' }, `Колода «${DECK.name}». Это не гадание и не предсказание: карта помогает заметить то, что вы и так чувствуете.`),
+      h('p', { class: 'muted' }, `Колода «${deck.name}». ${deck.tagline ? `${deck.tagline} ` : ''}Это не гадание и не предсказание: карта помогает заметить то, что вы и так чувствуете.`),
       h('p', { style: 'margin-top:8px' }, button('link', 'Как работают МАК карты', () => { cardUI.step = 'guide'; render(); window.scrollTo(0, 0); })));
 
-    if (locked) {
-      const card = cardById(todays[0].cardId);
+    if (DECKS.length > 1) {
+      box.append(
+        h('p', { class: 'ask' }, 'Колода'),
+        h('div', { class: 'chips', style: 'margin-top:10px' }, DECKS.map((d) => h('button', {
+          type: 'button', class: 'chip', 'aria-pressed': String(d.id === deck.id), onclick: () => selectDeck(d.id),
+        }, isLocked(d) ? `${d.name} · платная` : d.name))));
+    }
+
+    if (isLocked(deck)) {
+      box.append(...renderLockedDeck(deck).filter(Boolean));
+    } else if (dayDone) {
+      const card = cardById(todays[0].cardId, deck.id);
       box.append(
         h('p', { class: 'ask' }, `Карта на сегодня уже выбрана: «${card.title}».`),
         h('p', { class: 'muted' }, 'Новую можно будет выбрать завтра. Ответы по сегодняшней карте — в дневнике ниже.'));
     } else {
-      const chipEls = PRESET_QUESTIONS.map((q) => h('button', {
+      const chipEls = questions.map((q) => h('button', {
         type: 'button', class: 'chip', 'data-q': q,
         'aria-pressed': String(!cardUI.custom.trim() && cardUI.question === q),
         onclick: () => { cardUI.question = q; cardUI.custom = ''; render(); },
@@ -992,15 +1069,15 @@
       custom.addEventListener('input', () => { cardUI.custom = custom.value; syncChips(); });
 
       const note = h('p', { class: 'status-err', hidden: cardUI.before < 9 }, HARD_NOTE);
-      const s = slider(cardUI.before, (v) => { cardUI.before = v; cardUI.after = v; note.hidden = v < 9; });
+      const sl = slider(cardUI.before, (v) => { cardUI.before = v; cardUI.after = v; note.hidden = v < 9; });
 
       box.append(
         h('p', { class: 'ask' }, 'О чём спросим карту?'),
         h('div', { class: 'chips qchips', style: 'margin-top:10px' }, chipEls),
         h('div', { style: 'margin-top:10px' }, custom),
         h('div', { class: 'slider-row' },
-          h('span', { class: 'field-label' }, 'Насколько тревожно сейчас, от 0 до 10? ', s.out),
-          s.input,
+          h('span', { class: 'field-label' }, 'Насколько тревожно сейчас, от 0 до 10? ', sl.out),
+          sl.input,
           h('span', { class: 'range-ends' }, h('span', null, 'спокойно'), h('span', null, 'очень тревожно'))),
         note,
         h('div', { class: 'item-actions' }, button('btn primary wide', 'Выбрать карту', () => {
@@ -1029,14 +1106,14 @@
   }
 
   function renderReflect() {
-    const card = cardById(cardUI.cardId);
+    const card = cardById(cardUI.cardId, cardUI.deckId);
     const prompts = promptsFor(card);
     const after = slider(cardUI.after, (v) => { cardUI.after = v; });
 
     return [
       h('div', { class: 'bigcard reveal' },
         ART.art(card),
-        h('div', { class: 'bigcard-title' }, h('span', { class: 'cat' }, DECK.groups[card.group]), h('h2', null, card.title))),
+        h('div', { class: 'bigcard-title' }, h('span', { class: 'cat' }, deckById(card.deckId).groups[card.group]), h('h2', null, card.title))),
       verseEl(card),
       h('div', { class: 'card' },
         h('div', { class: 'stack' }, prompts.map((p, i) => {
@@ -1059,7 +1136,7 @@
   function saveDraw() {
     const draw = {
       id: uid(), date: todayKey(), ts: Date.now(),
-      cardId: cardUI.cardId, question: currentQuestion(),
+      deckId: cardUI.deckId, cardId: cardUI.cardId, question: currentQuestion(),
       before: cardUI.before, after: cardUI.after,
       answers: cardUI.answers.map((a) => a.trim()),
     };
@@ -1074,7 +1151,7 @@
 
   function renderDone() {
     const dr = cardUI.saved;
-    const card = cardById(dr.cardId);
+    const card = cardById(dr.cardId, dr.deckId);
     let line = `Было ${dr.before}, стало ${dr.after}.`;
     if (dr.after < dr.before) line += ' Вы заметили свою тревогу и уделили ей внимание, и это уже работа.';
     else if (dr.after === dr.before) line += ' Это тоже нормально: карта не обязана снижать тревогу сразу.';
@@ -1090,7 +1167,7 @@
         h('div', { class: 'item-actions' },
           button('btn soft wide', 'Поделиться картой', () => shareCard(card)),
           h('p', { class: 'fine', style: 'margin:8px 0 12px' }, 'На картинке только карта и строки к ней: без вашего вопроса и ответов.'),
-          button('btn ghost wide', 'Готово', () => { cardUI = freshCardUI(); render(); window.scrollTo(0, 0); }))),
+          button('btn ghost wide', 'Готово', () => { cardUI = freshCardUI(cardUI.deckId); render(); window.scrollTo(0, 0); }))),
       h('div', { class: 'card cta', style: 'margin-top:12px' },
         h('h2', null, 'Разобрать эту карту со мной'),
         h('p', null, 'Иногда одна карта открывает то, о чём важно поговорить подробнее. Я, Камила Золотова, помогу в этом разобраться: КПТ и EMDR при тревоге и панике, онлайн.'),
@@ -1109,8 +1186,8 @@
     const parts = [];
 
     if (draws.length >= 3) {
-      const first = cardById(draws[draws.length - 1].cardId);
-      const last = cardById(draws[0].cardId);
+      const first = cardById(draws[draws.length - 1].cardId, draws[draws.length - 1].deckId);
+      const last = cardById(draws[0].cardId, draws[0].deckId);
       parts.push(h('div', { class: 'card', style: 'margin-bottom:12px' },
         h('h2', null, 'Ваша динамика'),
         h('p', null, `По вашим оценкам: до карты тревога в среднем ${num(avg(draws.map((d) => d.before)))}, после — ${num(avg(draws.map((d) => d.after)))} (карт: ${draws.length}).`),
@@ -1118,13 +1195,13 @@
     }
 
     parts.push(h('div', { class: 'stack' }, draws.map((dr) => {
-      const card = cardById(dr.cardId);
+      const card = cardById(dr.cardId, dr.deckId);
       const prompts = promptsFor(card);
       const filled = dr.answers.map((a, i) => (a ? h('p', null, h('b', null, prompts[i]), a) : null));
       return h('details', { class: 'card entry' },
         h('summary', null,
           h('span', { class: 'mini' }, ART.art(card)),
-          h('span', { class: 'entry-head' }, h('strong', null, card.title), h('span', { class: 'muted' }, `${formatDate(dr.date)} · тревога ${dr.before} → ${dr.after}`))),
+          h('span', { class: 'entry-head' }, h('strong', null, card.title), h('span', { class: 'muted' }, `${dr.deckId && dr.deckId !== 'base' ? `${deckById(dr.deckId).name} · ` : ''}${formatDate(dr.date)} · тревога ${dr.before} → ${dr.after}`))),
         h('div', { class: 'entry-body' },
           verseEl(card),
           h('p', null, h('b', null, 'Вопрос'), `«${dr.question}»`),

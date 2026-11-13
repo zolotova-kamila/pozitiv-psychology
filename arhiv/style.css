@@ -424,6 +424,12 @@ input[type="range"] { width: 100%; accent-color: var(--accent-primary); margin: 
 body.cookie-open .shell { padding-bottom: 150px; }
 body.cookie-open #toast { bottom: 160px; }
 
+/* Платные колоды: образцы и ввод кода */
+.fan .art { border-radius: 12px; border: 3px solid var(--bg-card); box-shadow: var(--shadow); }
+.code-row { display: flex; gap: 8px; margin-top: 14px; }
+.code-input { flex: 1; min-width: 0; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-md); background: #fff; font: inherit; text-transform: uppercase; color: inherit; }
+.code-input:focus { outline: none; border-color: var(--accent-secondary); }
+
 /* Инструкция и кнопки перехода на сайт */
 .guide-block { margin-top: 18px; }
 .guide-h { margin: 0 0 6px; font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }

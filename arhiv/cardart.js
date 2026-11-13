@@ -242,7 +242,7 @@
 
   // Возвращает блок с картинкой. onState(true/false) сообщает, найден ли настоящий рисунок.
   function art(card, onState) {
-    const deck = window.ARHIV_DECK;
+    const deck = (window.ARHIV_DECK_INDEX || {})[card.deckId] || window.ARHIV_DECK;
     const el = document.createElement('div');
     el.className = 'art';
     el.innerHTML = placeholderSvg(card);
