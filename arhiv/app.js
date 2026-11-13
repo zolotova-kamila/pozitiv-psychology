@@ -7,6 +7,8 @@
   const LINKS = {
     booking: 'https://pozitiv-psychology.ru/#zapis',
     group: 'https://pozitiv-psychology.ru/group-therapy-landing.html',
+    telegram: 'https://t.me/Kamila_Zolotova',
+    whatsapp: 'https://wa.me/79099030000',
     site: 'https://pozitiv-psychology.ru/',
     contacts: 'https://pozitiv-psychology.ru/contact.html',
   };
@@ -778,6 +780,16 @@
     return { out, input };
   }
 
+  // Готовое сообщение для Камилы: только название карты, ответы человека никуда не передаются
+  function cardMessage(card) {
+    return `Здравствуйте! В приложении «Ассоциативная карта тревоги» мне выпала карта «${card.title}». Хочу разобрать её с вами.`;
+  }
+
+  function messageLinks(card) {
+    const text = encodeURIComponent(cardMessage(card));
+    return { tg: `${LINKS.telegram}?text=${text}`, wa: `${LINKS.whatsapp}?text=${text}` };
+  }
+
   // Инструкция перед использованием: показывается один раз, потом открывается по ссылке «Как работают МАК карты»
   function renderGuide(first) {
     const close = () => { cards.guideSeen = true; saveCards(); cardUI.step = 'intro'; render(); window.scrollTo(0, 0); };
@@ -939,8 +951,12 @@
       h('div', { class: 'card cta', style: 'margin-top:12px' },
         h('h2', null, 'Разобрать эту карту со мной'),
         h('p', null, 'Иногда одна карта открывает то, о чём важно поговорить подробнее. Я, Камила Золотова, помогу в этом разобраться: КПТ и EMDR при тревоге и панике, онлайн.'),
-        h('div', { class: 'item-actions' },
-          h('a', { class: 'btn primary wide', href: LINKS.booking, target: '_blank', rel: 'noopener' }, 'Записаться на знакомство — 20 минут'))),
+        h('div', { class: 'btn-row tall item-actions' },
+          h('a', { class: 'btn primary', href: messageLinks(card).tg, target: '_blank', rel: 'noopener' }, 'Написать про эту карту в Telegram'),
+          h('a', { class: 'btn ghost', href: messageLinks(card).wa, target: '_blank', rel: 'noopener' }, 'Написать в WhatsApp')),
+        h('p', { class: 'fine' }, `В сообщение попадёт только название карты, ваши ответы остаются у вас. Текст: «${cardMessage(card)}»`),
+        h('div', { class: 'item-links' },
+          h('a', { class: 'link', href: LINKS.booking, target: '_blank', rel: 'noopener' }, 'Или записаться на знакомство — 20 минут'))),
     ];
   }
 
@@ -971,7 +987,10 @@
           h('p', null, h('b', null, 'Вопрос'), `«${dr.question}»`),
           filled,
           h('p', null, h('b', null, 'Шаг на сегодня'), card.step),
-          h('div', { class: 'item-links' }, button('link danger', 'Удалить запись', () => {
+          h('div', { class: 'item-links' },
+            h('a', { class: 'link', href: messageLinks(card).tg, target: '_blank', rel: 'noopener' }, 'Написать про карту в Telegram'),
+            h('a', { class: 'link', href: messageLinks(card).wa, target: '_blank', rel: 'noopener' }, 'в WhatsApp'),
+            button('link danger', 'Удалить запись', () => {
             const snapshot = JSON.stringify(cards);
             cards.draws = cards.draws.filter((x) => x.id !== dr.id);
             saveCards();

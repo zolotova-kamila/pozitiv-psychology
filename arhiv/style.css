@@ -288,6 +288,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .cta .btn.primary { background: #F5F1EB; color: var(--accent-primary); }
 .cta .btn.primary:hover { background: #fff; }
 .cta .link { color: #E3EBE7; }
+.cta .btn.ghost { border-color: rgba(255, 255, 255, 0.55); color: #fff; }
+.cta .btn.ghost:hover { border-color: #fff; }
+.cta .fine { color: #D5E2DC; }
 
 .banner {
   display: flex;
