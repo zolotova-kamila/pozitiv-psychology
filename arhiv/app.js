@@ -18,7 +18,8 @@
   // Каждую цель нужно один раз создать в Метрике как «JavaScript-событие»:
   //   app_guide_ok, app_card_pick, app_card_saved, app_write_telegram, app_write_whatsapp,
   //   app_book_click, app_site_click, app_contacts_click, app_share_card, app_forecast_added, app_forecast_checked,
-  //   app_deck_open, app_deck_request, app_deck_unlocked
+  //   app_deck_open, app_deck_request, app_deck_unlocked,
+  //   app_daily_start, app_reminder_set, app_reminder_off, app_reminder_calendar
   // Адрес с ?test (проверка владельцем) цели не отправляет, чтобы тесты не искажали статистику.
   function goal(name) {
     if (new URLSearchParams(location.search).has('test')) return;
@@ -276,17 +277,19 @@
   }
 
   function scheduleSync() {
-    if (!API || remote.status !== 'on' || state.demo) return;
+    if (!API || remote.status !== 'on') return;
     clearTimeout(syncTimer);
     syncTimer = setTimeout(syncNow, 600);
   }
 
   async function syncNow() {
-    if (!API || remote.status !== 'on' || state.demo) return;
+    if (!API || remote.status !== 'on') return;
     const before = remoteSnapshot();
-    const items = state.items.filter((i) => !i.outcome).map((i) => ({ id: i.id, due: i.due }));
+    const items = state.demo ? [] : state.items.filter((i) => !i.outcome).map((i) => ({ id: i.id, due: i.due }));
+    // карта дня: час напоминания и дата последней вытянутой карты (чтобы не напоминать о том, что уже сделано)
+    const daily = { hour: cards.dailyHour ?? null, drawn: cards.draws.length ? cards.draws[0].date : null };
     try {
-      const r = await api('/api/sync', { key: remote.key, tz: -new Date().getTimezoneOffset(), items });
+      const r = await api('/api/sync', { key: remote.key, tz: -new Date().getTimezoneOffset(), items, daily });
       if (r.status === 409) { remote = { key: null, status: 'off' }; saveRemote(); } // в боте нажали /stop
       remoteError = !r.ok && r.status !== 409;
     } catch (e) { remoteError = true; }
@@ -339,7 +342,7 @@
     if (remote.status === 'on') {
       return h('div', { class: 'card' },
         h('p', { class: 'status-ok' }, '✓ Напоминания в Telegram включены'),
-        h('p', { class: 'muted', style: 'margin-top:6px' }, 'Бот напишет в 9:00 по вашему времени в день проверки. Текст прогнозов боту не передаётся.'),
+        h('p', { class: 'muted', style: 'margin-top:6px' }, `Бот напишет в 9:00 в день проверки прогноза${cards.dailyHour != null ? ` и в ${cards.dailyHour}:00 напомнит о карте дня (если вы её ещё не вытянули)` : ''}. Текст прогнозов и ваши ответы боту не передаются.`),
         error,
         h('div', { class: 'item-links' }, button('link danger', 'Отключить и удалить данные', disconnect)));
     }
@@ -356,14 +359,14 @@
 
     return h('div', { class: 'card' },
       h('p', { class: 'ask', style: 'margin-top:0' }, 'Напомнить в Telegram'),
-      h('p', { class: 'muted', style: 'margin-top:6px' }, 'В день проверки бот напишет вам: «Пора проверить прогноз». Так архив не забудется.'),
+      h('p', { class: 'muted', style: 'margin-top:6px' }, 'Бот напишет вам, когда придёт срок проверить прогноз, и в выбранное время напомнит о карте дня.'),
       error,
       h('div', { class: 'item-actions' },
         botName
           ? botLink('btn primary wide', 'Подключить Telegram')
           : h('span', { class: 'muted' }, remoteError ? '' : 'Загружаем…')),
       h('p', { class: 'fine' },
-        'Боту передаётся только ваш Telegram-идентификатор и даты проверки, без текста прогнозов. Нажимая кнопку, вы соглашаетесь на их обработку для напоминаний: ',
+        'Боту передаётся только ваш Telegram-идентификатор, даты проверки прогнозов, выбранное время напоминания и дата последней вытянутой карты, без текстов и ответов. Нажимая кнопку, вы соглашаетесь на их обработку для напоминаний: ',
         h('a', { href: CONSENT_URL, target: '_blank', rel: 'noopener' }, 'условия'),
         '. Отключить можно в любой момент.'));
   }
@@ -772,6 +775,8 @@
   const CARDS_KEY = 'arhiv-nesbyvshegosya:cards:v1';
   const DAILY_DRAWS = 1; // сколько карт в день бесплатно; адрес с ?test отключает ограничение
   const TEST_MODE = new URLSearchParams(location.search).has('test');
+  const DAILY_QUESTION = 'Что мне важно заметить сегодня?';
+  const REMIND_HOURS = [8, 9, 12, 18, 21];
   const PRESET_QUESTIONS = ['Что сейчас с моей тревогой?', 'О чём она пытается меня предупредить?', 'Что мне сейчас нужно?'];
   const AFTER_NOTE = 'Если тревога по-прежнему очень сильная, это не значит, что вы что-то делаете не так. Можно сделать паузу, поговорить с близким человеком или со специалистом. Если вам кажется, что вы в опасности, позвоните 112.';
   const HARD_NOTE = 'Если сейчас очень тяжело, сначала вернитесь к дыханию: вдох на 4, выдох на 6. Если вам кажется, что вы в опасности, позвоните 112 или обратитесь к близкому человеку.';
@@ -780,7 +785,7 @@
   let cardUI = freshCardUI();
 
   function freshCardUI(deckId = 'base') {
-    return { step: 'intro', deckId, question: (deckById(deckId).questions || PRESET_QUESTIONS)[0], custom: '', before: 5, options: [], cardId: null, answers: ['', '', '', ''], after: 5, saved: null };
+    return { step: 'intro', deckId, question: (deckById(deckId).questions || PRESET_QUESTIONS)[0], custom: '', before: 5, daily: false, options: [], cardId: null, answers: ['', '', '', ''], after: 5, saved: null };
   }
 
   function loadCards() {
@@ -793,6 +798,7 @@
 
   function saveCards() {
     try { localStorage.setItem(CARDS_KEY, JSON.stringify(cards)); } catch (e) { /* хранилище недоступно */ }
+    scheduleSync(); // час напоминания и дата последней карты уходят в сервис напоминаний (если подключён)
   }
 
   const cardById = (id, deckId) => deckById(deckId || 'base').cards.find((c) => c.id === id);
@@ -1056,7 +1062,65 @@
     ];
   }
 
+  function startDaily() {
+    const deck = currentDeck();
+    goal('app_daily_start');
+    cardUI.daily = true;
+    cardUI.question = deck.dailyQuestion || DAILY_QUESTION;
+    cardUI.custom = '';
+    cardUI.before = null;
+    cardUI.after = null;
+    cardUI.options = pickOptions();
+    cardUI.step = 'pick';
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  function setDailyHour(hour) {
+    cards.dailyHour = hour;
+    saveCards();
+    goal(hour == null ? 'app_reminder_off' : 'app_reminder_set');
+    render();
+  }
+
+  // Ежедневное напоминание в календаре: работает без бота и без передачи данных
+  function addDailyToCalendar(hour) {
+    goal('app_reminder_calendar');
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, 0);
+    if (start <= now) start.setDate(start.getDate() + 1);
+    const end = new Date(start.getTime() + 15 * 60000);
+    const f = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+    const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+    const ics = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//pozitiv-psychology.ru//Karta dnya//RU',
+      'BEGIN:VEVENT', 'UID:karta-dnya@arhiv-nesbyvshegosya', `DTSTAMP:${stamp}`,
+      `DTSTART:${f(start)}`, `DTEND:${f(end)}`, 'RRULE:FREQ=DAILY',
+      'SUMMARY:Карта дня',
+      `DESCRIPTION:Откройте приложение и вытяните карту: ${SHARE_URL}?utm_source=reminder&utm_medium=calendar`,
+      'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:Карта дня', 'END:VALARM',
+      'END:VEVENT', 'END:VCALENDAR',
+    ].join('\r\n');
+    download(new Blob([ics], { type: 'text/calendar;charset=utf-8' }), 'karta-dnya.ics');
+    toast('Файл скачан: откройте его, и календарь добавит ежедневное напоминание');
+  }
+
+  function renderDailyReminder() {
+    const cur = cards.dailyHour ?? null;
+    const chip = (label, hour) => h('button', { type: 'button', class: 'chip', 'aria-pressed': String(cur === hour), onclick: () => setDailyHour(hour) }, label);
+    const box = h('div', { class: 'card' },
+      h('p', { class: 'ask', style: 'margin-top:0' }, 'Во сколько напоминать о карте дня?'),
+      h('div', { class: 'chips', style: 'margin-top:10px' }, [chip('Не нужно', null), ...REMIND_HOURS.map((hh) => chip(`${hh}:00`, hh))]),
+      h('p', { class: 'fine' }, 'Время по вашему устройству.'),
+      h('div', { class: 'btn-row tall item-actions' }, button('btn soft', 'Добавить в календарь на каждый день', () => addDailyToCalendar(cur ?? 9))),
+      h('p', { class: 'fine' }, 'Календарь работает без Telegram и без передачи данных. Если время не выбрано, напоминание будет в 9:00.'));
+    const tg = API ? renderReminders() : null;
+    return section('Напоминание', box, tg ? h('div', { style: 'margin-top:12px' }, tg) : null);
+  }
+
   function renderCardsIntro() {
+    cardUI.daily = false;
+    if (cardUI.before == null) { cardUI.before = 5; cardUI.after = 5; }
     const deck = currentDeck();
     const todays = cards.draws.filter((d) => d.date === todayKey() && (d.deckId || 'base') === deck.id);
     const dayDone = !TEST_MODE && todays.length >= DAILY_DRAWS;
@@ -1098,7 +1162,11 @@
       const sl = slider(cardUI.before, (v) => { cardUI.before = v; cardUI.after = v; note.hidden = v < 9; });
 
       box.append(
-        h('p', { class: 'ask' }, 'О чём спросим карту?'),
+        h('div', { class: 'daily-box' },
+          h('p', { class: 'ask', style: 'margin-top:0' }, 'Карта дня за минуту'),
+          h('p', { class: 'muted' }, 'Без вопроса и оценок: просто вытяните карту и заметьте, что откликается.'),
+          h('div', { class: 'item-actions', style: 'margin-top:10px' }, button('btn primary wide', 'Вытянуть карту дня', startDaily))),
+        h('p', { class: 'ask' }, 'Или спросим карту о чём-то своём'),
         h('div', { class: 'chips qchips', style: 'margin-top:10px' }, chipEls),
         h('div', { style: 'margin-top:10px' }, custom),
         h('div', { class: 'slider-row' },
@@ -1107,13 +1175,15 @@
           h('span', { class: 'range-ends' }, h('span', null, 'спокойно'), h('span', null, 'очень тревожно'))),
         note,
         h('div', { class: 'item-actions' }, button('btn primary wide', 'Выбрать карту', () => {
+          cardUI.daily = false;
+          cardUI.after = cardUI.before;
           cardUI.options = pickOptions();
           cardUI.step = 'pick';
           render();
         })));
     }
 
-    const out = [box];
+    const out = [box, renderDailyReminder()];
     const history = renderHistory();
     if (history) out.push(history);
     return out;
@@ -1135,7 +1205,7 @@
     const card = cardById(cardUI.cardId, cardUI.deckId);
     const prompts = promptsFor(card);
     const afterNote = h('p', { class: 'status-err', hidden: cardUI.after < 8 }, AFTER_NOTE);
-    const after = slider(cardUI.after, (v) => { cardUI.after = v; afterNote.hidden = v < 8; });
+    const after = slider(cardUI.after ?? 5, (v) => { cardUI.after = v; afterNote.hidden = v < 8; });
 
     return [
       h('div', { class: 'bigcard reveal', style: deckVars(deckById(card.deckId)) },
@@ -1157,13 +1227,17 @@
         h('p', null, card.step),
         h('p', { class: 'fine' }, 'Шаг можно пропустить: если сейчас тяжело или не хочется, это нормально.'),
         deckById(card.deckId).note ? h('p', { class: 'fine' }, deckById(card.deckId).note) : null),
-      h('div', { class: 'card', style: 'margin-top:12px' },
-        h('span', { class: 'field-label' }, 'Насколько тревожно сейчас, от 0 до 10? ', after.out),
-        after.input,
-        h('span', { class: 'range-ends' }, h('span', null, 'спокойно'), h('span', null, 'очень тревожно')),
-        afterNote,
-        h('div', { class: 'item-actions' }, button('btn primary wide', 'Сохранить в дневник', saveDraw)),
-        h('div', { class: 'item-links' }, button('link', 'Выбрать другую карту', () => { cardUI.step = 'pick'; render(); window.scrollTo(0, 0); }))),
+      cardUI.daily
+        ? h('div', { class: 'card', style: 'margin-top:12px' },
+          h('div', { class: 'item-actions', style: 'margin-top:0' }, button('btn primary wide', 'Сохранить в дневник', saveDraw)),
+          h('div', { class: 'item-links' }, button('link', 'Выбрать другую карту', () => { cardUI.step = 'pick'; render(); window.scrollTo(0, 0); })))
+        : h('div', { class: 'card', style: 'margin-top:12px' },
+          h('span', { class: 'field-label' }, 'Насколько тревожно сейчас, от 0 до 10? ', after.out),
+          after.input,
+          h('span', { class: 'range-ends' }, h('span', null, 'спокойно'), h('span', null, 'очень тревожно')),
+          afterNote,
+          h('div', { class: 'item-actions' }, button('btn primary wide', 'Сохранить в дневник', saveDraw)),
+          h('div', { class: 'item-links' }, button('link', 'Выбрать другую карту', () => { cardUI.step = 'pick'; render(); window.scrollTo(0, 0); }))),
     ];
   }
 
@@ -1171,7 +1245,7 @@
     const draw = {
       id: uid(), date: todayKey(), ts: Date.now(),
       deckId: cardUI.deckId, cardId: cardUI.cardId, question: currentQuestion(),
-      before: cardUI.before, after: cardUI.after,
+      before: cardUI.daily ? null : cardUI.before, after: cardUI.daily ? null : cardUI.after, daily: cardUI.daily,
       answers: cardUI.answers.map((a) => a.trim()),
     };
     goal('app_card_saved');
@@ -1186,10 +1260,15 @@
   function renderDone() {
     const dr = cardUI.saved;
     const card = cardById(dr.cardId, dr.deckId);
-    let line = `Было ${dr.before}, стало ${dr.after}.`;
-    if (dr.after < dr.before) line += ' Вы заметили свою тревогу и уделили ей внимание, и это уже работа.';
-    else if (dr.after === dr.before) line += ' Это тоже нормально: карта не обязана снижать тревогу сразу.';
-    else line += ' Иногда, когда мы начинаем замечать тревогу, она становится заметнее. Это не ошибка.';
+    let line;
+    if (dr.before == null) {
+      line = 'Карта дня сохранена. Остановиться и заметить, что откликается, уже маленькая практика.';
+    } else {
+      line = `Было ${dr.before}, стало ${dr.after}.`;
+      if (dr.after < dr.before) line += ' Вы заметили свою тревогу и уделили ей внимание, и это уже работа.';
+      else if (dr.after === dr.before) line += ' Это тоже нормально: карта не обязана снижать тревогу сразу.';
+      else line += ' Иногда, когда мы начинаем замечать тревогу, она становится заметнее. Это не ошибка.';
+    }
 
     return [
       h('div', { class: 'bigcard', style: `max-width:240px;${deckVars(deckById(card.deckId))}` }, cardFrame(card),
@@ -1220,12 +1299,13 @@
     if (!draws.length) return null;
     const parts = [];
 
-    if (draws.length >= 3) {
+    const rated = draws.filter((d) => d.before != null);
+    if (rated.length >= 3) {
       const first = cardById(draws[draws.length - 1].cardId, draws[draws.length - 1].deckId);
       const last = cardById(draws[0].cardId, draws[0].deckId);
       parts.push(h('div', { class: 'card', style: 'margin-bottom:12px' },
         h('h2', null, 'Ваша динамика'),
-        h('p', null, `По вашим оценкам: до карты тревога в среднем ${num(avg(draws.map((d) => d.before)))}, после — ${num(avg(draws.map((d) => d.after)))} (карт: ${draws.length}).`),
+        h('p', null, `По вашим оценкам: до карты тревога в среднем ${num(avg(rated.map((d) => d.before)))}, после — ${num(avg(rated.map((d) => d.after)))} (карт: ${rated.length}).`),
         h('p', { class: 'muted', style: 'margin-top:8px' }, `Первая карта — «${first.title}», последняя — «${last.title}».`)));
     }
 
@@ -1236,7 +1316,7 @@
       return h('details', { class: 'card entry' },
         h('summary', null,
           h('span', { class: 'mini' }, ART.art(card)),
-          h('span', { class: 'entry-head' }, h('strong', null, card.title), h('span', { class: 'muted' }, `${dr.deckId && dr.deckId !== 'base' ? `${deckById(dr.deckId).name} · ` : ''}${formatDate(dr.date)} · тревога ${dr.before} → ${dr.after}`))),
+          h('span', { class: 'entry-head' }, h('strong', null, card.title), h('span', { class: 'muted' }, `${dr.deckId && dr.deckId !== 'base' ? `${deckById(dr.deckId).name} · ` : ''}${formatDate(dr.date)} · ${dr.before == null ? 'карта дня' : `тревога ${dr.before} → ${dr.after}`}`))),
         h('div', { class: 'entry-body' },
           verseEl(card),
           h('p', null, h('b', null, 'Вопрос'), `«${dr.question}»`),

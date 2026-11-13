@@ -10,7 +10,7 @@
   "price": 390,
   "imageDir": "cards/money/",
   "imageExt": "webp",
-  "imageVersion": "20261114d",
+  "imageVersion": "20261114e",
   "questions": [
     "Что я чувствую, когда думаю о деньгах?",
     "Откуда у меня такое отношение к деньгам?",
@@ -295,5 +295,6 @@
     "bgTop": "#F7EFE6",
     "bgBottom": "#EBD9C7",
     "symbol": "coin"
-  }
+  },
+  "dailyQuestion": "Что мне важно заметить сегодня в отношениях с деньгами?"
 });

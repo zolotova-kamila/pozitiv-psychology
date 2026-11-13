@@ -500,3 +500,6 @@ body.cookie-open #toast { bottom: 160px; }
 .deck-chip .dot { display: inline-block; width: 10px; height: 10px; margin-right: 8px; border-radius: 50%; background: var(--deck-accent, var(--accent-secondary)); }
 button.deck-chip[aria-pressed="true"] { background: var(--deck-dark, var(--accent-primary)); border-color: var(--deck-dark, var(--accent-primary)); }
 button.deck-chip[aria-pressed="true"] .dot { background: #fff; }
+
+/* Карта дня */
+.daily-box { margin: 14px 0 6px; padding: 14px 16px; border-radius: var(--radius-md); background: var(--deck-soft, var(--bg-secondary)); }
