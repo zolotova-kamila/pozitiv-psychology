@@ -1044,9 +1044,9 @@
       h('p', { style: 'margin-top:8px' }, button('link', 'Как работают МАК карты', () => { cardUI.step = 'guide'; render(); window.scrollTo(0, 0); })));
 
     if (DECKS.length > 1) {
-      box.append(
-        h('p', { class: 'ask' }, 'Колода'),
-        h('div', { class: 'chips', style: 'margin-top:10px' }, DECKS.map((d) => h('button', {
+      box.firstChild.after(
+        h('p', { class: 'ask', style: 'margin-top:4px' }, 'Выберите колоду'),
+        h('div', { class: 'chips', style: 'margin:10px 0 16px' }, DECKS.map((d) => h('button', {
           type: 'button', class: 'chip', 'aria-pressed': String(d.id === deck.id), onclick: () => selectDeck(d.id),
         }, isLocked(d) ? `${d.name} · платная` : d.name))));
     }
