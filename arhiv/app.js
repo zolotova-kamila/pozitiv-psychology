@@ -17,7 +17,7 @@
   // Цели Яндекс.Метрики. Функцию pozitivGoal даёт сайт (js/metrika-goals.js): она шлёт цель только после согласия на cookie.
   // Каждую цель нужно один раз создать в Метрике как «JavaScript-событие»:
   //   app_guide_ok, app_card_pick, app_card_saved, app_write_telegram, app_write_whatsapp,
-  //   app_book_click, app_site_click, app_contacts_click, app_forecast_added, app_forecast_checked
+  //   app_book_click, app_site_click, app_contacts_click, app_share_card, app_forecast_added, app_forecast_checked
   // Адрес с ?test (проверка владельцем) цели не отправляет, чтобы тесты не искажали статистику.
   function goal(name) {
     if (new URLSearchParams(location.search).has('test')) return;
@@ -804,6 +804,116 @@
     return { out, input };
   }
 
+  // ---------- Картинка карты для отправки ----------
+  // На картинке только карта, её название, строки к ней и адрес сайта: вопрос и ответы человека не попадают.
+  const SHARE_URL = 'https://pozitiv-psychology.ru/arhiv/';
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('image'));
+      img.src = src;
+    });
+  }
+
+  function roundedRect(c, x, y, w, h2, r) {
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.arcTo(x + w, y, x + w, y + h2, r);
+    c.arcTo(x + w, y + h2, x, y + h2, r);
+    c.arcTo(x, y + h2, x, y, r);
+    c.arcTo(x, y, x + w, y, r);
+    c.closePath();
+  }
+
+  // Подбирает размер шрифта, чтобы строка помещалась по ширине
+  function fitFont(c, text, maxW, size, make) {
+    let s = size;
+    c.font = make(s);
+    while (c.measureText(text).width > maxW && s > 20) { s -= 2; c.font = make(s); }
+  }
+
+  async function renderShareImage(card) {
+    const W = 1080, H = 1920;
+    const head = 'Montserrat, "Helvetica Neue", Arial, sans-serif';
+    const serif = '"Source Serif Pro", Georgia, serif';
+    try {
+      await Promise.all([document.fonts.load(`700 64px ${head}`), document.fonts.load(`600 30px ${head}`), document.fonts.load(`italic 400 42px ${serif}`)]);
+    } catch (e) { /* шрифты не загрузились: используем запасные */ }
+    const v = DECK.imageVersion ? `?v=${DECK.imageVersion}` : '';
+    const img = await loadImage(`${DECK.imageDir}${ART.pad(card.id)}.${DECK.imageExt}${v}`);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const c = canvas.getContext('2d');
+
+    const bg = c.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#F5F1EB'); bg.addColorStop(1, '#EAE3D8');
+    c.fillStyle = bg; c.fillRect(0, 0, W, H);
+
+    c.textAlign = 'center';
+    c.fillStyle = '#4A7C6F';
+    c.font = `600 30px ${head}`;
+    c.fillText('АССОЦИАТИВНАЯ КАРТА ТРЕВОГИ', W / 2, 112);
+
+    // карта (формат 2:3), рамка и мягкая тень
+    const cw = 800, ch = 1200, cx = (W - cw) / 2, cy = 150;
+    c.save();
+    c.shadowColor = 'rgba(45, 52, 54, 0.28)'; c.shadowBlur = 50; c.shadowOffsetY = 18;
+    roundedRect(c, cx - 12, cy - 12, cw + 24, ch + 24, 44);
+    c.fillStyle = '#FAF8F5'; c.fill();
+    c.restore();
+    c.save();
+    roundedRect(c, cx, cy, cw, ch, 34);
+    c.clip();
+    c.drawImage(img, cx, cy, cw, ch);
+    c.restore();
+
+    // название и строки
+    c.fillStyle = '#2D3436';
+    fitFont(c, card.title, 900, 68, (s) => `700 ${s}px ${head}`);
+    c.fillText(card.title, W / 2, 1452);
+
+    c.fillStyle = '#5A6266';
+    const lines = card.verse || [];
+    let y = 1528;
+    for (const line of lines) {
+      fitFont(c, line, 900, 42, (s) => `italic 400 ${s}px ${serif}`);
+      c.fillText(line, W / 2, y);
+      y += 60;
+    }
+
+    // подпись
+    c.fillStyle = '#2D5A4A';
+    c.font = `600 34px ${head}`;
+    c.fillText('Камила Золотова · психолог', W / 2, 1800);
+    c.fillStyle = '#B87D5E';
+    c.font = `600 32px ${head}`;
+    c.fillText('pozitiv-psychology.ru/arhiv', W / 2, 1852);
+
+    return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('blob'))), 'image/png'));
+  }
+
+  async function shareCard(card) {
+    goal('app_share_card');
+    try {
+      const blob = await renderShareImage(card);
+      const name = `karta-${ART.pad(card.id)}.png`;
+      const file = new File([blob], name, { type: 'image/png' });
+      const text = `Моя ассоциативная карта тревоги: «${card.title}». Попробуйте и вы: ${SHARE_URL}?utm_source=share&utm_medium=card`;
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file], title: card.title, text }); return; } catch (e) {
+          if (e.name === 'AbortError') return;
+        }
+      }
+      download(blob, name);
+      toast('Картинка сохранена: отправьте её друзьям');
+    } catch (e) {
+      toast('Не получилось подготовить картинку');
+    }
+  }
+
   // Готовое сообщение для Камилы: только название карты, ответы человека никуда не передаются
   // Если человек пришёл с рекламы, сайт запомнил метку (pozitivUtm): она добавляется к сообщению, чтобы было видно источник
   function cardMessage(card, withUtm) {
@@ -977,7 +1087,10 @@
       h('div', { class: 'card', style: 'margin-top:16px' },
         h('h2', null, 'Записано в дневник'),
         h('p', { class: 'muted' }, line),
-        h('div', { class: 'item-actions' }, button('btn ghost wide', 'Готово', () => { cardUI = freshCardUI(); render(); window.scrollTo(0, 0); }))),
+        h('div', { class: 'item-actions' },
+          button('btn soft wide', 'Поделиться картой', () => shareCard(card)),
+          h('p', { class: 'fine', style: 'margin:8px 0 12px' }, 'На картинке только карта и строки к ней: без вашего вопроса и ответов.'),
+          button('btn ghost wide', 'Готово', () => { cardUI = freshCardUI(); render(); window.scrollTo(0, 0); }))),
       h('div', { class: 'card cta', style: 'margin-top:12px' },
         h('h2', null, 'Разобрать эту карту со мной'),
         h('p', null, 'Иногда одна карта открывает то, о чём важно поговорить подробнее. Я, Камила Золотова, помогу в этом разобраться: КПТ и EMDR при тревоге и панике, онлайн.'),
@@ -1018,6 +1131,7 @@
           filled,
           h('p', null, h('b', null, 'Шаг на сегодня'), card.step),
           h('div', { class: 'item-links' },
+            button('link', 'Поделиться картой', () => shareCard(card)),
             h('a', { class: 'link', href: messageLinks(card).tg, target: '_blank', rel: 'noopener' }, 'Написать про карту в Telegram'),
             h('a', { class: 'link', href: messageLinks(card).wa, target: '_blank', rel: 'noopener' }, 'в WhatsApp'),
             button('link danger', 'Удалить запись', () => {
