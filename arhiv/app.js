@@ -748,6 +748,27 @@
   DECKS.forEach((d) => d.cards.forEach((c) => { c.deckId = d.id; }));
   window.ARHIV_DECK_INDEX = Object.fromEntries(DECKS.map((d) => [d.id, d]));
   const deckById = (id) => window.ARHIV_DECK_INDEX[id] || DECKS[0];
+
+  // Цвета и символ колоды: рамка карты, рубашка, акценты блока и картинка для отправки
+  const SYMBOLS = {
+    horizon: '<svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="9" r="4" fill="currentColor"/><path d="M2 17h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+    coin: '<svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.5" fill="currentColor"/></svg>',
+  };
+  const themeOf = (deck) => deck.theme || {};
+  const deckVars = (deck) => {
+    const t = themeOf(deck);
+    return t.accent ? `--deck-accent:${t.accent};--deck-dark:${t.accentDark};--deck-soft:${t.soft};--back-top:${t.backTop};--back-bottom:${t.backBottom};` : '';
+  };
+
+  // Карта в рамке колоды: картинка, символ, название колоды и номер «03/28»
+  function cardFrame(card) {
+    const deck = deckById(card.deckId);
+    const sym = h('span', { class: 'sym', 'aria-hidden': 'true' });
+    sym.innerHTML = SYMBOLS[themeOf(deck).symbol] || '';
+    return h('div', { class: 'cardframe' },
+      ART.art(card),
+      h('div', { class: 'cardfoot' }, sym, h('span', { class: 'cf-name' }, deck.name), h('span', null, `${String(card.id).padStart(2, '0')}/${deck.cards.length}`)));
+  }
   const CARDS_KEY = 'arhiv-nesbyvshegosya:cards:v1';
   const DAILY_DRAWS = 1; // сколько карт в день бесплатно; адрес с ?test отключает ограничение
   const TEST_MODE = new URLSearchParams(location.search).has('test');
@@ -862,12 +883,14 @@
     const c = canvas.getContext('2d');
 
     const bg = c.createLinearGradient(0, 0, 0, H);
-    bg.addColorStop(0, '#F5F1EB'); bg.addColorStop(1, '#EAE3D8');
+    const th = themeOf(deck);
+    bg.addColorStop(0, th.bgTop || '#F5F1EB'); bg.addColorStop(1, th.bgBottom || '#EAE3D8');
     c.fillStyle = bg; c.fillRect(0, 0, W, H);
 
     c.textAlign = 'center';
     c.fillStyle = '#4A7C6F';
     c.font = `600 30px ${head}`;
+    c.fillStyle = th.accent || '#4A7C6F';
     const topLine = (deck.title || 'Ассоциативная карта тревоги').toUpperCase();
     fitFont(c, topLine, 940, 30, (sz) => `600 ${sz}px ${head}`);
     c.fillText(topLine, W / 2, 112);
@@ -878,6 +901,7 @@
     c.shadowColor = 'rgba(45, 52, 54, 0.28)'; c.shadowBlur = 50; c.shadowOffsetY = 18;
     roundedRect(c, cx - 12, cy - 12, cw + 24, ch + 24, 44);
     c.fillStyle = '#FAF8F5'; c.fill();
+    c.shadowColor = 'transparent'; c.lineWidth = 5; c.strokeStyle = th.accent || '#B87D5E'; c.stroke();
     c.restore();
     c.save();
     roundedRect(c, cx, cy, cw, ch, 34);
@@ -900,7 +924,7 @@
     }
 
     // подпись
-    c.fillStyle = '#2D5A4A';
+    c.fillStyle = th.accentDark || '#2D5A4A';
     c.font = `600 34px ${head}`;
     c.fillText('Камила Золотова · психолог', W / 2, 1800);
     c.fillStyle = '#B87D5E';
@@ -1037,7 +1061,7 @@
     const todays = cards.draws.filter((d) => d.date === todayKey() && (d.deckId || 'base') === deck.id);
     const dayDone = !TEST_MODE && todays.length >= DAILY_DRAWS;
     const questions = deck.questions || PRESET_QUESTIONS;
-    const box = h('div', { class: 'card' },
+    const box = h('div', { class: 'card deck-card', style: deckVars(deck) },
       h('h2', null, deck.title || 'Ассоциативная карта тревоги'),
       h('p', { class: 'mak-note' }, h('b', null, 'МАК — метафорическая ассоциативная карта. '),
         'У образа нет «правильного» смысла: важно, что он вызывает именно у вас.'),
@@ -1049,8 +1073,8 @@
       box.firstChild.after(
         h('p', { class: 'ask', style: 'margin-top:4px' }, 'Выберите колоду'),
         h('div', { class: 'chips', style: 'margin:10px 0 16px' }, DECKS.map((d) => h('button', {
-          type: 'button', class: 'chip', 'aria-pressed': String(d.id === deck.id), onclick: () => selectDeck(d.id),
-        }, isLocked(d) ? `${d.name} · платная` : d.name))));
+          type: 'button', class: 'chip deck-chip', style: deckVars(d), 'aria-pressed': String(d.id === deck.id), onclick: () => selectDeck(d.id),
+        }, h('i', { class: 'dot' }), isLocked(d) ? `${d.name} · платная` : d.name))));
     }
 
     if (isLocked(deck)) {
@@ -1096,7 +1120,7 @@
   }
 
   function renderPick() {
-    return [h('div', { class: 'card' },
+    return [h('div', { class: 'card deck-card', style: deckVars(currentDeck()) },
       h('h2', null, 'Выберите карту'),
       h('p', { class: 'mak-note' }, h('b', null, 'МАК — метафорическая ассоциативная карта.')),
       h('p', { class: 'muted' }, `Ваш вопрос: «${currentQuestion()}». Не думайте долго: выберите ту карту, к которой тянет.`),
@@ -1114,8 +1138,8 @@
     const after = slider(cardUI.after, (v) => { cardUI.after = v; afterNote.hidden = v < 8; });
 
     return [
-      h('div', { class: 'bigcard reveal' },
-        ART.art(card),
+      h('div', { class: 'bigcard reveal', style: deckVars(deckById(card.deckId)) },
+        cardFrame(card),
         h('div', { class: 'bigcard-title' }, h('span', { class: 'cat' }, deckById(card.deckId).groups[card.group]), h('h2', null, card.title))),
       h('div', { class: 'card', style: 'margin-top:14px' },
         h('div', { class: 'stack' }, prompts.map((p, i) => {
@@ -1168,7 +1192,7 @@
     else line += ' Иногда, когда мы начинаем замечать тревогу, она становится заметнее. Это не ошибка.';
 
     return [
-      h('div', { class: 'bigcard', style: 'max-width:240px' }, ART.art(card),
+      h('div', { class: 'bigcard', style: `max-width:240px;${deckVars(deckById(card.deckId))}` }, cardFrame(card),
         h('div', { class: 'bigcard-title' }, h('h2', { style: 'font-size:22px' }, card.title)),
         verseEl(card)),
       h('div', { class: 'card', style: 'margin-top:16px' },

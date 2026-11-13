@@ -376,7 +376,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent-primary); margin: 
 .art svg, .art img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .bigcard { max-width: 340px; margin: 0 auto; }
-.bigcard .art { border-radius: 20px; border: 5px solid var(--bg-card); box-shadow: 0 12px 40px rgba(45, 52, 54, 0.18); }
+.bigcard .cardframe .art { border: 0; border-radius: 16px; box-shadow: none; }
 .bigcard-title { margin-top: 14px; text-align: center; }
 .bigcard-title .cat { font-family: var(--font-head); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-secondary); }
 .bigcard-title h2 { margin-top: 4px; font-size: 26px; }
@@ -391,7 +391,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent-primary); margin: 
   border-radius: 14px;
   background:
     radial-gradient(circle at 50% 38%, #F2C879 0 5%, rgba(242, 200, 121, 0.35) 6% 14%, transparent 15%),
-    linear-gradient(180deg, var(--accent-secondary) 0 68%, var(--accent-primary) 68% 100%);
+    linear-gradient(180deg, var(--back-top, var(--accent-secondary)) 0 68%, var(--back-bottom, var(--accent-primary)) 68% 100%);
   box-shadow: inset 0 0 0 4px var(--bg-card), var(--shadow);
   transition: transform 0.2s ease;
   animation: rise 0.5s ease both;
@@ -475,3 +475,28 @@ body.cookie-open #toast { bottom: 160px; }
   .hero-num { font-size: 68px; }
   .top h1 { font-size: 26px; }
 }
+
+/* Рамка карты и цвета колоды (у каждой колоды свои --deck-accent, --deck-dark, --back-top, --back-bottom) */
+.cardframe {
+  padding: 10px 10px 8px;
+  background: var(--bg-card);
+  border: 2px solid var(--deck-accent, var(--accent-terracotta));
+  border-radius: 26px;
+  box-shadow: 0 12px 40px rgba(45, 52, 54, 0.18);
+}
+.cardfoot {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 9px 6px 0;
+  font-family: var(--font-head); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--deck-dark, var(--accent-primary));
+}
+.cardfoot .sym { display: inline-flex; color: var(--deck-accent, var(--accent-terracotta)); }
+.cardfoot .cf-name { flex: 1; text-align: center; }
+.bigcard-title .cat { color: var(--deck-accent, var(--accent-secondary)); }
+.deck-card { border-top: 4px solid var(--deck-accent, transparent); }
+.deck-card .mak-note { border-left-color: var(--deck-accent, var(--accent-secondary)); }
+.deck-card .mak-note b { color: var(--deck-dark, var(--accent-primary)); }
+.deck-card input[type="range"] { accent-color: var(--deck-accent, var(--accent-primary)); }
+.deck-chip .dot { display: inline-block; width: 10px; height: 10px; margin-right: 8px; border-radius: 50%; background: var(--deck-accent, var(--accent-secondary)); }
+button.deck-chip[aria-pressed="true"] { background: var(--deck-dark, var(--accent-primary)); border-color: var(--deck-dark, var(--accent-primary)); }
+button.deck-chip[aria-pressed="true"] .dot { background: #fff; }
