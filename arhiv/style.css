@@ -420,6 +420,10 @@ input[type="range"] { width: 100%; accent-color: var(--accent-primary); margin: 
 
 .step-card { background: var(--bg-secondary); border-color: transparent; box-shadow: none; }
 
+/* Баннер согласия на cookie (подключается скриптом сайта) не должен закрывать кнопки и уведомления */
+body.cookie-open .shell { padding-bottom: 150px; }
+body.cookie-open #toast { bottom: 160px; }
+
 /* Инструкция и кнопки перехода на сайт */
 .guide-block { margin-top: 18px; }
 .guide-h { margin: 0 0 6px; font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }

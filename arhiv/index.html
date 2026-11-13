@@ -9,7 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
   <meta name="theme-color" content="#F5F1EB">
   <link rel="stylesheet" href="../css/fonts.css?v=2026102510">
-  <link rel="stylesheet" href="style.css?v=20261113b">
+  <link rel="stylesheet" href="style.css?v=20261113c">
 </head>
 <body>
   <div class="shell">
@@ -36,6 +36,7 @@
     <footer class="foot">
       <p>Это инструмент самонаблюдения, а не медицинская или психологическая помощь. В экстренной ситуации звоните 112.</p>
       <p>Тексты прогнозов хранятся только в этом браузере на вашем устройстве и никуда не отправляются. Если подключить напоминания в Telegram, боту передаются только даты проверки.</p>
+      <p>Если вы разрешите статистику (баннер внизу страницы), Яндекс.Метрика считает нажатия на кнопки. Тексты ваших записей в статистику не попадают.</p>
       <p><button type="button" class="link" id="wipe">Удалить все записи</button></p>
     </footer>
   </div>
@@ -79,9 +80,11 @@
 
   <div id="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="config.js?v=20261113b"></script>
-  <script src="cards.js?v=20261113b"></script>
-  <script src="cardart.js?v=20261113b"></script>
-  <script src="app.js?v=20261113b"></script>
+  <script src="../js/metrika-goals.js?v=2026102701"></script>
+  <script src="../js/cookie-consent.js?v=20261024"></script>
+  <script src="config.js?v=20261113c"></script>
+  <script src="cards.js?v=20261113c"></script>
+  <script src="cardart.js?v=20261113c"></script>
+  <script src="app.js?v=20261113c"></script>
 </body>
 </html>

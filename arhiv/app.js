@@ -14,6 +14,28 @@
   };
   const SHARE_SITE = 'pozitiv-psychology.ru';
 
+  // Цели Яндекс.Метрики. Функцию pozitivGoal даёт сайт (js/metrika-goals.js): она шлёт цель только после согласия на cookie.
+  // Каждую цель нужно один раз создать в Метрике как «JavaScript-событие»:
+  //   app_guide_ok, app_card_pick, app_card_saved, app_write_telegram, app_write_whatsapp,
+  //   app_book_click, app_site_click, app_contacts_click, app_forecast_added, app_forecast_checked
+  // Адрес с ?test (проверка владельцем) цели не отправляет, чтобы тесты не искажали статистику.
+  function goal(name) {
+    if (new URLSearchParams(location.search).has('test')) return;
+    try { if (typeof window.pozitivGoal === 'function') window.pozitivGoal(name); } catch (e) { /* статистика недоступна */ }
+  }
+
+  // Переходы по ссылкам (сайт, контакты, запись, сообщения в мессенджеры) считаем в одном месте
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    const href = a.href;
+    if (href === LINKS.site) goal('app_site_click');
+    else if (href === LINKS.contacts) goal('app_contacts_click');
+    else if (href === LINKS.booking) goal('app_book_click');
+    else if (href.startsWith(LINKS.telegram)) goal('app_write_telegram');
+    else if (href.startsWith(LINKS.whatsapp)) goal('app_write_whatsapp');
+  }, true);
+
   const OUTCOMES = {
     no: { label: 'Не сбылось', toast: 'Отправлено в архив несбывшегося' },
     coped: { label: 'Сбылось, но справились', toast: 'Записано: сбылось, но вы справились' },
@@ -509,6 +531,7 @@
   const find = (id) => state.items.find((i) => i.id === id);
 
   function resolve(id, outcome) {
+    goal('app_forecast_checked');
     change(OUTCOMES[outcome].toast, () => {
       const item = find(id);
       item.outcome = outcome;
@@ -599,6 +622,7 @@
 
     dialog.close();
     view = 'today';
+    goal('app_forecast_added');
     change(`Записано. Проверим ${formatDate(due)}`, () => {
       state.items.push({
         id: uid(), text, due,
@@ -781,18 +805,23 @@
   }
 
   // Готовое сообщение для Камилы: только название карты, ответы человека никуда не передаются
-  function cardMessage(card) {
-    return `Здравствуйте! В приложении «Ассоциативная карта тревоги» мне выпала карта «${card.title}». Хочу разобрать её с вами.`;
+  // Если человек пришёл с рекламы, сайт запомнил метку (pozitivUtm): она добавляется к сообщению, чтобы было видно источник
+  function cardMessage(card, withUtm) {
+    const text = `Здравствуйте! В приложении «Ассоциативная карта тревоги» мне выпала карта «${card.title}». Хочу разобрать её с вами.`;
+    const utm = withUtm && typeof window.pozitivUtm === 'function' ? window.pozitivUtm() : '';
+    return utm ? `${text} [${utm}]` : text;
   }
 
+  const hasUtm = () => typeof window.pozitivUtm === 'function' && !!window.pozitivUtm();
+
   function messageLinks(card) {
-    const text = encodeURIComponent(cardMessage(card));
+    const text = encodeURIComponent(cardMessage(card, true));
     return { tg: `${LINKS.telegram}?text=${text}`, wa: `${LINKS.whatsapp}?text=${text}` };
   }
 
   // Инструкция перед использованием: показывается один раз, потом открывается по ссылке «Как работают МАК карты»
   function renderGuide(first) {
-    const close = () => { cards.guideSeen = true; saveCards(); cardUI.step = 'intro'; render(); window.scrollTo(0, 0); };
+    const close = () => { if (first) goal('app_guide_ok'); cards.guideSeen = true; saveCards(); cardUI.step = 'intro'; render(); window.scrollTo(0, 0); };
     const block = (title, ...kids) => h('div', { class: 'guide-block' }, h('h3', { class: 'guide-h' }, title), ...kids);
 
     return [h('div', { class: 'card' },
@@ -884,7 +913,7 @@
       h('p', { class: 'muted' }, `Ваш вопрос: «${currentQuestion()}». Не думайте долго: выберите ту карту, к которой тянет.`),
       h('div', { class: 'fan' }, cardUI.options.map((id, i) => h('button', {
         type: 'button', class: 'cardback', 'aria-label': `Закрытая карта ${i + 1}`,
-        onclick: () => { cardUI.cardId = id; cardUI.after = cardUI.before; cardUI.step = 'reflect'; render(); window.scrollTo(0, 0); },
+        onclick: () => { goal('app_card_pick'); cardUI.cardId = id; cardUI.after = cardUI.before; cardUI.step = 'reflect'; render(); window.scrollTo(0, 0); },
       }))),
       h('div', { class: 'item-links' }, button('link', 'Назад', () => { cardUI.step = 'intro'; render(); })))];
   }
@@ -924,6 +953,7 @@
       before: cardUI.before, after: cardUI.after,
       answers: cardUI.answers.map((a) => a.trim()),
     };
+    goal('app_card_saved');
     cards.draws.unshift(draw);
     saveCards();
     cardUI.saved = draw;
@@ -954,7 +984,7 @@
         h('div', { class: 'btn-row tall item-actions' },
           h('a', { class: 'btn primary', href: messageLinks(card).tg, target: '_blank', rel: 'noopener' }, 'Написать про эту карту в Telegram'),
           h('a', { class: 'btn ghost', href: messageLinks(card).wa, target: '_blank', rel: 'noopener' }, 'Написать в WhatsApp')),
-        h('p', { class: 'fine' }, `В сообщение попадёт только название карты, ваши ответы остаются у вас. Текст: «${cardMessage(card)}»`),
+        h('p', { class: 'fine' }, `В сообщение попадёт только название карты, ваши ответы остаются у вас. Текст: «${cardMessage(card)}»${hasUtm() ? ' К нему добавится короткая служебная метка источника.' : ''}`),
         h('div', { class: 'item-links' },
           h('a', { class: 'link', href: LINKS.booking, target: '_blank', rel: 'noopener' }, 'Или записаться на знакомство — 20 минут'))),
     ];
