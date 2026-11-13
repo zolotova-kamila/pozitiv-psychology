@@ -752,6 +752,7 @@
   const DAILY_DRAWS = 1; // сколько карт в день бесплатно; адрес с ?test отключает ограничение
   const TEST_MODE = new URLSearchParams(location.search).has('test');
   const PRESET_QUESTIONS = ['Что сейчас с моей тревогой?', 'О чём она пытается меня предупредить?', 'Что мне сейчас нужно?'];
+  const AFTER_NOTE = 'Если тревога по-прежнему очень сильная, это не значит, что вы что-то делаете не так. Можно сделать паузу, поговорить с близким человеком или со специалистом. Если вам кажется, что вы в опасности, позвоните 112.';
   const HARD_NOTE = 'Если сейчас очень тяжело, сначала вернитесь к дыханию: вдох на 4, выдох на 6. Если вам кажется, что вы в опасности, позвоните 112 или обратитесь к близкому человеку.';
 
   let cards = loadCards();
@@ -962,9 +963,9 @@
           h('li', null, h('strong', null, 'Вопрос'), 'Выберите вопрос и отметьте, насколько тревожно сейчас.'),
           h('li', null, h('strong', null, 'Карта'), 'Выберите карту, не думая долго: к какой потянуло.'),
           h('li', null, h('strong', null, 'Образ'), 'Посмотрите на картинку и ответьте на вопросы. Правильных ответов нет, любой вопрос можно пропустить.'),
-          h('li', null, h('strong', null, 'Шаг'), 'Прочитайте строки к карте, сделайте маленький шаг и снова отметьте уровень тревоги.'))),
+          h('li', null, h('strong', null, 'Строки и шаг'), 'По желанию прочитайте строки к карте (это одна из возможных историй, не обязательно ваша), сделайте маленький шаг и снова отметьте уровень тревоги.'))),
       block('Важно помнить',
-        h('p', null, 'Если вам тяжело, остановитесь, подышите и сделайте паузу. Приложение не заменяет консультацию психолога. Если вам плохо или вы в опасности, позвоните 112.')),
+        h('p', null, 'Любой вопрос и любой шаг можно пропустить. Если шаг про дыхание или тело вызывает неприятные ощущения, остановитесь. Если вам тяжело, сделайте паузу. Приложение не заменяет консультацию психолога. Если вам плохо или вы в опасности, позвоните 112.')),
       h('div', { class: 'item-actions' }, button('btn primary wide', first ? 'Понятно, начать' : 'Вернуться к картам', close)),
       h('div', { class: 'site-links' },
         h('a', { class: 'btn ghost', href: LINKS.site, target: '_blank', rel: 'noopener' }, 'Перейти на сайт'),
@@ -1041,6 +1042,7 @@
       h('p', { class: 'mak-note' }, h('b', null, 'МАК — метафорическая ассоциативная карта. '),
         'У образа нет «правильного» смысла: важно, что он вызывает именно у вас.'),
       h('p', { class: 'muted' }, `Колода «${deck.name}». ${deck.tagline ? `${deck.tagline} ` : ''}Это не гадание и не предсказание: карта помогает заметить то, что вы и так чувствуете.`),
+      deck.note ? h('p', { class: 'fine' }, deck.note) : null,
       h('p', { style: 'margin-top:8px' }, button('link', 'Как работают МАК карты', () => { cardUI.step = 'guide'; render(); window.scrollTo(0, 0); })));
 
     if (DECKS.length > 1) {
@@ -1108,26 +1110,34 @@
   function renderReflect() {
     const card = cardById(cardUI.cardId, cardUI.deckId);
     const prompts = promptsFor(card);
-    const after = slider(cardUI.after, (v) => { cardUI.after = v; });
+    const afterNote = h('p', { class: 'status-err', hidden: cardUI.after < 8 }, AFTER_NOTE);
+    const after = slider(cardUI.after, (v) => { cardUI.after = v; afterNote.hidden = v < 8; });
 
     return [
       h('div', { class: 'bigcard reveal' },
         ART.art(card),
         h('div', { class: 'bigcard-title' }, h('span', { class: 'cat' }, deckById(card.deckId).groups[card.group]), h('h2', null, card.title))),
-      verseEl(card),
-      h('div', { class: 'card' },
+      h('div', { class: 'card', style: 'margin-top:14px' },
         h('div', { class: 'stack' }, prompts.map((p, i) => {
           const area = h('textarea', { rows: 2, maxlength: 400, placeholder: 'Коротко или пропустите' }, cardUI.answers[i]);
           area.addEventListener('input', () => { cardUI.answers[i] = area.value; });
           return h('label', { class: 'field', style: 'margin:0' }, h('span', { class: 'field-label' }, p), area);
         }))),
+      // Строки к карте показываем по желанию и после собственных ответов, чтобы они не подсказывали готовый смысл
+      h('details', { class: 'card verse-box', style: 'margin-top:12px' },
+        h('summary', null, 'Показать строки к карте'),
+        h('p', { class: 'fine' }, 'Это одна из возможных историй. Она не обязательно ваша.'),
+        verseEl(card)),
       h('div', { class: 'card step-card', style: 'margin-top:12px' },
-        h('p', { class: 'ask', style: 'margin-top:0' }, 'Маленький шаг на сегодня'),
-        h('p', null, card.step)),
+        h('p', { class: 'ask', style: 'margin-top:0' }, 'Маленький шаг, если захочется'),
+        h('p', null, card.step),
+        h('p', { class: 'fine' }, 'Шаг можно пропустить: если сейчас тяжело или не хочется, это нормально.'),
+        deckById(card.deckId).note ? h('p', { class: 'fine' }, deckById(card.deckId).note) : null),
       h('div', { class: 'card', style: 'margin-top:12px' },
         h('span', { class: 'field-label' }, 'Насколько тревожно сейчас, от 0 до 10? ', after.out),
         after.input,
         h('span', { class: 'range-ends' }, h('span', null, 'спокойно'), h('span', null, 'очень тревожно')),
+        afterNote,
         h('div', { class: 'item-actions' }, button('btn primary wide', 'Сохранить в дневник', saveDraw)),
         h('div', { class: 'item-links' }, button('link', 'Выбрать другую карту', () => { cardUI.step = 'pick'; render(); window.scrollTo(0, 0); }))),
     ];
@@ -1164,6 +1174,7 @@
       h('div', { class: 'card', style: 'margin-top:16px' },
         h('h2', null, 'Записано в дневник'),
         h('p', { class: 'muted' }, line),
+        dr.after >= 8 ? h('p', { class: 'status-err' }, AFTER_NOTE) : null,
         h('div', { class: 'item-actions' },
           button('btn soft wide', 'Поделиться картой', () => shareCard(card)),
           h('p', { class: 'fine', style: 'margin:8px 0 12px' }, 'На картинке только карта и строки к ней: без вашего вопроса и ответов.'),

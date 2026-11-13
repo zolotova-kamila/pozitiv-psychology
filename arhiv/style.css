@@ -430,6 +430,11 @@ body.cookie-open #toast { bottom: 160px; }
 .code-input { flex: 1; min-width: 0; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-md); background: #fff; font: inherit; text-transform: uppercase; color: inherit; }
 .code-input:focus { outline: none; border-color: var(--accent-secondary); }
 
+/* Строки к карте по желанию */
+.verse-box { padding: 14px 18px; }
+.verse-box summary { cursor: pointer; font-family: var(--font-head); font-weight: 600; font-size: 15px; color: var(--accent-primary); }
+.verse-box .verse { margin: 12px auto 4px; }
+
 /* Инструкция и кнопки перехода на сайт */
 .guide-block { margin-top: 18px; }
 .guide-h { margin: 0 0 6px; font-family: var(--font-head); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
