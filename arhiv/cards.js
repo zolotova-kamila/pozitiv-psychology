@@ -10,7 +10,7 @@ window.ARHIV_DECK = {
   "tagline": "Образы о том, что происходит внутри, когда тревожно.",
   "imageDir": "cards/img/",
   "imageExt": "webp",
-  "imageVersion": "20261114a",
+  "imageVersion": "20261114b",
   "basePrompt": "Soft hand-painted surrealist fine-art image with fine canvas grain, blending photographic realism with painterly texture, dreamlike and poetic. Pastel palette of dusty rose, mauve, lavender-grey, warm sand and cream, with a delicate golden glow as the single bright accent. Hazy atmospheric light, gentle diffused shadows. The image is built around one clear associative image (a detail of nature, an animal, a symbol, a surreal transformation, or a human gesture) that evokes feelings and associations and leaves room for the viewer's own interpretation. Dali-inspired dreamlike logic but an original composition. Quiet, hopeful mood. No text, no letters, no logos, no watermark. Vertical 2:3.",
   "noPeoplePrompt": "No people in the scene.",
   "negativePrompt": "skulls, bones, skeleton, blood, wounds, severed or disfigured body parts, gore, horror, monsters, spiders, snakes, grotesque or distorted faces, extra fingers, text, letters, logo, watermark, harsh black, heavy darkness, cartoon, 3d render",
@@ -94,11 +94,11 @@ window.ARHIV_DECK = {
     {
       "id": 5,
       "group": "look",
-      "title": "Стол на краю",
+      "title": "Недосказанное",
       "motif": "table",
       "hue": 2,
-      "desc": "Мужчина и женщина сидят друг напротив друга за накрытым столом на тонких ножках у обрыва. Они смотрят вниз, не друг на друга; на лицах тихая грусть. Между ними ровно горят две свечи.",
-      "scene": "a man and a woman sit across from each other at a set dinner table standing on very thin stilt legs at the edge of a cliff, both looking down with quiet sadness and not at each other, shoulders slightly slumped, two candles burning steadily between them",
+      "desc": "Мужчина и женщина сидят друг напротив друга за кухонным столом в сумерках. Между ними две нетронутые чашки, свеча и закрытый конверт. Оба смотрят вниз.",
+      "scene": "a man and a woman sit across from each other at a kitchen table at dusk, two untouched cups of tea and a lit candle between them, both looking down quietly, a closed envelope on the table",
       "q": "О чём сейчас трудно говорить вслух — и с кем?",
       "step": "Если хотите, напишите одну фразу, которую хотели бы сказать, но не сказали. Отправлять её необязательно.",
       "people": true,
@@ -381,12 +381,12 @@ window.ARHIV_DECK = {
       "title": "Мост из света",
       "motif": "bridge",
       "hue": 4,
-      "desc": "Мужчина протягивает руку женщине в начале моста из света над туманной пропастью. У него спокойная ободряющая улыбка, она смотрит с надеждой и сомнением.",
-      "scene": "a man stands at the beginning of a bridge made of golden light that spans a misty chasm, holding out his hand to a woman beside him, he with a reassuring gentle smile, she with hopeful but hesitant eyes, about to step onto the bridge",
+      "desc": "Две раскрытые ладони тянутся друг к другу с двух краёв кадра над туманной пропастью. Между ними светящаяся дорожка, как мост.",
+      "scene": "two open hands reaching toward each other from the left and right edges of the frame across a misty chasm, a path of golden light forming a bridge between them, soft diffused light",
       "q": "Какой самый маленький шаг вам по силам? Нужна ли вам для него чья-то поддержка?",
       "step": "Если хотите, сделайте этот шаг. Если нужна поддержка, подумайте, к кому из безопасных для вас людей можно обратиться.",
       "people": true,
-      "kind": "pair",
+      "kind": "hands",
       "verse": [
         "Мост из света",
         "начинается с протянутой руки."
@@ -416,12 +416,12 @@ window.ARHIV_DECK = {
       "title": "Калитка",
       "motif": "fence",
       "hue": 3,
-      "desc": "Мужчина стоит у открытой калитки низкой изгороди и открыто, спокойно улыбается. За ним цветущий сад. Женщина снаружи остановилась и закусила губу в раздумье.",
-      "scene": "a man stands inside a low garden fence at its open gate with a calm welcoming expression while a woman outside the fence hesitates, biting her lip, a blooming garden behind him in an otherwise empty landscape",
+      "desc": "Низкая изгородь с открытой калиткой посреди пустого пейзажа. За ней цветущий сад, на столбике сидит птичка, к калитке ведёт тропа.",
+      "scene": "a low garden fence with an open gate in an empty landscape, a blooming garden behind it, a small bird on the gatepost, a path leading through the gate",
       "q": "Где вам хочется сказать «нет» или «не сейчас», а где «да»?",
       "step": "Если хотите, сформулируйте одну границу одной фразой. Произносить её вслух сегодня необязательно.",
-      "people": true,
-      "kind": "pair",
+      "people": false,
+      "kind": "nature",
       "verse": [
         "Калитка открыта.",
         "Входить необязательно,",
@@ -434,8 +434,8 @@ window.ARHIV_DECK = {
       "title": "Волна",
       "motif": "wave",
       "hue": 5,
-      "desc": "Девочка стоит на берегу и смотрит на стеклянную волну, застывшую аркой над морем. Глаза широко раскрыты от удивления. Под аркой проплывает лодка из света.",
-      "scene": "a girl stands on the shore looking up at a glass-like wave frozen mid-air in an arch, eyes wide with awe, lips slightly parted, a small boat of golden light passing beneath it",
+      "desc": "Девочка стоит на широком тихом пляже и смотрит на небольшую стеклянную волну далеко у горизонта. На воде крошечная лодка с золотым огоньком.",
+      "scene": "a girl stands on a wide quiet beach looking at a small gentle glass-like wave far away near the horizon, a tiny boat of golden light on the water, vast calm sky, the wave is distant and peaceful",
       "q": "Что вы чувствуете, глядя на эту волну? Как она связана с вашей тревогой?",
       "step": "Если хотите, минуту-другую понаблюдайте за ощущением, не споря с ним. Заметьте, меняется оно или остаётся.",
       "people": true,
@@ -444,6 +444,78 @@ window.ARHIV_DECK = {
         "Волна замерла аркой,",
         "и под ней плывёт",
         "лодка света."
+      ]
+    },
+    {
+      "id": 25,
+      "group": "look",
+      "title": "Бумажный вихрь",
+      "kind": "symbol",
+      "motif": "birds",
+      "hue": 4,
+      "people": false,
+      "honest": true,
+      "desc": "Маленькая пустая комната, в которой одновременно кружатся сотни белых листов бумаги. В центре неподвижно стоит простой деревянный стул.",
+      "scene": "a small bare room where hundreds of white paper sheets whirl in the air at once, a plain wooden chair stands still in the middle of the room, muted grey-mauve light from a window",
+      "q": "Сколько мыслей сейчас кружится одновременно? Какая из них самая громкая?",
+      "step": "Если хотите, запишите самую громкую мысль на отдельный лист. Остальные пока могут подождать.",
+      "verse": [
+        "Листов слишком много, чтобы прочесть.",
+        "Можно не читать их все."
+      ]
+    },
+    {
+      "id": 26,
+      "group": "body",
+      "title": "Замерла среди потока",
+      "kind": "person",
+      "motif": "door",
+      "hue": 4,
+      "people": true,
+      "honest": true,
+      "desc": "Женщина в сером пальто неподвижно стоит на пешеходном переходе в тумане. Мимо неё струятся бледные размытые фигуры, а она смотрит прямо перед собой.",
+      "scene": "a woman in a grey coat stands motionless on a pedestrian crossing in soft fog while pale blurred figures stream past her, her gaze fixed ahead, calm but frozen",
+      "q": "Бывает ли так, что хочется двигаться, а тело замирает? Что в такие моменты происходит вокруг?",
+      "step": "Если получится, почувствуйте опору под ногами или под телом. Больше ничего делать не нужно.",
+      "verse": [
+        "Поток идёт мимо.",
+        "Замереть — тоже способ пережить."
+      ]
+    },
+    {
+      "id": 27,
+      "group": "look",
+      "title": "Низкий потолок",
+      "kind": "symbol",
+      "motif": "island",
+      "hue": 4,
+      "people": false,
+      "honest": true,
+      "desc": "Тяжёлые бледные облака опустились так низко, что давят на крошечный дом посреди пустого поля. Окна дома тускло светятся.",
+      "scene": "a very low ceiling of heavy pale clouds pressing down on a tiny house in an empty field, the house looks squeezed, its windows dim",
+      "q": "Что сейчас давит сверху? Сколько места при этом остаётся вам?",
+      "step": "Если хотите, заметьте, где в теле ощущается это давление. Просто заметьте.",
+      "verse": [
+        "Потолок опустился так низко,",
+        "что тесно даже мыслям."
+      ]
+    },
+    {
+      "id": 28,
+      "group": "body",
+      "title": "Ладони на груди",
+      "kind": "hands",
+      "motif": "shell",
+      "hue": 4,
+      "people": true,
+      "honest": true,
+      "desc": "Две ладони прижаты к груди серого вязаного свитера. Пальцы слегка напряжены. Лица не видно.",
+      "scene": "two hands pressed flat on the chest of a grey knitted sweater, fingers slightly spread and tense, face not shown, soft muted light",
+      "q": "Что вы чувствуете в груди и в дыхании прямо сейчас? Как это ощущается?",
+      "step": "Если хочется, положите ладонь туда, где ощущение. Если от этого неприятно, уберите руку.",
+      "verse": [
+        "Ладони лежат на груди,",
+        "как будто что-то нужно удержать."
       ]
     }
   ],
@@ -458,5 +530,6 @@ window.ARHIV_DECK = {
     "landscape": "Сюрреалистичный пейзаж",
     "symbol": "Символ",
     "object": "Предмет"
-  }
+  },
+  "honestPrompt": "Soft hand-painted surrealist fine-art image with fine canvas grain, blending photographic realism with painterly texture, dreamlike and poetic. Muted dusty palette of ash rose, grey-mauve, cool lavender-grey and sand, with no golden glow and no symbol of hope or rescue in the image. Hazy atmospheric light, gentle diffused shadows. The image is built around one clear associative image that evokes feelings and associations and leaves room for the viewer's own interpretation. Dali-inspired dreamlike logic but an original composition. The mood is honest, quiet and slightly uncomfortable, but never frightening, violent or hopeless. No text, no letters, no logos, no watermark. Vertical 2:3."
 }

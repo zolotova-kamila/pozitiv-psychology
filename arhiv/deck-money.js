@@ -10,7 +10,7 @@
   "price": 390,
   "imageDir": "cards/money/",
   "imageExt": "webp",
-  "imageVersion": "20261114a",
+  "imageVersion": "20261114b",
   "questions": [
     "Что я чувствую, когда думаю о деньгах?",
     "Откуда у меня такое отношение к деньгам?",
@@ -156,8 +156,8 @@
       "motif": "shell",
       "hue": 3,
       "people": true,
-      "desc": "Молодая женщина прикрывает ладонью светящуюся золотую монету. Свет пробивается сквозь пальцы, на лице лёгкое смущение.",
-      "scene": "a young woman in a simple dress covers a glowing golden coin in her palm with her other hand, the light shining between her fingers, a shy and slightly embarrassed expression, soft diffused light",
+      "desc": "Молодая женщина держит на раскрытой ладони маленькую монету и смотрит на неё с робкой, чуть смущённой полуулыбкой.",
+      "scene": "a young woman holds a small coin in her open palm and looks at it with a shy, slightly embarrassed half-smile, warm and a little uncertain, soft diffused light",
       "q": "Что вызывает у вас неловкость или страх в отношении денег: иметь, не иметь, просить, тратить?",
       "step": "Если хотите, назовите про себя одно чувство, связанное с деньгами, как сказал бы добрый друг: «Мне неловко, и это можно».",
       "verse": [
@@ -231,6 +231,57 @@
       "verse": [
         "Хлеб, монета и спящий кот",
         "на одном подоконнике."
+      ]
+    },
+    {
+      "id": 13,
+      "group": "feelings",
+      "title": "Счета",
+      "kind": "object",
+      "motif": "table",
+      "hue": 4,
+      "people": false,
+      "desc": "Деревянный кухонный стол: аккуратная стопка счетов, маленький калькулятор, карандаш и чашка чая. Из окна падает мягкий утренний свет.",
+      "scene": "a wooden kitchen table with a neat stack of bills, a small calculator, a pencil and a cup of tea, soft morning light from the window",
+      "q": "Что вы чувствуете, когда видите платёжки и счета? Где это ощущается в теле?",
+      "step": "Если хотите, выберите один счёт и спросите себя: что в нём пугает больше, сумма или неизвестность?",
+      "verse": [
+        "Бумаги на столе лежат тихо.",
+        "Громче всего то, что в голове."
+      ]
+    },
+    {
+      "id": 14,
+      "group": "feelings",
+      "title": "Доски через ручей",
+      "kind": "landscape",
+      "motif": "bridge",
+      "hue": 1,
+      "people": false,
+      "desc": "Старый деревянный мостик через тихий ручей. Некоторых досок не хватает, вдоль мостика натянут канат-перила.",
+      "scene": "an old wooden plank footbridge across a quiet stream with a few planks missing and a rope handrail, soft pastel light",
+      "q": "Как вы живёте с неровным доходом? Что помогает держать равновесие, а что выбивает из него?",
+      "step": "Если хотите, назовите одну «доску», на которую вы опираетесь точно: человека, навык или привычку.",
+      "verse": [
+        "Не все доски на месте.",
+        "И всё же по мостику ходят."
+      ]
+    },
+    {
+      "id": 15,
+      "group": "feelings",
+      "title": "Полка в кладовой",
+      "kind": "object",
+      "motif": "suitcase",
+      "hue": 3,
+      "people": false,
+      "desc": "Кладовая: на полке несколько банок с заготовками и полупустой тканевый мешок с мукой. Рядом старый деревянный половник, из окна падает мягкий свет.",
+      "scene": "a pantry shelf with a few jars of preserves and a half-full cloth bag of flour, a worn wooden ladle, soft window light",
+      "q": "Что для вас значит «запас»? Какое чувство появляется, когда он уменьшается?",
+      "step": "Если хотите, подумайте, что именно вам нужно, чтобы чувствовать себя в безопасности: не сумма, а что вы тогда сможете делать.",
+      "verse": [
+        "Полка не полная и не пустая.",
+        "Вопрос в том, сколько нужно, чтобы дышать."
       ]
     }
   ],
