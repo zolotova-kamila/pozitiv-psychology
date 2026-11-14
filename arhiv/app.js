@@ -1122,7 +1122,9 @@
       h('div', { class: 'btn-row tall item-actions' }, button('btn soft', 'Добавить в календарь на каждый день', () => addDailyToCalendar(cur ?? 9))),
       h('p', { class: 'fine' }, 'Календарь работает без Telegram и без передачи данных. Если время не выбрано, напоминание будет в 9:00.'));
     const tg = API ? renderReminders() : null;
-    return section('Напоминание', box, tg ? h('div', { style: 'margin-top:12px' }, tg) : null);
+    const block = section('Напоминание', box, tg ? h('div', { style: 'margin-top:12px' }, tg) : null);
+    block.id = 'reminder-block';
+    return block;
   }
 
   function renderCardsIntro() {
@@ -1172,7 +1174,11 @@
         h('div', { class: 'daily-box' },
           h('p', { class: 'ask', style: 'margin-top:0' }, 'Карта дня за минуту'),
           h('p', { class: 'muted' }, 'Без вопроса и оценок: просто вытяните карту и заметьте, что откликается.'),
-          h('div', { class: 'item-actions', style: 'margin-top:10px' }, button('btn primary wide', 'Вытянуть карту дня', startDaily))),
+          h('div', { class: 'item-actions', style: 'margin-top:10px' }, button('btn primary wide', 'Вытянуть карту дня', startDaily)),
+          h('p', { style: 'margin-top:10px' }, button('link', 'Напоминать о карте дня (календарь или Telegram) ↓', () => {
+            const el = document.getElementById('reminder-block');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }))),
         h('p', { class: 'ask' }, 'Или спросим карту о чём-то своём'),
         h('div', { class: 'chips qchips', style: 'margin-top:10px' }, chipEls),
         h('div', { style: 'margin-top:10px' }, custom),
