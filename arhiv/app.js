@@ -248,7 +248,7 @@
   }
 
   // перерисовываем только если что-то реально поменялось
-  function remoteSnapshot() { return `${remote.status}|${remoteError}|${botName}`; }
+  function remoteSnapshot() { return `${remote.status}|${remoteError}|${botName}|${remote.forecastHour}|${cards.dailyHour}`; }
 
   async function loadBot() {
     const before = remoteSnapshot();
@@ -264,7 +264,7 @@
     try {
       const r = await api(`/api/status?key=${encodeURIComponent(remote.key)}`);
       remoteError = !r.ok;
-      if (r.ok && r.data.linked) { remote.status = 'on'; saveRemote(); syncNow(); }
+      if (r.ok && r.data.linked) { remote.status = 'on'; remote.hourDirty = true; saveRemote(); syncNow(); }
     } catch (e) { remoteError = true; }
     if (before !== remoteSnapshot()) render();
   }
@@ -294,10 +294,24 @@
     const before = remoteSnapshot();
     const items = state.demo ? [] : state.items.filter((i) => !i.outcome).map((i) => ({ id: i.id, due: i.due }));
     // карта дня: час напоминания и дата последней вытянутой карты (чтобы не напоминать о том, что уже сделано)
-    const daily = { hour: cards.dailyHour ?? null, drawn: cards.draws.length ? cards.draws[0].date : null };
+    // hour_set: час уходит на сервер, только если его изменили здесь; иначе остаётся выбранный в боте
+    const hourSet = !!remote.hourDirty;
+    const daily = { hour: cards.dailyHour ?? null, drawn: cards.draws.length ? cards.draws[0].date : null, hour_set: hourSet };
     try {
       const r = await api('/api/sync', { key: remote.key, tz: -new Date().getTimezoneOffset(), items, daily });
       if (r.status === 409) { remote = { key: null, status: 'off' }; saveRemote(); } // в боте нажали /stop
+      else if (r.ok) {
+        // сервер — единственный источник времени: если человек поменял его в боте, берём оттуда
+        remote.hourDirty = false;
+        if (Number.isInteger(r.data.forecast_hour)) remote.forecastHour = r.data.forecast_hour;
+        if (r.data.daily_hour === null || Number.isInteger(r.data.daily_hour)) {
+          if ((cards.dailyHour ?? null) !== r.data.daily_hour) {
+            cards.dailyHour = r.data.daily_hour;
+            try { localStorage.setItem(CARDS_KEY, JSON.stringify(cards)); } catch (e) { /* хранилище недоступно */ }
+          }
+        }
+        saveRemote();
+      }
       remoteError = !r.ok && r.status !== 409;
     } catch (e) { remoteError = true; }
     if (before !== remoteSnapshot()) render();
@@ -349,7 +363,7 @@
     if (remote.status === 'on') {
       return h('div', { class: 'card' },
         h('p', { class: 'status-ok' }, '✓ Напоминания в Telegram включены'),
-        h('p', { class: 'muted', style: 'margin-top:6px' }, `Бот напишет в 9:00 в день проверки прогноза${cards.dailyHour != null ? ` и в ${cards.dailyHour}:00 напомнит о карте дня (если вы её ещё не вытянули)` : ''}. Текст прогнозов и ваши ответы боту не передаются.`),
+        h('p', { class: 'muted', style: 'margin-top:6px' }, `Бот напишет в ${remote.forecastHour ?? 9}:00 в день проверки прогноза${cards.dailyHour != null ? ` и в ${cards.dailyHour}:00 напомнит о карте дня (если вы её ещё не вытянули)` : ''}. Время можно менять здесь или в самом боте (кнопка «Меню»). Текст прогнозов и ваши ответы боту не передаются.`),
         error,
         h('div', { class: 'item-links' }, button('link danger', 'Отключить и удалить данные', disconnect)));
     }
@@ -1085,6 +1099,7 @@
 
   function setDailyHour(hour) {
     cards.dailyHour = hour;
+    if (remote.status === 'on') { remote.hourDirty = true; saveRemote(); }
     saveCards();
     goal(hour == null ? 'app_reminder_off' : 'app_reminder_set');
     render();
