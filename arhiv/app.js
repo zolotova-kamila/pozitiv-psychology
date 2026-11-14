@@ -19,7 +19,8 @@
   //   app_guide_ok, app_card_pick, app_card_saved, app_write_telegram, app_write_whatsapp,
   //   app_book_click, app_site_click, app_contacts_click, app_share_card, app_forecast_added, app_forecast_checked,
   //   app_deck_open, app_deck_request, app_deck_unlocked,
-  //   app_daily_start, app_reminder_set, app_reminder_off, app_reminder_calendar
+  //   app_daily_start, app_reminder_set, app_reminder_off, app_reminder_calendar,
+  //   app_tip_done, app_tip_other, app_thought_start, app_thought_done
   // Адрес с ?test (проверка владельцем) цели не отправляет, чтобы тесты не искажали статистику.
   function goal(name) {
     if (new URLSearchParams(location.search).has('test')) return;
@@ -176,6 +177,8 @@
 
     if (!state.items.length) {
       out.push(renderIntro());
+      const tip0 = renderTipCard(true);
+      if (tip0) out.push(h('div', { class: 'section' }, tip0));
       return out;
     }
 
@@ -191,6 +194,8 @@
     if (!s.due.length && !s.waiting.length) {
       out.push(h('p', { class: 'muted section' }, 'Все прогнозы проверены. Когда тревога снова что-то пообещает — запишите.'));
     }
+    const tip = renderTipCard(true);
+    if (tip) out.push(h('div', { class: 'section' }, tip));
     const reminders = renderReminders();
     if (reminders) out.push(section('Напоминания', reminders));
     return out;
@@ -762,6 +767,7 @@
     wipeArmed = null;
     wipe.textContent = 'Удалить все записи';
     if (remote.status !== 'off') disconnect();
+    practice = { thoughts: [], tips: {}, topic: 'all' }; thoughtUI = null; savePractice();
     change('Все записи удалены', () => { state = { items: [], demo: false }; });
   });
 
@@ -1366,6 +1372,301 @@
     return section('Дневник карт', ...parts);
   }
 
+  // ---------- Практики: совет дня и разбор мысли ----------
+  // Всё хранится только в браузере (ключ :practice:v1) и никуда не отправляется.
+  const PRACTICE_KEY = 'arhiv-nesbyvshegosya:practice:v1';
+  const PR = window.ARHIV_PRACTICE || { topics: [], tips: [], emotions: [], traps: [], conHints: [], balancedStarters: [] };
+  let practice = loadPractice();
+  let thoughtUI = null; // черновик разбора: { step, rec } (пока не сохранён, живёт только в памяти)
+
+  function loadPractice() {
+    try {
+      const p = JSON.parse(localStorage.getItem(PRACTICE_KEY));
+      if (p && Array.isArray(p.thoughts)) return { thoughts: p.thoughts, tips: p.tips || {}, topic: p.topic || 'all' };
+    } catch (e) { /* нет сохранённого */ }
+    return { thoughts: [], tips: {}, topic: 'all' };
+  }
+  function savePractice() {
+    try { localStorage.setItem(PRACTICE_KEY, JSON.stringify(practice)); } catch (e) { /* хранилище недоступно */ }
+  }
+
+  // Совет дня: один и тот же в течение суток; тема выбирается человеком, «Другой совет» листает дальше
+  function dayNumber() { const d = new Date(); return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000); }
+  function tipList() {
+    const all = PR.tips.map((t, i) => ({ id: i, topic: t[0], title: t[1], text: t[2], tryIt: t[3] }));
+    if (practice.topic !== 'all') return all.filter((t) => t.topic === practice.topic);
+    // «Все темы»: темы чередуются, чтобы подряд не шли советы об одном и том же
+    const by = PR.topics.map((tp) => all.filter((t) => t.topic === tp.id));
+    const mixed = [];
+    for (let i = 0; by.some((b) => i < b.length); i++) by.forEach((b) => { if (i < b.length) mixed.push(b[i]); });
+    return mixed;
+  }
+  function todaysTip() {
+    const list = tipList();
+    if (!list.length) return null;
+    const rec = practice.tips[todayKey()] || {};
+    return { tip: list[(dayNumber() + (rec.shift || 0)) % list.length], rec };
+  }
+  function tipRecord() {
+    const k = todayKey();
+    practice.tips[k] = practice.tips[k] || {};
+    return practice.tips[k];
+  }
+  const tipsDone = () => Object.values(practice.tips).filter((r) => r.status === 'done').length;
+
+  function setTipStatus(status) {
+    const rec = tipRecord();
+    const tip = todaysTip().tip;
+    rec.status = status; rec.id = tip.id;
+    savePractice();
+    if (status === 'done') goal('app_tip_done');
+    render();
+    toast(status === 'done' ? 'Отлично. Маленькие шаги тоже считаются' : 'Хорошо. Не каждый совет подходит, возьмём другой');
+    if (status === 'skip') nextTip(true);
+  }
+  function nextTip(silent) {
+    const rec = tipRecord();
+    rec.shift = (rec.shift || 0) + 1;
+    rec.status = null;
+    savePractice();
+    if (!silent) goal('app_tip_other');
+    render();
+  }
+  function setTopic(id) { practice.topic = id; savePractice(); render(); }
+
+  function renderTipCard(compact) {
+    const cur = todaysTip();
+    if (!cur) return null;
+    const { tip, rec } = cur;
+    const topicName = (PR.topics.find((t) => t.id === tip.topic) || {}).name || '';
+    const done = rec.status === 'done';
+    const n = tipsDone();
+    const box = h('div', { class: 'card tip-card' },
+      h('p', { class: 'tip-kicker' }, `Совет дня · ${topicName}`),
+      h('h2', null, tip.title),
+      h('p', null, tip.text),
+      h('div', { class: 'tip-try' }, h('b', null, 'Попробуйте'), tip.tryIt));
+    if (done) {
+      box.append(h('p', { class: 'status-ok', style: 'margin-top:12px' }, '✓ Сделано. Хорошо, что вы про себя вспомнили'));
+    } else {
+      box.append(h('div', { class: 'btn-row item-actions' },
+        button('btn primary', 'Сделано', () => setTipStatus('done')),
+        button('btn ghost', 'Не моё', () => setTipStatus('skip'))));
+    }
+    box.append(h('div', { class: 'item-links' }, button('link', 'Другой совет', () => nextTip(false))));
+    if (!compact) {
+      box.append(
+        h('p', { class: 'ask' }, 'О чём советы'),
+        h('div', { class: 'chips', style: 'margin-top:8px' },
+          [{ id: 'all', name: 'Обо всём' }, ...PR.topics].map((t) => h('button', {
+            type: 'button', class: 'chip', 'aria-pressed': String(practice.topic === t.id), onclick: () => setTopic(t.id),
+          }, t.name))));
+      if (n) box.append(h('p', { class: 'fine' }, `Вы попробовали ${n} ${plural(n, ['совет', 'совета', 'советов'])}. Никаких серий и баллов: приходите, когда нужно.`));
+    } else {
+      box.append(h('p', { class: 'fine' }, 'Хотите выбрать тему или разобрать тревожную мысль? ', button('link', 'Откройте «Практики»', () => { view = 'practice'; render(); window.scrollTo(0, 0); })));
+    }
+    return box;
+  }
+
+  // ----- Разбор мысли -----
+  const THOUGHT_STEPS = 6;
+  function freshThought() {
+    return { step: 0, rec: { situation: '', emotions: [], emoBefore: 5, thought: '', confBefore: 70, pro: '', con: '', traps: [], balanced: '', confAfter: 50, emoAfter: 5 } };
+  }
+  function startThought() {
+    thoughtUI = freshThought();
+    goal('app_thought_start');
+    render();
+    window.scrollTo(0, 0);
+  }
+  function thoughtGo(delta) {
+    thoughtUI.step += delta;
+    // последний шаг начинается с исходных оценок, чтобы было видно, что изменилось
+    if (thoughtUI.step === THOUGHT_STEPS - 1 && delta > 0) { thoughtUI.rec.confAfter = thoughtUI.rec.confBefore; thoughtUI.rec.emoAfter = thoughtUI.rec.emoBefore; }
+    render(); window.scrollTo(0, 0);
+  }
+
+  function ta(value, onInput, placeholder, rows = 3) {
+    const el = h('textarea', { rows, maxlength: 500, placeholder }, value);
+    el.addEventListener('input', () => onInput(el.value));
+    return el;
+  }
+  function slider100(value, onInput) {
+    const out = h('output', null, `${value}%`);
+    const input = h('input', { type: 'range', min: 0, max: 100, step: 5, value });
+    input.addEventListener('input', () => { out.textContent = `${input.value}%`; onInput(Number(input.value)); });
+    return { out, input };
+  }
+
+  function renderThought() {
+    const { step, rec } = thoughtUI;
+    const head = h('p', { class: 'tip-kicker' }, `Разбор мысли · шаг ${step + 1} из ${THOUGHT_STEPS}`);
+    const err = h('p', { class: 'error', hidden: true });
+    let body;
+    let canNext = () => true;
+
+    if (step === 0) {
+      const emo = h('div', { class: 'chips', style: 'margin-top:8px' }, PR.emotions.map((e) => h('button', {
+        type: 'button', class: 'chip', 'aria-pressed': String(rec.emotions.includes(e)),
+        onclick: (ev) => {
+          rec.emotions = rec.emotions.includes(e) ? rec.emotions.filter((x) => x !== e) : [...rec.emotions, e].slice(-3);
+          ev.currentTarget.parentNode.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(rec.emotions.includes(b.textContent))));
+        },
+      }, e)));
+      const note = h('p', { class: 'status-err', hidden: rec.emoBefore < 9 }, HARD_NOTE);
+      const sl = slider(rec.emoBefore, (v) => { rec.emoBefore = v; note.hidden = v < 9; });
+      body = [
+        h('h2', null, 'Что случилось?'),
+        h('p', { class: 'muted' }, 'Коротко: ситуация или повод, из-за которого появилась мысль. Можно пропустить.'),
+        ta(rec.situation, (v) => { rec.situation = v; }, 'Например: «Начальник не ответил на моё письмо»'),
+        h('p', { class: 'ask' }, 'Что вы при этом чувствуете? (до трёх)'),
+        emo,
+        h('div', { class: 'slider-row' },
+          h('span', { class: 'field-label' }, 'Насколько сильно, от 0 до 10? ', sl.out), sl.input,
+          h('span', { class: 'range-ends' }, h('span', null, 'слабо'), h('span', null, 'очень сильно'))),
+        note];
+    } else if (step === 1) {
+      const sl = slider100(rec.confBefore, (v) => { rec.confBefore = v; });
+      body = [
+        h('h2', null, 'Какая мысль пришла?'),
+        h('p', { class: 'muted' }, 'Запишите её так, как она звучит в голове, без смягчения.'),
+        ta(rec.thought, (v) => { rec.thought = v; err.hidden = true; }, 'Например: «Я всё испортил(а), меня уволят»'),
+        err,
+        h('div', { class: 'slider-row' },
+          h('span', { class: 'field-label' }, 'Насколько вы в ней уверены сейчас? ', sl.out), sl.input,
+          h('span', { class: 'range-ends' }, h('span', null, 'не верю'), h('span', null, 'абсолютно уверен(а)')))];
+      canNext = () => { if (rec.thought.trim()) return true; err.textContent = 'Напишите хотя бы пару слов о мысли'; err.hidden = false; return false; };
+    } else if (step === 2) {
+      body = [
+        h('h2', null, 'Что говорит «за» и «против»'),
+        h('p', { class: 'muted' }, 'Только факты: то, что можно подтвердить, а не ощущения.'),
+        h('p', { class: 'ask' }, 'Что подтверждает эту мысль?'),
+        ta(rec.pro, (v) => { rec.pro = v; }, 'Факты «за»'),
+        h('p', { class: 'ask' }, 'Что ей противоречит или не вписывается?'),
+        ta(rec.con, (v) => { rec.con = v; }, 'Факты «против»'),
+        h('details', { class: 'hints' }, h('summary', null, 'Подсказки, если трудно найти «против»'), h('ul', null, PR.conHints.map((t) => h('li', null, t))))];
+    } else if (step === 3) {
+      const trapEls = PR.traps.map(([name, hint]) => h('button', {
+        type: 'button', class: 'chip trap', 'data-t': name, 'aria-pressed': String(rec.traps.includes(name)),
+        onclick: (ev) => {
+          rec.traps = rec.traps.includes(name) ? rec.traps.filter((x) => x !== name) : [...rec.traps, name];
+          ev.currentTarget.setAttribute('aria-pressed', String(rec.traps.includes(name)));
+        },
+      }, h('b', null, name), h('span', null, hint)));
+      body = [
+        h('h2', null, 'Знакомый шаблон?'),
+        h('p', { class: 'muted' }, 'У мыслей бывают привычные «ловушки». Это не ошибка, а способ работы мозга. Отметьте, что узнаёте (можно пропустить).'),
+        h('div', { class: 'chips qchips', style: 'margin-top:10px' }, trapEls)];
+    } else if (step === 4) {
+      const starters = h('div', { class: 'chips', style: 'margin-top:8px' }, PR.balancedStarters.map((t) => h('button', {
+        type: 'button', class: 'chip', onclick: () => { balancedEl.value = balancedEl.value ? balancedEl.value : t; rec.balanced = balancedEl.value; balancedEl.focus(); },
+      }, t)));
+      const balancedEl = ta(rec.balanced, (v) => { rec.balanced = v; err.hidden = true; }, 'Более взвешенный взгляд на ситуацию', 4);
+      body = [
+        h('h2', null, 'Более взвешенная мысль'),
+        h('p', { class: 'muted' }, 'Учтите и «за», и «против». Это не позитивное мышление, а более точное: оно может быть и непростым.'),
+        balancedEl,
+        err,
+        h('p', { class: 'ask' }, 'Можно начать так'),
+        starters];
+      canNext = () => { if (rec.balanced.trim()) return true; err.textContent = 'Напишите хотя бы одну фразу'; err.hidden = false; return false; };
+    } else {
+      const note = h('p', { class: 'status-err', hidden: rec.emoAfter < 9 }, HARD_NOTE);
+      const sl = slider(rec.emoAfter, (v) => { rec.emoAfter = v; note.hidden = v < 9; });
+      const sc = slider100(rec.confAfter, (v) => { rec.confAfter = v; });
+      body = [
+        h('h2', null, 'Как теперь?'),
+        h('p', { class: 'muted' }, 'Вернитесь к первой мысли и оцените ещё раз. Результат может быть любым: даже небольшое изменение уже важно.'),
+        h('div', { class: 'slider-row' },
+          h('span', { class: 'field-label' }, 'Насколько вы теперь верите первой мысли? ', sc.out), sc.input),
+        h('div', { class: 'slider-row' },
+          h('span', { class: 'field-label' }, 'Сила чувства сейчас, от 0 до 10? ', sl.out), sl.input),
+        note];
+    }
+
+    const last = step === THOUGHT_STEPS - 1;
+    const nav = h('div', { class: 'btn-row item-actions' },
+      step > 0 ? button('btn ghost', 'Назад', () => thoughtGo(-1)) : button('btn ghost', 'Выйти', () => { thoughtUI = null; render(); }),
+      button('btn primary', last ? 'Сохранить' : 'Дальше', () => {
+        if (!canNext()) return;
+        if (last) finishThought(); else thoughtGo(1);
+      }));
+    return [h('div', { class: 'card tip-card' }, head, ...body, nav)];
+  }
+
+  function finishThought() {
+    const rec = { ...thoughtUI.rec, id: uid(), date: todayKey() };
+    practice.thoughts.unshift(rec);
+    savePractice();
+    goal('app_thought_done');
+    thoughtUI = { done: rec };
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  function renderThoughtDone() {
+    const r = thoughtUI.done;
+    const dConf = r.confAfter - r.confBefore;
+    const heavy = r.emoAfter >= 7 || r.emoAfter > r.emoBefore;
+    const box = h('div', { class: 'card tip-card' },
+      h('p', { class: 'tip-kicker' }, 'Разбор сохранён'),
+      h('h2', null, 'Вы сделали важную работу'),
+      h('div', { class: 'compare' },
+        h('div', null, h('b', null, 'Уверенность в мысли'), h('span', null, `${r.confBefore}% → ${r.confAfter}%`)),
+        h('div', null, h('b', null, 'Сила чувства'), h('span', null, `${r.emoBefore} → ${r.emoAfter}`))),
+      h('p', null, dConf < 0
+        ? 'Мысль стала чуть менее убедительной: вы увидели ситуацию шире. Так и работает этот приём.'
+        : 'Иногда мысль держится крепко, и это нормально. Один разбор не обязан её убрать: важно, что вы посмотрели на неё внимательно.'),
+      h('div', { class: 'tip-try' }, h('b', null, 'Ваша взвешенная мысль'), r.balanced));
+    if (heavy) {
+      box.append(h('p', { class: 'muted', style: 'margin-top:12px' }, 'Если эта мысль возвращается снова и снова или чувство остаётся очень сильным, с ней можно поработать вместе со специалистом.'),
+        h('div', { class: 'btn-row tall item-actions' },
+          h('a', { class: 'btn primary', href: LINKS.booking, target: '_blank', rel: 'noopener' }, 'Записаться на консультацию'),
+          h('a', { class: 'btn ghost', href: LINKS.telegram, target: '_blank', rel: 'noopener' }, 'Написать Камиле в Telegram')));
+    }
+    box.append(h('div', { class: 'btn-row tall item-actions' },
+      button('btn soft', 'Новый разбор', startThought),
+      button('btn ghost', 'Закрыть', () => { thoughtUI = null; render(); })));
+    return [box];
+  }
+
+  function renderThoughtJournal() {
+    if (!practice.thoughts.length) return null;
+    const rows = practice.thoughts.map((r) => h('details', { class: 'card entry' },
+      h('summary', null,
+        h('span', { class: 'entry-head' }, h('strong', null, r.thought.length > 70 ? `${r.thought.slice(0, 70)}…` : r.thought),
+          h('span', { class: 'muted' }, `${formatDate(r.date)} · уверенность ${r.confBefore}% → ${r.confAfter}%`))),
+      h('div', { class: 'entry-body' },
+        r.situation ? h('p', null, h('b', null, 'Что случилось'), r.situation) : null,
+        r.emotions.length ? h('p', null, h('b', null, 'Чувства'), `${r.emotions.join(', ')} (${r.emoBefore} → ${r.emoAfter})`) : null,
+        h('p', null, h('b', null, 'Мысль'), r.thought),
+        r.pro ? h('p', null, h('b', null, 'Что подтверждает'), r.pro) : null,
+        r.con ? h('p', null, h('b', null, 'Что противоречит'), r.con) : null,
+        r.traps.length ? h('p', null, h('b', null, 'Шаблоны'), r.traps.join(', ')) : null,
+        h('p', null, h('b', null, 'Взвешенная мысль'), r.balanced),
+        h('div', { class: 'item-links' }, button('link danger', 'Удалить запись', () => {
+          const snap = JSON.stringify(practice);
+          practice.thoughts = practice.thoughts.filter((x) => x.id !== r.id);
+          savePractice(); render();
+          toast('Запись удалена', () => { practice = JSON.parse(snap); savePractice(); render(); });
+        })))));
+    return section('Мои разборы', h('div', { class: 'stack' }, rows));
+  }
+
+  function renderPractice() {
+    if (thoughtUI && thoughtUI.done) return renderThoughtDone();
+    if (thoughtUI) return renderThought();
+    const intro = h('div', { class: 'card' },
+      h('h2', null, 'Разбор мысли'),
+      h('p', { class: 'muted' }, 'Когда тревожная, виноватая или самокритичная мысль не отпускает: за 5 минут проверим её на факты и найдём более взвешенный взгляд. Приём из когнитивно-поведенческой терапии.'),
+      h('div', { class: 'item-actions' }, button('btn primary wide', 'Разобрать мысль', startThought)),
+      h('p', { class: 'fine' }, 'Это самопомощь, а не терапия. Записи хранятся только на вашем устройстве. Если вам кажется, что вы в опасности или есть мысли причинить себе вред, позвоните 112.'));
+    const out = [renderTipCard(false), intro];
+    const journal = renderThoughtJournal();
+    if (journal) out.push(journal);
+    return out;
+  }
+
   // ---------- Отрисовка ----------
   document.querySelectorAll('.tab').forEach((tab) => {
     tab.addEventListener('click', () => { view = tab.dataset.view; askingHow = null; render(); window.scrollTo(0, 0); });
@@ -1373,7 +1674,7 @@
 
   function render() {
     const s = stats();
-    const screens = { today: renderToday, cards: renderCards, archive: renderArchive, insights: renderInsights };
+    const screens = { today: renderToday, practice: renderPractice, cards: renderCards, archive: renderArchive, insights: renderInsights };
     $('#app').replaceChildren(...screens[view](s));
 
     document.querySelectorAll('.tab').forEach((tab) => {
