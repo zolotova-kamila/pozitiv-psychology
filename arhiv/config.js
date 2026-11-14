@@ -2,5 +2,5 @@
 // Пока пусто — раздел «Напоминания в Telegram» в приложении скрыт.
 // Пример: 'https://remind.pozitiv-psychology.ru'
 window.ARHIV_CONFIG = {
-  remindersApi: '',
+  remindersApi: 'https://pozitiv-psychology.ru/api/arhiv-reminders.php',
 };

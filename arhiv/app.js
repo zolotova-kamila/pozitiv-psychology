@@ -226,11 +226,18 @@
     return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
 
+  // Адрес сервиса может быть PHP-файлом (…/arhiv-reminders.php): тогда путь передаётся параметром ?a=
+  function endpoint(path) {
+    if (!/\.php$/.test(API)) return API + path;
+    const [p, q] = path.split('?');
+    return `${API}?a=${p.replace('/api/', '')}${q ? `&${q}` : ''}`;
+  }
+
   async function api(path, body) {
     const ctl = new AbortController();
     const timer = setTimeout(() => ctl.abort(), 10000);
     try {
-      const res = await fetch(API + path, body
+      const res = await fetch(endpoint(path), body
         ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: ctl.signal }
         : { signal: ctl.signal });
       const data = await res.json().catch(() => ({}));
