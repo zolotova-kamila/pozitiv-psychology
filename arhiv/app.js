@@ -1245,17 +1245,17 @@
       h('div', { class: 'bigcard reveal', style: deckVars(deckById(card.deckId)) },
         cardFrame(card),
         h('div', { class: 'bigcard-title' }, h('span', { class: 'cat' }, deckById(card.deckId).groups[card.group]), h('h2', null, card.title))),
-      h('div', { class: 'card', style: 'margin-top:14px' },
+      // Строки к карте закрыты по умолчанию, чтобы не подсказывать готовый смысл раньше времени; открываются под картой
+      h('details', { class: 'card verse-box', style: 'margin-top:14px' },
+        h('summary', null, 'Показать строки к карте'),
+        h('p', { class: 'fine' }, 'Это одна из возможных историй. Она не обязательно ваша.'),
+        verseEl(card)),
+      h('div', { class: 'card', style: 'margin-top:12px' },
         h('div', { class: 'stack' }, prompts.map((p, i) => {
           const area = h('textarea', { rows: 2, maxlength: 400, placeholder: 'Коротко или пропустите' }, cardUI.answers[i]);
           area.addEventListener('input', () => { cardUI.answers[i] = area.value; });
           return h('label', { class: 'field', style: 'margin:0' }, h('span', { class: 'field-label' }, p), area);
         }))),
-      // Строки к карте показываем по желанию и после собственных ответов, чтобы они не подсказывали готовый смысл
-      h('details', { class: 'card verse-box', style: 'margin-top:12px' },
-        h('summary', null, 'Показать строки к карте'),
-        h('p', { class: 'fine' }, 'Это одна из возможных историй. Она не обязательно ваша.'),
-        verseEl(card)),
       h('div', { class: 'card step-card', style: 'margin-top:12px' },
         h('p', { class: 'ask', style: 'margin-top:0' }, 'Маленький шаг, если захочется'),
         h('p', null, card.step),
