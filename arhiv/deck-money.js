@@ -1,5 +1,5 @@
-// Тематическая колода «Деньги и тревога» (12 карт). Строгий JSON: его читают и браузер, и tools/generate_cards.py.
-// Общие промпты стиля берутся из базовой колоды (cards.js). Картинки: cards/money/01.webp … 12.webp.
+// Тематическая колода «Деньги и тревога» (30 карт). Строгий JSON: его читают и браузер, и tools/generate_cards.py.
+// Общие промпты стиля берутся из базовой колоды (cards.js). Картинки: cards/money/01.webp … 30.webp.
 // codes — хеши кодов доступа (их создаёт tools/make_codes.py; сами коды здесь не хранятся).
 (window.ARHIV_EXTRA_DECKS = window.ARHIV_EXTRA_DECKS || []).push({
   "id": "money",
@@ -10,7 +10,7 @@
   "price": 390,
   "imageDir": "cards/money/",
   "imageExt": "webp",
-  "imageVersion": "20261114j",
+  "imageVersion": "20261119a",
   "questions": [
     "Что я чувствую, когда думаю о деньгах?",
     "Откуда у меня такое отношение к деньгам?",
@@ -282,6 +282,261 @@
       "verse": [
         "Полка не полная и не пустая.",
         "Вопрос в том, сколько нужно, чтобы дышать."
+      ]
+    },
+    {
+      "id": 16,
+      "group": "roots",
+      "title": "Ключ в замке",
+      "kind": "symbol",
+      "motif": "door",
+      "hue": 0,
+      "people": false,
+      "desc": "Старый латунный ключ, наполовину повёрнутый в замке простой деревянной двери; из-под двери идёт полоска тёплого золотого света.",
+      "scene": "close-up of an old brass key halfway turned in the lock of a plain wooden door, a thin line of warm golden light spilling from the crack beneath the door, soft pastel wall",
+      "q": "Кому, как вам кажется, можно иметь достаток, и чем вы от этих людей отличаетесь?",
+      "step": "Если хотите, закончите про себя фразу: «Мне можно иметь деньги, потому что…». Даже если звучит неубедительно.",
+      "verse": [
+        "Ключ уже в замке.",
+        "Дверь не заперта, она просто закрыта."
+      ]
+    },
+    {
+      "id": 17,
+      "group": "roots",
+      "title": "Подарок или счёт",
+      "kind": "pair",
+      "motif": "table",
+      "hue": 1,
+      "people": true,
+      "desc": "Пожилая женщина и маленькая девочка за столом: между ними ломоть хлеба и одна монета. Они смотрят друг на друга тепло и задумчиво.",
+      "scene": "an elderly woman and a little girl sit at a kitchen table, between them a slice of bread and a single coin, they look at each other with a quiet, warm and thoughtful expression, soft golden window light",
+      "q": "Как в вашей семье показывали любовь: через деньги, заботу, подарки, их отсутствие? Что вы тогда решили о себе?",
+      "step": "Если хотите, вспомните один случай из детства, связанный с деньгами и любовью, и скажите той девочке или тому мальчику доброе слово.",
+      "verse": [
+        "Хлеб и монета на одном столе.",
+        "Любовь и счёт можно развести."
+      ]
+    },
+    {
+      "id": 18,
+      "group": "roots",
+      "title": "Соль на столе",
+      "kind": "object",
+      "motif": "shell",
+      "hue": 2,
+      "people": false,
+      "desc": "Льняной мешочек крупной соли на деревенском столе рядом с караваем и миской тёплого супа; через стол проходит луч дневного солнца.",
+      "scene": "a small linen pouch of coarse salt on a rustic wooden table beside a loaf of bread and a bowl of warm soup, a ray of afternoon sun crossing the table, soft pastel kitchen",
+      "q": "Что для вас значит «достаточно» в самом простом смысле: еда, тепло, крыша? Что из этого у вас уже есть?",
+      "step": "Если хотите, назовите три простые вещи, которые у вас сегодня уже есть и на которых держится ваш день.",
+      "verse": [
+        "Хлеб, соль, тёплая миска.",
+        "Дом начинается с малого."
+      ]
+    },
+    {
+      "id": 19,
+      "group": "roots",
+      "title": "Муравьиная тропа",
+      "kind": "animal",
+      "motif": "hive",
+      "hue": 3,
+      "people": false,
+      "desc": "Крупный план: вереница крошечных муравьёв несёт золотые зёрнышки по изогнутой травинке, один отдыхает на капле росы.",
+      "scene": "extreme close-up macro of a line of tiny ants carrying small golden seeds along a curved blade of grass, one ant resting on a dewdrop, warm morning light, pastel haze in the background",
+      "q": "Откуда у вас убеждение, что нужно работать без передышки, чтобы быть в безопасности? Чей это голос?",
+      "step": "Если хотите, отметьте сегодня одно место для маленькой остановки, как капля росы для муравья, и позвольте себе её.",
+      "verse": [
+        "Зёрнышко за зёрнышком.",
+        "Даже у тропы есть капля росы."
+      ]
+    },
+    {
+      "id": 20,
+      "group": "roots",
+      "title": "Два ключа",
+      "kind": "hands",
+      "motif": "thread",
+      "hue": 4,
+      "people": true,
+      "desc": "Крупный план: две руки передают друг другу связку из двух ключей; одна ладонь открыта, другая принимает.",
+      "scene": "close-up of two hands passing a ring with two small keys from one open palm to another, gentle and calm gesture, soft diffused golden light, pastel background",
+      "q": "Что для вас значит зависеть от чужих денег или чтобы кто-то зависел от ваших? Что бы вы решали иначе, если бы ключи были у вас?",
+      "step": "Если хотите, подумайте: какое одно небольшое решение про деньги вы можете принять сами, без чужого разрешения?",
+      "verse": [
+        "Два ключа, две ладони.",
+        "Передать можно и обратно."
+      ]
+    },
+    {
+      "id": 21,
+      "group": "roots",
+      "title": "Белка и запасы",
+      "kind": "animal",
+      "motif": "eggs",
+      "hue": 5,
+      "people": false,
+      "desc": "Маленькая рыжая белка сидит на мшистой ветке и держит в лапках один жёлудь; в дупле за ней спрятаны ещё несколько, сзади мягкий золотой свет.",
+      "scene": "a small red squirrel sitting on a mossy branch holding one acorn in its paws, looking up calmly, a few more acorns tucked in a hollow behind it, soft golden backlight, pastel hazy forest",
+      "q": "Сколько запасов вам нужно, чтобы выдохнуть? Что тревога говорит вам про «чёрный день»?",
+      "step": "Если хотите, спросите себя: «Если запас уже есть, что я могу позволить себе сегодня?». Это не финансовый совет, а вопрос к себе.",
+      "verse": [
+        "Желудь в лапах, остальные в дупле.",
+        "Можно доверять и тому, что уже есть."
+      ]
+    },
+    {
+      "id": 22,
+      "group": "feelings",
+      "title": "Зеркало в траве",
+      "kind": "symbol",
+      "motif": "spring",
+      "hue": 1,
+      "people": false,
+      "desc": "Круглое ручное зеркало лежит в высокой луговой траве, в нём отражаются бледное золотое небо и одно облако; сквозь деревянную ручку проросший маленький голубой цветок.",
+      "scene": "a round hand mirror lying in tall meadow grass reflecting a pale golden sky and a single cloud, a tiny blue flower growing through its wooden handle, soft pastel meadow light",
+      "q": "С кем из окружающих вы сравниваете себя в деньгах? Чего не видно в их жизни и в вашей?",
+      "step": "Если хотите, запишите одну вещь в вашей жизни, которую со стороны не заметить, но которая вам дорога.",
+      "verse": [
+        "В зеркале небо, а не чужой кошелёк.",
+        "Цветок растёт там, где не ждали."
+      ]
+    },
+    {
+      "id": 23,
+      "group": "feelings",
+      "title": "Новое платье",
+      "kind": "person",
+      "motif": "windows",
+      "hue": 2,
+      "people": true,
+      "desc": "Молодая женщина стоит у витрины, смотрит на светлое платье и тихо улыбается, чуть смущённо; в стекле отражается мягкий закат.",
+      "scene": "a young woman stands by a shop window looking at a pale dress with a shy, quietly hopeful half-smile, her hand lightly touching the glass, soft golden sunset reflected in the window",
+      "q": "Что происходит внутри, когда вы тратите деньги на себя? Чей голос вас одёргивает?",
+      "step": "Если хотите, представьте, что подруга покупает себе то же самое. Что вы бы ей сказали? Скажите это себе.",
+      "verse": [
+        "Витрина не осуждает.",
+        "Желание тоже вправе быть."
+      ]
+    },
+    {
+      "id": 24,
+      "group": "feelings",
+      "title": "Нераспечатанный конверт",
+      "kind": "object",
+      "motif": "blanket",
+      "hue": 3,
+      "people": false,
+      "desc": "Белый конверт на подоконнике рядом с нетронутой чашкой чая; за окном мягкое утро и ветка с первыми листьями.",
+      "scene": "a white sealed envelope on a windowsill beside an untouched cup of tea, a branch with first green leaves outside the window, soft morning light, pastel interior",
+      "q": "Какое дело с деньгами вы обходите стороной? Что кажется самым страшным в первом шаге?",
+      "step": "Если хотите, назначьте на этот конверт пять минут и таймер: открыть, посмотреть, закрыть. Больше ничего не нужно.",
+      "verse": [
+        "Конверт тихий.",
+        "Тревога громче бумаги."
+      ]
+    },
+    {
+      "id": 25,
+      "group": "next",
+      "title": "Цена",
+      "kind": "person",
+      "motif": "wheel",
+      "hue": 4,
+      "people": true,
+      "desc": "Мужчина средних лет за деревянным столом с открытой ладонью на столе; взгляд спокойный и прямой, с лёгкой уверенностью.",
+      "scene": "a middle-aged man sits at a wooden table with an open palm resting on it, his gaze calm and direct with quiet confidence, soft golden window light, pastel interior",
+      "q": "Какую цифру вам страшно произнести вслух? Что, как вам кажется, случится после?",
+      "step": "Если хотите, скажите её вслух один раз, в одиночестве, спокойным голосом, и заметьте, что происходит в теле.",
+      "verse": [
+        "Цифра лежит на ладони.",
+        "Её можно назвать спокойно."
+      ]
+    },
+    {
+      "id": 26,
+      "group": "next",
+      "title": "Нет и да",
+      "kind": "pair",
+      "motif": "fence",
+      "hue": 5,
+      "people": true,
+      "desc": "Две подруги на скамье у ограды сада; одна мягко отводит руку в жесте «нет, спасибо», другая слушает с пониманием.",
+      "scene": "two women friends sit on a garden bench by a low fence, one gently lifts her hand in a soft gesture of refusal while the other listens with understanding and a gentle smile, warm afternoon light, pastel garden",
+      "q": "Что вы чувствуете, когда хочется сказать «нет», и чего боитесь потерять, если скажете?",
+      "step": "Если хотите, потренируйтесь в одиночестве: «Сейчас я не могу, но желаю тебе удачи». Что чувствуется в теле?",
+      "verse": [
+        "«Нет» — тоже забота.",
+        "Дружба выдерживает границу."
+      ]
+    },
+    {
+      "id": 27,
+      "group": "next",
+      "title": "Русло",
+      "kind": "nature",
+      "motif": "wave",
+      "hue": 0,
+      "people": false,
+      "desc": "Широкий мелкий ручей на лугу огибает гладкий мшистый камень двумя тихими протоками; на воде золотой свет и несколько лепестков.",
+      "scene": "a wide shallow stream in a meadow dividing around a smooth mossy stone into two quiet channels, golden light on the water, a few small petals floating along, soft pastel haze",
+      "q": "Куда у вас течёт ваше внимание и деньги? Где вы пытаетесь перегородить, а где можно позволить течь?",
+      "step": "Если хотите, найдите одно место, где вы держите всё «мёртвой хваткой», и представьте, что отпускаете хотя бы чуть-чуть.",
+      "verse": [
+        "Вода обходит камень.",
+        "Не стоит с ним спорить."
+      ]
+    },
+    {
+      "id": 28,
+      "group": "next",
+      "title": "Якорь и лодка",
+      "kind": "landscape",
+      "motif": "sail",
+      "hue": 1,
+      "people": false,
+      "desc": "Маленькая деревянная лодка на спокойной пастельной воде; трос уходит в прозрачную воду к якорю на песчаном дне; на горизонте золотой рассвет.",
+      "scene": "a small wooden rowboat on a calm pastel bay with a rope going down into the clear water to an anchor resting on the sandy bottom, golden sunrise on the horizon, soft haze",
+      "q": "Что в ваших деньгах держит вас в безопасности, а что не даёт плыть?",
+      "step": "Если хотите, подумайте: что одно можно отпустить хотя бы на метр троса, чтобы лодка слегка покачалась, оставаясь в бухте?",
+      "verse": [
+        "Якорь держит.",
+        "Бухта тоже часть моря."
+      ]
+    },
+    {
+      "id": 29,
+      "group": "next",
+      "title": "Лестница в облака",
+      "kind": "sky",
+      "motif": "stairs",
+      "hue": 2,
+      "people": false,
+      "desc": "Тонкая деревянная лестница прислонена к мягкому розовому облаку в пастельном небе; на третьей ступеньке висит маленький золотой фонарик.",
+      "scene": "a slender wooden ladder leaning against a soft pink cloud in a pastel sky, a small golden lantern hanging on the third rung, a flock of tiny birds passing far away, hazy light",
+      "q": "На какой ступеньке вам сейчас уютно? Что вам подсказывает усталость от бесконечного подъёма?",
+      "step": "Если хотите, остановитесь на «своей» ступеньке и назовите, что с неё видно хорошего.",
+      "verse": [
+        "Фонарь висит на третьей ступеньке.",
+        "Высота измеряется не только вверх."
+      ]
+    },
+    {
+      "id": 30,
+      "group": "next",
+      "title": "Оттепель",
+      "kind": "sky",
+      "motif": "birds",
+      "hue": 3,
+      "people": false,
+      "desc": "Широкая весенняя река с тонкими льдинами и низким золотым солнцем; на одной льдине маленький зелёный росток; небо розово-голубое и отражается в воде.",
+      "scene": "a wide river in early spring with drifting thin ice floes, low golden sun over the water, one floe carrying a small green sprig, a pastel blue-pink sky mirrored in the water",
+      "q": "Что в вашей денежной жизни начинает оттаивать? Чему ещё нужно время?",
+      "step": "Если хотите, отметьте одну маленькую перемену к лучшему за последний год, даже если она едва заметна.",
+      "verse": [
+        "Лёд трогается.",
+        "Росток едет на льдине."
       ]
     }
   ],
